@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pigx.engine</groupId>
+        <artifactId>engine-data</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>data-core-mongodb</artifactId>
+    <name>data-core-mongodb</name>
+    <description>PigX Cloud 微服务基座组件库以 MongoDB 作为数据访问层的通用代码模块</description>
+    <dependencies>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>data-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+    </dependencies>
+</project>

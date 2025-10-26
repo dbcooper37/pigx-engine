@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pigx.engine</groupId>
+        <artifactId>pigx-engine</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>engine-data</artifactId>
+    <name>engine-data</name>
+
+    <packaging>pom</packaging>
+
+    <description>PigX Cloud 微服务基座组件库数据访问通用代码模块分组</description>
+
+    <modules>
+        <module>data-core</module>
+        <module>data-core-jpa</module>
+        <module>data-core-mongodb</module>
+        <module>data-module-tenant</module>
+        <module>data-module-hibernate</module>
+        <module>data-core-jpa</module>
+        <module>data-core-mongodb</module>
+        <module>data-module-tenant</module>
+    </modules>
+</project>

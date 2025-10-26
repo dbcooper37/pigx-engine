@@ -1,0 +1,27 @@
+package com.pigx.engine.oauth2.authentication.provider;
+
+import com.pigx.engine.oauth2.authentication.customizer.HerodotusGrantType;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationGrantAuthenticationToken;
+import org.springframework.util.Assert;
+
+/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/provider/OAuth2ResourceOwnerPasswordAuthenticationToken.class */
+public class OAuth2ResourceOwnerPasswordAuthenticationToken extends OAuth2AuthorizationGrantAuthenticationToken {
+    private final Set<String> scopes;
+
+    public OAuth2ResourceOwnerPasswordAuthenticationToken(Authentication clientPrincipal, @Nullable Set<String> scopes, @Nullable Map<String, Object> additionalParameters) {
+        super(HerodotusGrantType.PASSWORD, clientPrincipal, additionalParameters);
+        Assert.notNull(clientPrincipal, "clientPrincipal cannot be null");
+        this.scopes = Collections.unmodifiableSet(CollectionUtils.isNotEmpty(scopes) ? new HashSet(scopes) : Collections.emptySet());
+    }
+
+    public Set<String> getScopes() {
+        return this.scopes;
+    }
+}

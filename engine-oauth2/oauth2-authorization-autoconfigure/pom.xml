@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pigx.engine</groupId>
+        <artifactId>engine-oauth2</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>oauth2-authorization-autoconfigure</artifactId>
+    <name>oauth2-authorization-autoconfigure</name>
+    <description>PigX Cloud 微服务基座组件库 OAuth2 资源服务器基础内容自动配置模块</description>
+    <dependencies>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>oauth2-module-authorization</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>facility-kafka-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-rsocket</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>servlet-message-spring-boot-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>rest-module-servlet-upms</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>

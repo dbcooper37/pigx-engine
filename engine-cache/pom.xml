@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pigx.engine</groupId>
+        <artifactId>pigx-engine</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+
+    <artifactId>engine-cache</artifactId>
+    <name>engine-cache</name>
+    <packaging>pom</packaging>
+
+    <description>PigX Cloud 微服务基座组件库缓存功能封装模块分组</description>
+
+    <modules>
+        <module>cache-core</module>
+        <module>cache-module-caffeine</module>
+        <module>cache-module-jetcache</module>
+        <module>cache-module-redisson</module>
+        <module>cache-module-redis</module>
+    </modules>
+</project>

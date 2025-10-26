@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pigx.engine</groupId>
+        <artifactId>pigx-engine</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>engine-core</artifactId>
+    <name>engine-core</name>
+
+    <packaging>pom</packaging>
+
+    <description>PigX Cloud</description>
+
+    <modules>
+        <module>core-definition</module>
+        <module>core-autoconfigure</module>
+        <module>core-foundation</module>
+        <module>core-identity</module>
+    </modules>
+</project>

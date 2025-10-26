@@ -1,0 +1,403 @@
+package com.pigx.engine.core.foundation.context;
+
+import com.pigx.engine.core.definition.constant.SymbolConstants;
+import com.pigx.engine.core.definition.enums.Protocol;
+import com.pigx.engine.core.definition.utils.WellFormedUtils;
+import com.pigx.engine.core.foundation.enums.Architecture;
+import com.pigx.engine.core.foundation.enums.DataAccessStrategy;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEvent;
+
+/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/context/ServiceContextHolder.class */
+public class ServiceContextHolder {
+    private static volatile ServiceContextHolder instance;
+    private final ServiceContext serviceContext = new ServiceContext();
+
+    private ServiceContextHolder() {
+    }
+
+    public static ServiceContextHolder getInstance() {
+        if (ObjectUtils.isEmpty(instance)) {
+            synchronized (ServiceContextHolder.class) {
+                if (ObjectUtils.isEmpty(instance)) {
+                    instance = new ServiceContextHolder();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private ServiceContext serviceContext() {
+        return this.serviceContext;
+    }
+
+    private static ServiceContext getServiceContext() {
+        return getInstance().serviceContext();
+    }
+
+    public static Architecture getArchitecture() {
+        return getServiceContext().getArchitecture();
+    }
+
+    public static void setArchitecture(Architecture architecture) {
+        getServiceContext().setArchitecture(architecture);
+    }
+
+    public static DataAccessStrategy getDataAccessStrategy() {
+        return getServiceContext().getDataAccessStrategy();
+    }
+
+    public static void setDataAccessStrategy(DataAccessStrategy dataAccessStrategy) {
+        getServiceContext().setDataAccessStrategy(dataAccessStrategy);
+    }
+
+    public static Protocol getProtocol() {
+        return getServiceContext().getProtocol();
+    }
+
+    public static void setProtocol(Protocol protocol) {
+        getServiceContext().setProtocol(protocol);
+    }
+
+    public static String getPort() {
+        return getServiceContext().getPort();
+    }
+
+    public static void setPort(String port) {
+        getServiceContext().setPort(port);
+    }
+
+    public static String getIp() {
+        return getServiceContext().getIp();
+    }
+
+    public static void setIp(String ip) {
+        getServiceContext().setIp(ip);
+    }
+
+    public static String getAddress() {
+        if (isDistributedArchitecture()) {
+            return getGatewayServiceUri() + "/" + getApplicationName();
+        }
+        if (StringUtils.isNotBlank(getIp()) && StringUtils.isNotBlank(getPort())) {
+            return getIp() + ":" + getPort();
+        }
+        return getServiceContext().getAddress();
+    }
+
+    public static void setAddress(String address) {
+        getServiceContext().setAddress(address);
+    }
+
+    public static String getUrl() {
+        if (StringUtils.isBlank(getServiceContext().getUrl())) {
+            String address = getAddress();
+            if (StringUtils.isNotBlank(address)) {
+                return WellFormedUtils.addressToUri(address, getProtocol(), false);
+            }
+        }
+        return getServiceContext().getUrl();
+    }
+
+    public static void setUrl(String url) {
+        getServiceContext().setUrl(url);
+    }
+
+    public static String getApplicationName() {
+        return getServiceContext().getApplicationName();
+    }
+
+    public static void setApplicationName(String applicationName) {
+        getServiceContext().setApplicationName(applicationName);
+    }
+
+    public static ApplicationContext getApplicationContext() {
+        return getServiceContext().getApplicationContext();
+    }
+
+    public static void setApplicationContext(ApplicationContext applicationContext) {
+        getServiceContext().setApplicationContext(applicationContext);
+    }
+
+    public static String getUaaServiceName() {
+        return getServiceContext().getUaaServiceName();
+    }
+
+    public static void setUaaServiceName(String uaaServiceName) {
+        getServiceContext().setUaaServiceName(uaaServiceName);
+    }
+
+    public static String getUpmsServiceName() {
+        return getServiceContext().getUpmsServiceName();
+    }
+
+    public static void setUpmsServiceName(String upmsServiceName) {
+        getServiceContext().setUpmsServiceName(upmsServiceName);
+    }
+
+    public static String getMessageServiceName() {
+        return getServiceContext().getMessageServiceName();
+    }
+
+    public static void setMessageServiceName(String messageServiceName) {
+        getServiceContext().setMessageServiceName(messageServiceName);
+    }
+
+    public static String getOssServiceName() {
+        return getServiceContext().getOssServiceName();
+    }
+
+    public static void setOssServiceName(String ossServiceName) {
+        getServiceContext().setOssServiceName(ossServiceName);
+    }
+
+    public static String getGatewayServiceUri() {
+        return getServiceContext().getGatewayServiceUri();
+    }
+
+    public static void setGatewayServiceUri(String gatewayServiceUri) {
+        getServiceContext().setGatewayServiceUri(gatewayServiceUri);
+    }
+
+    public static String getUaaServiceUri() {
+        return getServiceContext().getUaaServiceUri();
+    }
+
+    public static void setUaaServiceUri(String uaaServiceUri) {
+        getServiceContext().setUaaServiceUri(uaaServiceUri);
+    }
+
+    public static String getUpmsServiceUri() {
+        return getServiceContext().getUpmsServiceUri();
+    }
+
+    public static void setUpmsServiceUri(String upmsServiceUri) {
+        getServiceContext().setUpmsServiceUri(upmsServiceUri);
+    }
+
+    public static String getMessageServiceUri() {
+        return getServiceContext().getMessageServiceUri();
+    }
+
+    public static void setMessageServiceUri(String messageServiceUri) {
+        getServiceContext().setMessageServiceUri(messageServiceUri);
+    }
+
+    public static String getOssServiceUri() {
+        return getServiceContext().getOssServiceUri();
+    }
+
+    public static void setOssServiceUri(String ossServiceUri) {
+        getServiceContext().setOssServiceUri(ossServiceUri);
+    }
+
+    public static String getAuthorizationUri() {
+        return getServiceContext().getAuthorizationUri();
+    }
+
+    public static void setAuthorizationUri(String authorizationUri) {
+        getServiceContext().setAuthorizationUri(authorizationUri);
+    }
+
+    public static String getAuthorizationEndpoint() {
+        return getServiceContext().getAuthorizationEndpoint();
+    }
+
+    public static void setAuthorizationEndpoint(String authorizationEndpoint) {
+        getServiceContext().setAuthorizationEndpoint(authorizationEndpoint);
+    }
+
+    public static String getPushedAuthorizationRequestUri() {
+        return getServiceContext().getPushedAuthorizationRequestUri();
+    }
+
+    public static void setPushedAuthorizationRequestUri(String pushedAuthorizationRequestUri) {
+        getServiceContext().setPushedAuthorizationRequestUri(pushedAuthorizationRequestUri);
+    }
+
+    public static String getPushedAuthorizationRequestEndpoint() {
+        return getServiceContext().getPushedAuthorizationRequestEndpoint();
+    }
+
+    public static void setPushedAuthorizationRequestEndpoint(String pushedAuthorizationRequestEndpoint) {
+        getServiceContext().setPushedAuthorizationRequestEndpoint(pushedAuthorizationRequestEndpoint);
+    }
+
+    public static String getAccessTokenUri() {
+        return getServiceContext().getAccessTokenUri();
+    }
+
+    public static void setAccessTokenUri(String accessTokenUri) {
+        getServiceContext().setAccessTokenUri(accessTokenUri);
+    }
+
+    public static String getAccessTokenEndpoint() {
+        return getServiceContext().getAccessTokenEndpoint();
+    }
+
+    public static void setAccessTokenEndpoint(String accessTokenEndpoint) {
+        getServiceContext().setAccessTokenEndpoint(accessTokenEndpoint);
+    }
+
+    public static String getJwkSetUri() {
+        return getServiceContext().getJwkSetUri();
+    }
+
+    public static void setJwkSetUri(String jwkSetUri) {
+        getServiceContext().setJwkSetUri(jwkSetUri);
+    }
+
+    public static String getJwkSetEndpoint() {
+        return getServiceContext().getJwkSetEndpoint();
+    }
+
+    public static void setJwkSetEndpoint(String jwkSetEndpoint) {
+        getServiceContext().setJwkSetEndpoint(jwkSetEndpoint);
+    }
+
+    public static String getTokenRevocationUri() {
+        return getServiceContext().getTokenRevocationUri();
+    }
+
+    public static void setTokenRevocationUri(String tokenRevocationUri) {
+        getServiceContext().setTokenRevocationUri(tokenRevocationUri);
+    }
+
+    public static String getTokenRevocationEndpoint() {
+        return getServiceContext().getTokenRevocationEndpoint();
+    }
+
+    public static void setTokenRevocationEndpoint(String tokenRevocationEndpoint) {
+        getServiceContext().setTokenRevocationEndpoint(tokenRevocationEndpoint);
+    }
+
+    public static String getTokenIntrospectionUri() {
+        return getServiceContext().getTokenIntrospectionUri();
+    }
+
+    public static void setTokenIntrospectionUri(String tokenIntrospectionUri) {
+        getServiceContext().setTokenIntrospectionUri(tokenIntrospectionUri);
+    }
+
+    public static String getTokenIntrospectionEndpoint() {
+        return getServiceContext().getTokenIntrospectionEndpoint();
+    }
+
+    public static void setTokenIntrospectionEndpoint(String tokenIntrospectionEndpoint) {
+        getServiceContext().setTokenIntrospectionEndpoint(tokenIntrospectionEndpoint);
+    }
+
+    public static String getDeviceAuthorizationUri() {
+        return getServiceContext().getDeviceAuthorizationUri();
+    }
+
+    public static void setDeviceAuthorizationUri(String deviceAuthorizationUri) {
+        getServiceContext().setDeviceAuthorizationUri(deviceAuthorizationUri);
+    }
+
+    public static String getDeviceAuthorizationEndpoint() {
+        return getServiceContext().getDeviceAuthorizationEndpoint();
+    }
+
+    public static void setDeviceAuthorizationEndpoint(String deviceAuthorizationEndpoint) {
+        getServiceContext().setDeviceAuthorizationEndpoint(deviceAuthorizationEndpoint);
+    }
+
+    public static String getDeviceVerificationUri() {
+        return getServiceContext().getDeviceVerificationUri();
+    }
+
+    public static void setDeviceVerificationUri(String deviceVerificationUri) {
+        getServiceContext().setDeviceVerificationUri(deviceVerificationUri);
+    }
+
+    public static String getDeviceVerificationEndpoint() {
+        return getServiceContext().getDeviceVerificationEndpoint();
+    }
+
+    public static void setDeviceVerificationEndpoint(String deviceVerificationEndpoint) {
+        getServiceContext().setDeviceVerificationEndpoint(deviceVerificationEndpoint);
+    }
+
+    public static String getOidcClientRegistrationUri() {
+        return getServiceContext().getOidcClientRegistrationUri();
+    }
+
+    public static void setOidcClientRegistrationUri(String oidcClientRegistrationUri) {
+        getServiceContext().setOidcClientRegistrationUri(oidcClientRegistrationUri);
+    }
+
+    public static String getOidcClientRegistrationEndpoint() {
+        return getServiceContext().getOidcClientRegistrationEndpoint();
+    }
+
+    public static void setOidcClientRegistrationEndpoint(String oidcClientRegistrationEndpoint) {
+        getServiceContext().setOidcClientRegistrationEndpoint(oidcClientRegistrationEndpoint);
+    }
+
+    public static String getOidcLogoutUri() {
+        return getServiceContext().getOidcLogoutUri();
+    }
+
+    public static void setOidcLogoutUri(String oidcLogoutUri) {
+        getServiceContext().setOidcLogoutUri(oidcLogoutUri);
+    }
+
+    public static String getOidcLogoutEndpoint() {
+        return getServiceContext().getOidcLogoutEndpoint();
+    }
+
+    public static void setOidcLogoutEndpoint(String oidcLogoutEndpoint) {
+        getServiceContext().setOidcLogoutEndpoint(oidcLogoutEndpoint);
+    }
+
+    public static String getOidcUserInfoUri() {
+        return getServiceContext().getOidcUserInfoUri();
+    }
+
+    public static void setOidcUserInfoUri(String oidcUserInfoUri) {
+        getServiceContext().setOidcUserInfoUri(oidcUserInfoUri);
+    }
+
+    public static String getOidcUserInfoEndpoint() {
+        return getServiceContext().getOidcUserInfoEndpoint();
+    }
+
+    public static void setOidcUserInfoEndpoint(String oidcUserInfoEndpoint) {
+        getServiceContext().setOidcUserInfoEndpoint(oidcUserInfoEndpoint);
+    }
+
+    public static String getIssuerUri() {
+        return getServiceContext().getIssuerUri();
+    }
+
+    public static void setIssuerUri(String issuerUri) {
+        getServiceContext().setIssuerUri(issuerUri);
+    }
+
+    public static boolean isDistributedArchitecture() {
+        return getServiceContext().getArchitecture() == Architecture.DISTRIBUTED;
+    }
+
+    public static String getOriginService() {
+        return getApplicationName() + ":**";
+    }
+
+    public static void publishEvent(ApplicationEvent applicationEvent) {
+        getApplicationContext().publishEvent(applicationEvent);
+    }
+
+    public static String getId() {
+        return getApplicationName() + ":" + getPort();
+    }
+
+    public static boolean isFromSelf(String serviceId) {
+        if (Strings.CS.contains(serviceId, SymbolConstants.COLON)) {
+            return Strings.CS.equals(serviceId, getId());
+        }
+        return false;
+    }
+}

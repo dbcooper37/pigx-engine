@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pigx.engine</groupId>
+        <artifactId>engine-oauth2</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>oauth2-module-authentication</artifactId>
+    <name>oauth2-module-authentication</name>
+
+    <description>PigX Cloud 微服务基座组件库 Spring Authorization Server 授权服务器核心功能封装模块</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>oauth2-module-persistence-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>core-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>web-module-servlet</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>
