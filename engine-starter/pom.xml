@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pigx.engine</groupId>
+        <artifactId>pigx-engine</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>engine-starter</artifactId>
+    <name>engine-starter</name>
+
+    <packaging>pom</packaging>
+
+    <description>Dante Cloud 微服务基座组件库自动配置 Starters 分组</description>
+
+    <modules>
+        <module>cache-spring-boot-starter</module>
+        <module>captcha-spring-boot-starter</module>
+        <module>data-mongodb-spring-boot-starter</module>
+        <module>data-rdbms-spring-boot-starter</module>
+        <module>facility-alibaba-spring-boot-starter</module>
+        <module>facility-gateway-spring-boot-starter</module>
+        <module>facility-tencent-spring-boot-starter</module>
+        <module>logging-spring-boot-starter</module>
+        <module>reactive-container-spring-boot-starter</module>
+        <module>servlet-container-spring-boot-starter</module>
+        <module>servlet-message-spring-boot-starter</module>
+        <module>webmvc-spring-boot-starter</module>
+        <module>facility-kafka-spring-boot-starter</module>
+    </modules>
+</project>

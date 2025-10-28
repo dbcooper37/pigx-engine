@@ -73,8 +73,51 @@
     <file url="file://$PROJECT_DIR$/engine-oauth2/oauth2-module-persistence-jpa/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-oauth2/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-oauth2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-identity/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-identity/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-message/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-message/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-upms/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-upms/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-rest/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-rest/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/cache-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/captcha-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/captcha-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/data-mongodb-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/data-mongodb-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/data-rdbms-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/data-rdbms-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/facility-alibaba-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/facility-alibaba-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/facility-gateway-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/facility-gateway-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/facility-kafka-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/facility-kafka-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/facility-tencent-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/facility-tencent-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/logging-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/logging-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/reactive-container-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/reactive-container-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/servlet-container-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/servlet-container-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/servlet-message-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/servlet-message-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/webmvc-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/webmvc-spring-boot-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-web/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-web/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-web/web-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-web/web-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-web/web-module-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-web/web-module-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-web/web-module-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-web/web-module-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-web/web-module-servlet/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-web/web-module-servlet/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>

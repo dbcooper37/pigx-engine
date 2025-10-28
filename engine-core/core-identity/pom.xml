@@ -20,7 +20,7 @@
         </dependency>
 
         <dependency>
-            <groupId>cn.herodotus.opensteward</groupId>
+            <groupId>com.pigx.opensteward</groupId>
             <artifactId>JustAuth</artifactId>
             <version>1.18.2</version>
         </dependency>
