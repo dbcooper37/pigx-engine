@@ -4,9 +4,11 @@ import com.pigx.engine.core.definition.constant.ErrorCodes;
 import com.pigx.engine.core.definition.domain.Feedback;
 import com.pigx.engine.core.definition.exception.PlatformRuntimeException;
 
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/exception/feigin/FeignDecodeIOException.class */
+
 public class FeignDecodeIOException extends PlatformRuntimeException {
+
     public FeignDecodeIOException() {
+        super();
     }
 
     public FeignDecodeIOException(String message) {
@@ -25,7 +27,7 @@ public class FeignDecodeIOException extends PlatformRuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    @Override // com.pigx.engine.core.definition.exception.PlatformRuntimeException, com.pigx.engine.core.definition.exception.HerodotusException
+    @Override
     public Feedback getFeedback() {
         return ErrorCodes.FEIGN_DECODER_IO_EXCEPTION;
     }

@@ -2,10 +2,12 @@ package com.pigx.engine.core.definition.domain.captcha;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/captcha/Coordinate.class */
+
 public class Coordinate implements Serializable {
+
     private int x;
     private int y;
 
@@ -18,7 +20,7 @@ public class Coordinate implements Serializable {
     }
 
     public int getX() {
-        return this.x;
+        return x;
     }
 
     public void setX(int x) {
@@ -26,13 +28,14 @@ public class Coordinate implements Serializable {
     }
 
     public int getY() {
-        return this.y;
+        return y;
     }
 
     public void setY(int y) {
         this.y = y;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -41,14 +44,19 @@ public class Coordinate implements Serializable {
             return false;
         }
         Coordinate that = (Coordinate) o;
-        return this.x == that.x && this.y == that.y;
+        return x == that.x && y == that.y;
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{Integer.valueOf(this.x), Integer.valueOf(this.y)});
+        return Objects.hashCode(x, y);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("x", this.x).add("y", this.y).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("x", x)
+                .add("y", y)
+                .toString();
     }
 }

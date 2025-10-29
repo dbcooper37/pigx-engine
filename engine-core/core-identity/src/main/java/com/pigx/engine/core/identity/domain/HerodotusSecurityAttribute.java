@@ -2,14 +2,16 @@ package com.pigx.engine.core.identity.domain;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-/* loaded from: core-identity-3.5.7.0.jar:cn/herodotus/engine/core/identity/domain/HerodotusSecurityAttribute.class */
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class HerodotusSecurityAttribute implements Serializable {
+
     private String attribute;
 
     public HerodotusSecurityAttribute() {
@@ -42,6 +44,7 @@ public class HerodotusSecurityAttribute implements Serializable {
         return this.attribute;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -50,14 +53,18 @@ public class HerodotusSecurityAttribute implements Serializable {
             return false;
         }
         HerodotusSecurityAttribute that = (HerodotusSecurityAttribute) o;
-        return Objects.equal(this.attribute, that.attribute);
+        return Objects.equal(attribute, that.attribute);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.attribute});
+        return Objects.hashCode(attribute);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("attrib", this.attribute).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("attrib", attribute)
+                .toString();
     }
 }

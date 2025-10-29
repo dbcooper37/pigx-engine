@@ -15,27 +15,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping({"/authorize/device"})
-@Tags({@Tag(name = "OAuth2 认证服务接口"), @Tag(name = "物联网管理接口"), @Tag(name = "物联网设备接口")})
+
 @RestController
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/controller/OAuth2DeviceController.class */
+@RequestMapping("/authorize/device")
+@Tags({
+        @Tag(name = "OAuth2 认证服务接口"),
+        @Tag(name = "物联网管理接口"),
+        @Tag(name = "物联网设备接口")
+})
 public class OAuth2DeviceController extends AbstractJpaWriteableController<OAuth2Device, String> {
+
     private final OAuth2DeviceService deviceService;
 
     public OAuth2DeviceController(OAuth2DeviceService deviceService) {
         this.deviceService = deviceService;
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
+    @Override
     public BaseJpaWriteableService<OAuth2Device, String> getService() {
-        return this.deviceService;
+        return deviceService;
     }
 
-    @PutMapping
     @Operation(summary = "给设备分配Scope", description = "给设备分配Scope")
-    @Parameters({@Parameter(name = "deviceId", required = true, description = "设备ID"), @Parameter(name = "scopes[]", required = true, description = "Scope对象组成的数组")})
+    @Parameters({
+            @Parameter(name = "deviceId", required = true, description = "设备ID"),
+            @Parameter(name = "scopes[]", required = true, description = "Scope对象组成的数组")
+    })
+    @PutMapping
     public Result<OAuth2Device> authorize(@RequestParam(name = "deviceId") String deviceId, @RequestParam(name = "scopes[]") String[] scopes) {
-        OAuth2Device device = this.deviceService.authorize(deviceId, scopes);
-        return result((OAuth2DeviceController) device);
+        OAuth2Device device = deviceService.authorize(deviceId, scopes);
+        return result(device);
     }
 }

@@ -1,23 +1,30 @@
-package com.pigx.engine.autoconfigure.crypto;
+package com.pigx.engine.core.autoconfigure.crypto;
 
-import com.pigx.engine.core.definition.constant.BaseConstants;
 import com.google.common.base.MoreObjects;
+import com.pigx.engine.core.definition.constant.BaseConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+
 @ConfigurationProperties(prefix = BaseConstants.PROPERTY_PREFIX_CRYPTO)
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/crypto/CryptoProperties.class */
 public class CryptoProperties {
+
+    /**
+     * 加密算法策略，默认：国密算法
+     */
     private CryptoStrategy strategy = CryptoStrategy.SM;
 
     public CryptoStrategy getStrategy() {
-        return this.strategy;
+        return strategy;
     }
 
     public void setStrategy(CryptoStrategy strategy) {
         this.strategy = strategy;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("strategy", this.strategy).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("strategy", strategy)
+                .toString();
     }
 }

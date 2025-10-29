@@ -3,18 +3,26 @@ package com.pigx.engine.core.definition.domain.captcha;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/captcha/GraphicCaptcha.class */
+
 public class GraphicCaptcha extends Captcha {
+
+    /**
+     * 图形验证码成的图。
+     */
     private String graphicImageBase64;
 
+    public GraphicCaptcha() {
+    }
+
     public String getGraphicImageBase64() {
-        return this.graphicImageBase64;
+        return graphicImageBase64;
     }
 
     public void setGraphicImageBase64(String graphicImageBase64) {
         this.graphicImageBase64 = graphicImageBase64;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -23,14 +31,18 @@ public class GraphicCaptcha extends Captcha {
             return false;
         }
         GraphicCaptcha that = (GraphicCaptcha) o;
-        return Objects.equal(this.graphicImageBase64, that.graphicImageBase64);
+        return Objects.equal(graphicImageBase64, that.graphicImageBase64);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.graphicImageBase64});
+        return Objects.hashCode(graphicImageBase64);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("graphicImageBase64", this.graphicImageBase64).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("graphicImageBase64", graphicImageBase64)
+                .toString();
     }
 }

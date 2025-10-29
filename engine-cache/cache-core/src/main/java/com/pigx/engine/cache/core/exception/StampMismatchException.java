@@ -1,10 +1,12 @@
-package com.pigx.engine.core.exception;
+package com.pigx.engine.cache.core.exception;
 
 import com.pigx.engine.core.definition.exception.PlatformException;
 
-/* loaded from: cache-core-3.5.7.0.jar:cn/herodotus/engine/cache/core/exception/StampMismatchException.class */
+
 public class StampMismatchException extends PlatformException {
+
     public StampMismatchException() {
+        super();
     }
 
     public StampMismatchException(String message) {

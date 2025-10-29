@@ -1,5 +1,6 @@
 package com.pigx.engine.web.servlet.crypto;
 
+import cn.hutool.v7.core.data.id.IdUtil;
 import com.pigx.engine.cache.core.exception.StampHasExpiredException;
 import com.pigx.engine.cache.jetcache.stamp.AbstractStampManager;
 import com.pigx.engine.core.definition.domain.SecretKey;
@@ -7,18 +8,21 @@ import com.pigx.engine.core.definition.support.crypto.AsymmetricCryptoProcessor;
 import com.pigx.engine.core.definition.support.crypto.SymmetricCryptoProcessor;
 import com.pigx.engine.web.core.constant.WebConstants;
 import com.pigx.engine.web.core.exception.SessionInvalidException;
-import cn.hutool.v7.core.data.id.IdUtil;
-import java.time.Duration;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 
-/* loaded from: web-module-servlet-3.5.7.0.jar:cn/herodotus/engine/web/servlet/crypto/HttpCryptoProcessor.class */
+import java.time.Duration;
+
+
 public class HttpCryptoProcessor extends AbstractStampManager<String, SecretKey> {
+
     private static final Logger log = LoggerFactory.getLogger(HttpCryptoProcessor.class);
+
     private final AsymmetricCryptoProcessor asymmetricCryptoProcessor;
+
     private final SymmetricCryptoProcessor symmetricCryptoProcessor;
 
     public HttpCryptoProcessor(AsymmetricCryptoProcessor asymmetricCryptoProcessor, SymmetricCryptoProcessor symmetricCryptoProcessor, ServerProperties serverProperties) {
@@ -30,14 +34,14 @@ public class HttpCryptoProcessor extends AbstractStampManager<String, SecretKey>
     public String encrypt(String identity, String content) {
         try {
             SecretKey secretKey = getSecretKey(identity);
-            String result = this.symmetricCryptoProcessor.encrypt(content, secretKey.getSymmetricKey());
-            log.debug("[Herodotus] |- Encrypt content from [{}] to [{}].", content, result);
+            String result = symmetricCryptoProcessor.encrypt(content, secretKey.getSymmetricKey());
+            log.debug("[PIGXD] |- Encrypt content from [{}] to [{}].", content, result);
             return result;
         } catch (StampHasExpiredException e) {
-            log.warn("[Herodotus] |- Session has expired, need recreate, Skip encrypt content [{}].", content);
+            log.warn("[PIGXD] |- Session has expired, need recreate, Skip encrypt content [{}].", content);
             return content;
-        } catch (Exception e2) {
-            log.warn("[Herodotus] |- Symmetric can not Encrypt content [{}], Skip!", content);
+        } catch (Exception e) {
+            log.warn("[PIGXD] |- Symmetric can not Encrypt content [{}], Skip!", content);
             return content;
         }
     }
@@ -45,77 +49,113 @@ public class HttpCryptoProcessor extends AbstractStampManager<String, SecretKey>
     public String decrypt(String identity, String content) {
         try {
             SecretKey secretKey = getSecretKey(identity);
-            String result = this.symmetricCryptoProcessor.decrypt(content, secretKey.getSymmetricKey());
-            log.debug("[Herodotus] |- Decrypt content from [{}] to [{}].", content, result);
+
+            String result = symmetricCryptoProcessor.decrypt(content, secretKey.getSymmetricKey());
+            log.debug("[PIGXD] |- Decrypt content from [{}] to [{}].", content, result);
             return result;
         } catch (StampHasExpiredException e) {
-            log.warn("[Herodotus] |- Session has expired, need recreate, Skip decrypt content [{}].", content);
+            log.warn("[PIGXD] |- Session has expired, need recreate, Skip decrypt content [{}].", content);
             return content;
-        } catch (Exception e2) {
-            log.warn("[Herodotus] |- Symmetric can not Decrypt content [{}], Skip!", content);
+        } catch (Exception e) {
+            log.warn("[PIGXD] |- Symmetric can not Decrypt content [{}], Skip!", content);
             return content;
         }
     }
 
+    /**
+     * 根据SessionId创建SecretKey {@link SecretKey}。如果前端有可以唯一确定的SessionId，并且使用该值，则用该值创建SecretKey。否则就由后端动态生成一个SessionId。
+     *
+     * @param identity                   SessionId，可以为空。
+     * @param accessTokenValiditySeconds Session过期时间，单位秒
+     * @return {@link SecretKey}
+     */
     public SecretKey createSecretKey(String identity, Duration accessTokenValiditySeconds) {
+        // 前端如果设置sessionId，则由后端生成
         if (StringUtils.isBlank(identity)) {
             identity = IdUtil.fastUUID();
         } else {
             try {
                 return getSecretKey(identity);
             } catch (StampHasExpiredException e) {
-                log.debug("[Herodotus] |- SecretKey has expired, recreate it");
+                log.debug("[PIGXD] |- SecretKey has expired, recreate it");
             }
         }
+
+        // 根据Token的有效时间设置
         Duration expire = getExpire(accessTokenValiditySeconds);
-        return create(identity, expire);
+        return this.create(identity, expire);
     }
 
-    @Override // com.pigx.engine.cache.jetcache.stamp.StampManager
+    @Override
     public SecretKey nextStamp(String key) {
-        SecretKey secretKey = this.asymmetricCryptoProcessor.createSecretKey();
-        String symmetricKey = this.symmetricCryptoProcessor.createKey();
+        SecretKey secretKey = asymmetricCryptoProcessor.createSecretKey();
+        String symmetricKey = symmetricCryptoProcessor.createKey();
         secretKey.setSymmetricKey(symmetricKey);
         secretKey.setIdentity(key);
         secretKey.setState(IdUtil.fastUUID());
-        log.debug("[Herodotus] |- Generate secret key, value is : [{}]", secretKey);
+
+        log.debug("[PIGXD] |- Generate secret key, value is : [{}]", secretKey);
         return secretKey;
     }
 
     private boolean isSessionValid(String identity) {
-        return containKey(identity);
+        return this.containKey(identity);
     }
 
     private SecretKey getSecretKey(String identity) throws StampHasExpiredException {
         if (isSessionValid(identity)) {
-            SecretKey secretKey = get(identity);
+            SecretKey secretKey = this.get(identity);
             if (ObjectUtils.isNotEmpty(secretKey)) {
-                log.trace("[Herodotus] |- Decrypt Or Encrypt content use param identity [{}], cached identity is [{}].", identity, secretKey.getIdentity());
+                log.trace("[PIGXD] |- Decrypt Or Encrypt content use param identity [{}], cached identity is [{}].", identity, secretKey.getIdentity());
                 return secretKey;
             }
         }
+
         throw new StampHasExpiredException("SecretKey key is expired!");
     }
 
     private Duration getExpire(Duration accessTokenValiditySeconds) {
         if (ObjectUtils.isEmpty(accessTokenValiditySeconds) || accessTokenValiditySeconds.isZero()) {
             return Duration.ofHours(2L);
+        } else {
+            return accessTokenValiditySeconds;
         }
-        return accessTokenValiditySeconds;
     }
 
+    /**
+     * 用后端非对称加密算法私钥，解密前端传递过来的、用后端非对称加密算法公钥加密的前端非对称加密算法公钥
+     *
+     * @param privateKey 后端非对称加密算法私钥
+     * @param content    传回的已加密前端非对称加密算法公钥
+     * @return 前端非对称加密算法公钥
+     */
     private String decryptFrontendPublicKey(String content, String privateKey) {
-        String frontendPublicKey = this.asymmetricCryptoProcessor.decrypt(content, privateKey);
-        log.debug("[Herodotus] |- Decrypt frontend public key, value is : [{}]", frontendPublicKey);
+        String frontendPublicKey = asymmetricCryptoProcessor.decrypt(content, privateKey);
+        log.debug("[PIGXD] |- Decrypt frontend public key, value is : [{}]", frontendPublicKey);
         return frontendPublicKey;
     }
 
+    /**
+     * 用前端非对称加密算法公钥加密后端生成的对称加密算法 Key
+     *
+     * @param symmetricKey 对称算法秘钥
+     * @param publicKey    前端非对称加密算法公钥
+     * @return 用前端前端非对称加密算法公钥加密后的对称算法秘钥
+     */
     private String encryptBackendKey(String symmetricKey, String publicKey) {
-        String encryptedAesKey = this.asymmetricCryptoProcessor.encrypt(symmetricKey, publicKey);
-        log.debug("[Herodotus] |- Encrypt symmetric key use frontend public key, value is : [{}]", encryptedAesKey);
+        String encryptedAesKey = asymmetricCryptoProcessor.encrypt(symmetricKey, publicKey);
+        log.debug("[PIGXD] |- Encrypt symmetric key use frontend public key, value is : [{}]", encryptedAesKey);
         return encryptedAesKey;
     }
 
+    /**
+     * 前端获取后端生成 AES Key
+     *
+     * @param identity     Session ID
+     * @param confidential 前端和后端加解密结果都
+     * @return 前端 PublicKey 加密后的 AES KEY
+     * @throws SessionInvalidException sessionId不可用，无法从缓存中找到对应的值
+     */
     public String exchange(String identity, String confidential) {
         try {
             SecretKey secretKey = getSecretKey(identity);
@@ -124,5 +164,6 @@ public class HttpCryptoProcessor extends AbstractStampManager<String, SecretKey>
         } catch (StampHasExpiredException e) {
             throw new SessionInvalidException();
         }
+
     }
 }

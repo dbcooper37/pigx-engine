@@ -9,21 +9,21 @@
     <artifactId>cache-spring-boot-starter</artifactId>
     <name>cache-spring-boot-starter</name>
 
-    <description>Dante Cloud 微服务基座组件库缓存自动配置 Starter</description>
+    <description>PigX Cloud 微服务基座组件库缓存自动配置 Starter</description>
 
     <dependencies>
         <dependency>
-            <groupId>cn.herodotus.engine</groupId>
+            <groupId>com.pigx.engine</groupId>
             <artifactId>core-autoconfigure</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>cn.herodotus.engine</groupId>
+            <groupId>com.pigx.engine</groupId>
             <artifactId>cache-module-redisson</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>cn.herodotus.engine</groupId>
+            <groupId>com.pigx.engine</groupId>
             <artifactId>cache-module-jetcache</artifactId>
         </dependency>
 

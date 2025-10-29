@@ -9,19 +9,24 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping({"/authorize/product"})
-@Tags({@Tag(name = "OAuth2 认证服务接口"), @Tag(name = "物联网管理接口"), @Tag(name = "物联网产品接口")})
+
 @RestController
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/controller/OAuth2ProductController.class */
+@RequestMapping("/authorize/product")
+@Tags({
+        @Tag(name = "OAuth2 认证服务接口"),
+        @Tag(name = "物联网管理接口"),
+        @Tag(name = "物联网产品接口")
+})
 public class OAuth2ProductController extends AbstractJpaWriteableController<OAuth2Product, String> {
+
     private final OAuth2ProductService iotProductService;
 
     public OAuth2ProductController(OAuth2ProductService iotProductService) {
         this.iotProductService = iotProductService;
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
+    @Override
     public BaseJpaWriteableService<OAuth2Product, String> getService() {
-        return this.iotProductService;
+        return iotProductService;
     }
 }

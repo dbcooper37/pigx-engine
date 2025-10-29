@@ -4,8 +4,6 @@ import com.pigx.engine.web.core.annotation.Crypto;
 import com.pigx.engine.web.core.exception.SessionInvalidException;
 import com.pigx.engine.web.core.servlet.utils.SessionUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,9 +18,14 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartRequest;
 
-/* loaded from: web-module-servlet-3.5.7.0.jar:cn/herodotus/engine/web/servlet/crypto/DecryptRequestParamResolver.class */
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class DecryptRequestParamResolver implements HandlerMethodArgumentResolver {
+
     private static final Logger log = LoggerFactory.getLogger(DecryptRequestParamResolver.class);
+
     private HttpCryptoProcessor httpCryptoProcessor;
     private RequestParamMethodArgumentResolver requestParamMethodArgumentResolver;
 
@@ -34,51 +37,71 @@ public class DecryptRequestParamResolver implements HandlerMethodArgumentResolve
         this.httpCryptoProcessor = httpCryptoProcessor;
     }
 
+    @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
         String methodName = methodParameter.getMethod().getName();
-        boolean isSupports = isConfigCrypto(methodParameter) && this.requestParamMethodArgumentResolver.supportsParameter(methodParameter);
-        log.trace("[Herodotus] |- Is DecryptRequestParamResolver supports method [{}] ? Status is [{}].", methodName, Boolean.valueOf(isSupports));
+        boolean isSupports = isConfigCrypto(methodParameter) && requestParamMethodArgumentResolver.supportsParameter(methodParameter);
+
+        log.trace("[PIGXD] |- Is DecryptRequestParamResolver supports method [{}] ? Status is [{}].", methodName, isSupports);
         return isSupports;
     }
 
+    /**
+     * 判断该接口方法是否用@Crypto注解标记，同时requestDecrypt的值是true
+     *
+     * @param methodParameter {@link MethodParameter}
+     * @return 是否开启了自定义@Crypto
+     */
     private boolean isConfigCrypto(MethodParameter methodParameter) {
-        Crypto crypto = (Crypto) methodParameter.getMethodAnnotation(Crypto.class);
+        Crypto crypto = methodParameter.getMethodAnnotation(Crypto.class);
         return ObjectUtils.isNotEmpty(crypto) && crypto.requestDecrypt();
     }
 
+    /**
+     * 是否是常规的请求
+     *
+     * @param webRequest {@link NativeWebRequest}
+     * @return boolean
+     */
     private boolean isRegularRequest(NativeWebRequest webRequest) {
-        MultipartRequest multipartRequest = (MultipartRequest) webRequest.getNativeRequest(MultipartRequest.class);
+        MultipartRequest multipartRequest = webRequest.getNativeRequest(MultipartRequest.class);
         return ObjectUtils.isEmpty(multipartRequest);
     }
 
     private String[] decrypt(String sessionId, String[] paramValues) throws SessionInvalidException {
         List<String> values = new ArrayList<>();
         for (String paramValue : paramValues) {
-            String value = this.httpCryptoProcessor.decrypt(sessionId, paramValue);
+            String value = httpCryptoProcessor.decrypt(sessionId, paramValue);
             if (StringUtils.isNotBlank(value)) {
                 values.add(value);
             }
         }
+
         String[] result = new String[values.size()];
-        return (String[]) values.toArray(result);
+        return values.toArray(result);
     }
 
+    @Override
     @Nullable
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+
         if (isRegularRequest(webRequest)) {
-            HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest(HttpServletRequest.class);
+
+            HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+
             String sessionId = SessionUtils.analyseSessionId(request);
             if (SessionUtils.isCryptoEnabled(request, sessionId)) {
                 String[] paramValues = request.getParameterValues(methodParameter.getParameterName());
                 if (ArrayUtils.isNotEmpty(paramValues)) {
                     String[] values = decrypt(sessionId, paramValues);
-                    return values.length == 1 ? values[0] : values;
+                    return (values.length == 1 ? values[0] : values);
                 }
             } else {
-                log.warn("[Herodotus] |- Cannot find Herodotus Cloud custom session header. Use interface crypto founction need add X_HERODOTUS_SESSION_ID to request header.");
+                log.warn("[PIGXD] |- Cannot find Herodotus Cloud custom session header. Use interface crypto founction need add X_HERODOTUS_SESSION_ID to request header.");
             }
         }
-        log.debug("[Herodotus] |- The decryption conditions are not met DecryptRequestParamResolver, skip! to next!");
-        return this.requestParamMethodArgumentResolver.resolveArgument(methodParameter, mavContainer, webRequest, binderFactory);
+
+        log.debug("[PIGXD] |- The decryption conditions are not met DecryptRequestParamResolver, skip! to next!");
+        return requestParamMethodArgumentResolver.resolveArgument(methodParameter, mavContainer, webRequest, binderFactory);
     }
 }

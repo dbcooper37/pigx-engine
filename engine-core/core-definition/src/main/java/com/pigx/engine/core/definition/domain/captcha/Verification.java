@@ -2,16 +2,30 @@ package com.pigx.engine.core.definition.domain.captcha;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+
 import java.util.List;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/captcha/Verification.class */
+
 public class Verification extends Captcha {
+
+    /**
+     * 滑块拼图验证参数
+     */
     private Coordinate coordinate;
+    /**
+     * 文字点选验证参数
+     */
     private List<Coordinate> coordinates;
+    /**
+     * 图形验证码验证参数
+     */
     private String characters;
 
+    public Verification() {
+    }
+
     public Coordinate getCoordinate() {
-        return this.coordinate;
+        return coordinate;
     }
 
     public void setCoordinate(Coordinate coordinate) {
@@ -19,7 +33,7 @@ public class Verification extends Captcha {
     }
 
     public List<Coordinate> getCoordinates() {
-        return this.coordinates;
+        return coordinates;
     }
 
     public void setCoordinates(List<Coordinate> coordinates) {
@@ -27,13 +41,14 @@ public class Verification extends Captcha {
     }
 
     public String getCharacters() {
-        return this.characters;
+        return characters;
     }
 
     public void setCharacters(String characters) {
         this.characters = characters;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -42,14 +57,18 @@ public class Verification extends Captcha {
             return false;
         }
         Verification that = (Verification) o;
-        return Objects.equal(this.characters, that.characters);
+        return Objects.equal(characters, that.characters);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.characters});
+        return Objects.hashCode(characters);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("characters", this.characters).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("characters", characters)
+                .toString();
     }
 }

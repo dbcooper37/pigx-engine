@@ -1,37 +1,47 @@
 package com.pigx.engine.oauth2.core.enums;
 
-import com.pigx.engine.core.definition.enums.BaseUiEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ImmutableMap;
+import com.pigx.engine.core.definition.enums.BaseUiEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Schema(name = "令牌格式")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-/* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/enums/ServerDevice.class */
 public enum ServerDevice implements BaseUiEnum<Integer> {
+
+    /**
+     * enum
+     */
     PHYSICAL_MACHINE(0, "实体机"),
     VIRTUAL_MACHINE(1, "虚拟机");
 
-    private static final Map<Integer, ServerDevice> INDEX_MAP = new HashMap();
-    private static final List<Map<String, Object>> JSON_STRUCTURE = new ArrayList();
+    private static final Map<Integer, ServerDevice> INDEX_MAP = new HashMap<>();
+    private static final List<Map<String, Object>> JSON_STRUCTURE = new ArrayList<>();
+
+    static {
+        for (ServerDevice serverDevice : ServerDevice.values()) {
+            INDEX_MAP.put(serverDevice.getValue(), serverDevice);
+            JSON_STRUCTURE.add(serverDevice.getValue(),
+                    ImmutableMap.<String, Object>builder()
+                            .put("value", serverDevice.getValue())
+                            .put("key", serverDevice.name())
+                            .put("text", serverDevice.getDescription())
+                            .put("index", serverDevice.getValue())
+                            .build());
+        }
+    }
 
     @Schema(name = "枚举值")
     private final Integer value;
-
     @Schema(name = "文字")
     private final String description;
-
-    static {
-        for (ServerDevice serverDevice : values()) {
-            INDEX_MAP.put(serverDevice.getValue(), serverDevice);
-            JSON_STRUCTURE.add(serverDevice.getValue().intValue(), ImmutableMap.builder().put("value", serverDevice.getValue()).put("key", serverDevice.name()).put("text", serverDevice.getDescription()).put("index", serverDevice.getValue()).build());
-        }
-    }
 
     ServerDevice(Integer value, String description) {
         this.value = value;
@@ -46,14 +56,22 @@ public enum ServerDevice implements BaseUiEnum<Integer> {
         return JSON_STRUCTURE;
     }
 
-    @Override // com.pigx.engine.core.definition.enums.EnumValue
+    /**
+     * 不加@JsonValue，转换的时候转换出完整的对象。
+     * 加了@JsonValue，只会显示相应的属性的值
+     * <p>
+     * 不使用@JsonValue @JsonDeserializer类里面要做相应的处理
+     *
+     * @return Enum枚举值
+     */
     @JsonValue
+    @Override
     public Integer getValue() {
-        return this.value;
+        return value;
     }
 
-    @Override // com.pigx.engine.core.definition.enums.EnumDescription
+    @Override
     public String getDescription() {
-        return this.description;
+        return description;
     }
 }

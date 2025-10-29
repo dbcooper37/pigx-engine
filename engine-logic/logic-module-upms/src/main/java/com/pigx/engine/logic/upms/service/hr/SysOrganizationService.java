@@ -8,9 +8,6 @@ import com.pigx.engine.logic.upms.entity.hr.SysOrganization;
 import com.pigx.engine.logic.upms.enums.OrganizationCategory;
 import com.pigx.engine.logic.upms.repository.hr.SysOrganizationRepository;
 import jakarta.persistence.criteria.Predicate;
-import java.lang.invoke.SerializedLambda;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
@@ -20,32 +17,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 @Service
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/service/hr/SysOrganizationService.class */
 public class SysOrganizationService extends AbstractJpaService<SysOrganization, String> {
+
     private final SysOrganizationRepository sysOrganizationRepository;
     private final SysOwnershipService sysOwnershipService;
     private final SysDepartmentService sysDepartmentService;
-
-    private static /* synthetic */ Object $deserializeLambda$(SerializedLambda lambda) {
-        switch (lambda.getImplMethodName()) {
-            case "lambda$findByCondition$5a0a2f2e$1":
-                if (lambda.getImplMethodKind() == 6 && lambda.getFunctionalInterfaceClass().equals("org/springframework/data/jpa/domain/Specification") && lambda.getFunctionalInterfaceMethodName().equals("toPredicate") && lambda.getFunctionalInterfaceMethodSignature().equals("(Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;") && lambda.getImplClass().equals("cn/herodotus/engine/logic/upms/service/hr/SysOrganizationService") && lambda.getImplMethodSignature().equals("(Lcn/herodotus/engine/logic/upms/enums/OrganizationCategory;Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;")) {
-                    OrganizationCategory organizationCategory = (OrganizationCategory) lambda.getCapturedArg(0);
-                    return (root, criteriaQuery, criteriaBuilder) -> {
-                        List<Predicate> predicates = new ArrayList<>();
-                        if (ObjectUtils.isNotEmpty(organizationCategory)) {
-                            predicates.add(criteriaBuilder.equal(root.get("category"), organizationCategory));
-                        }
-                        Predicate[] predicateArray = new Predicate[predicates.size()];
-                        criteriaQuery.where(criteriaBuilder.and((Predicate[]) predicates.toArray(predicateArray)));
-                        return criteriaQuery.getRestriction();
-                    };
-                }
-                break;
-        }
-        throw new IllegalArgumentException("Invalid lambda deserialization");
-    }
 
     public SysOrganizationService(SysOrganizationRepository sysOrganizationRepository, SysOwnershipService sysOwnershipService, SysDepartmentService sysDepartmentService) {
         this.sysOrganizationRepository = sysOrganizationRepository;
@@ -53,41 +34,65 @@ public class SysOrganizationService extends AbstractJpaService<SysOrganization, 
         this.sysDepartmentService = sysDepartmentService;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaReadableService
+    @Override
     public BaseJpaRepository<SysOrganization, String> getRepository() {
-        return this.sysOrganizationRepository;
+        return sysOrganizationRepository;
     }
 
     public List<SysOrganization> findAll(OrganizationCategory organizationCategory) {
         if (ObjectUtils.isNotEmpty(organizationCategory)) {
-            return this.sysOrganizationRepository.findByCategory(organizationCategory);
+            return sysOrganizationRepository.findByCategory(organizationCategory);
+        } else {
+            return sysOrganizationRepository.findAll();
         }
-        return this.sysOrganizationRepository.m105findAll();
     }
 
     public Page<SysOrganization> findByCondition(int pageNumber, int pageSize, OrganizationCategory organizationCategory) {
-        PageRequest pageRequestOf = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
         Specification<SysOrganization> specification = (root, criteriaQuery, criteriaBuilder) -> {
+
             List<Predicate> predicates = new ArrayList<>();
+
             if (ObjectUtils.isNotEmpty(organizationCategory)) {
                 predicates.add(criteriaBuilder.equal(root.get("category"), organizationCategory));
             }
+
             Predicate[] predicateArray = new Predicate[predicates.size()];
-            criteriaQuery.where(criteriaBuilder.and((Predicate[]) predicates.toArray(predicateArray)));
+            criteriaQuery.where(criteriaBuilder.and(predicates.toArray(predicateArray)));
             return criteriaQuery.getRestriction();
         };
-        return findByPage((Specification) specification, (Pageable) pageRequestOf);
+
+        return this.findByPage(specification, pageable);
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaWriteableService, com.pigx.engine.data.core.service.BaseService
-    @Transactional(rollbackFor = {TransactionalRollbackException.class})
+    /**
+     * Transactional 注解 可以作用于接口、接口方法、类以及类方法上。当作用于类上时，该类的所有 public 方法将都具有该类型的事务属性，同时，我们也可以在方法级别使用该标注来覆盖类级别的定义。
+     * <p>
+     * 虽然@Transactional 注解可以作用于接口、接口方法、类以及类方法上，但是 Spring 建议不要在接口或者接口方法上使用该注解，因为这只有在使用基于接口的代理时它才会生效。另外， @Transactional注解应该只被应用到 public 方法上，这是由Spring AOP的本质决定的。如果你在 protected、private 或者默认可见性的方法上使用 @Transactional 注解，这将被忽略，也不会抛出任何异常。
+     * <p>
+     * 默认情况下，只有来自外部的方法调用才会被AOP代理捕获，也就是，类内部方法调用本类内部的其他方法并不会引起事务行为，即使被调用方法使用@Transactional注解进行修饰。
+     * <p>
+     * 作者：tuacy
+     * 链接：<a href="https://www.jianshu.com/p/befc2d73e487">...</a>
+     *
+     * @param organizationId 单位ID
+     */
+    @Transactional(rollbackFor = TransactionalRollbackException.class)
+    @Override
     public void deleteById(String organizationId) {
-        this.sysOwnershipService.deleteByOrganizationId(organizationId);
-        super.deleteById((SysOrganizationService) organizationId);
+        sysOwnershipService.deleteByOrganizationId(organizationId);
+        super.deleteById(organizationId);
     }
 
+    /**
+     * 检测某个组织机构是否被其它数据关联。
+     *
+     * @param organizationId 单位ID
+     * @return true 被其它数据使用，false 没有被使用。
+     */
     public boolean isInUse(String organizationId) {
-        List<SysDepartment> sysDepartments = this.sysDepartmentService.findAll(organizationId);
+        List<SysDepartment> sysDepartments = sysDepartmentService.findAll(organizationId);
         return CollectionUtils.isNotEmpty(sysDepartments);
     }
 }

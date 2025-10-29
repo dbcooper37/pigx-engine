@@ -1,10 +1,16 @@
 package com.pigx.engine.assistant.captcha.enums;
 
-/* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/enums/FontStyle.class */
+import java.awt.*;
+
+
 public enum FontStyle {
-    PLAIN(0),
-    BOLD(1),
-    ITALIC(2);
+
+    /**
+     * 字体风格
+     */
+    PLAIN(Font.PLAIN),
+    BOLD(Font.BOLD),
+    ITALIC(Font.ITALIC);
 
     private final int mapping;
 
@@ -13,6 +19,6 @@ public enum FontStyle {
     }
 
     public int getMapping() {
-        return this.mapping;
+        return mapping;
     }
 }

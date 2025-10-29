@@ -1,14 +1,17 @@
 package com.pigx.engine.logic.identity.generator;
 
-import java.lang.annotation.ElementType;
+import org.hibernate.annotations.IdGeneratorType;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.hibernate.annotations.IdGeneratorType;
 
-@Target({ElementType.FIELD, ElementType.METHOD})
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+
+
 @IdGeneratorType(OAuth2PermissionIdGeneratorType.class)
 @Retention(RetentionPolicy.RUNTIME)
-/* loaded from: logic-module-identity-3.5.7.0.jar:cn/herodotus/engine/logic/identity/generator/OAuth2PermissionIdGenerator.class */
+@Target({FIELD, METHOD})
 public @interface OAuth2PermissionIdGenerator {
 }

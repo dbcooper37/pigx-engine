@@ -1,10 +1,12 @@
 package com.pigx.engine.core.definition.domain.view.datatables;
 
 import com.google.common.base.MoreObjects;
+
 import java.io.Serializable;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/view/datatables/DataTableResult.class */
+
 public class DataTableResult implements Serializable {
+
     private int pageNumber;
     private int pageSize;
     private String sEcho;
@@ -23,7 +25,7 @@ public class DataTableResult implements Serializable {
     }
 
     public int getPageNumber() {
-        return this.pageNumber;
+        return pageNumber;
     }
 
     public void setPageNumber(int pageNumber) {
@@ -31,7 +33,7 @@ public class DataTableResult implements Serializable {
     }
 
     public int getPageSize() {
-        return this.pageSize;
+        return pageSize;
     }
 
     public void setPageSize(int pageSize) {
@@ -39,7 +41,7 @@ public class DataTableResult implements Serializable {
     }
 
     public String getsEcho() {
-        return this.sEcho;
+        return sEcho;
     }
 
     public void setsEcho(String sEcho) {
@@ -47,7 +49,7 @@ public class DataTableResult implements Serializable {
     }
 
     public int getiDisplayStart() {
-        return this.iDisplayStart;
+        return iDisplayStart;
     }
 
     public void setiDisplayStart(int iDisplayStart) {
@@ -55,7 +57,7 @@ public class DataTableResult implements Serializable {
     }
 
     public int getiDisplayLength() {
-        return this.iDisplayLength;
+        return iDisplayLength;
     }
 
     public void setiDisplayLength(int iDisplayLength) {
@@ -63,7 +65,7 @@ public class DataTableResult implements Serializable {
     }
 
     public String getJsonString() {
-        return this.jsonString;
+        return jsonString;
     }
 
     public void setJsonString(String jsonString) {
@@ -71,14 +73,23 @@ public class DataTableResult implements Serializable {
     }
 
     public long getTotal() {
-        return this.total;
+        return total;
     }
 
     public void setTotal(long total) {
         this.total = total;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("pageNumber", this.pageNumber).add("pageSize", this.pageSize).add(DataTableUtils.ECHO, this.sEcho).add(DataTableUtils.DISPLAY_START, this.iDisplayStart).add(DataTableUtils.DISPLAY_LENGTH, this.iDisplayLength).add("jsonString", this.jsonString).add("total", this.total).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("pageNumber", pageNumber)
+                .add("pageSize", pageSize)
+                .add("sEcho", sEcho)
+                .add("iDisplayStart", iDisplayStart)
+                .add("iDisplayLength", iDisplayLength)
+                .add("jsonString", jsonString)
+                .add("total", total)
+                .toString();
     }
 }

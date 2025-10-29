@@ -1,13 +1,24 @@
 package com.pigx.engine.assistant.access.definition.domain;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
 import me.zhyd.oauth.enums.AuthUserGender;
 
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/definition/domain/AccessUserDetails.class */
+
 public class AccessUserDetails {
 
+    /**
+     * JustAuth中的关键词
+     * 以下内容了解后，将会使你更容易地上手JustAuth。
+     * <p>
+     * source JustAuth支持的第三方平台，比如：GITHUB、GITEE等
+     * uuid 一般为第三方平台的用户ID。以下几个平台需特别注意：
+     * 钉钉、抖音：uuid 为用户的 unionid
+     * 微信公众平台登录、京东、酷家乐、美团：uuid 为用户的 openId
+     * 微信开放平台登录、QQ：uuid 为用户的 openId，平台支持获取unionid， unionid 在 AuthToken 中（如果支持），在登录完成后，可以通过 response.getData().getToken().getUnionId() 获取
+     * Google：uuid 为用户的 sub，sub为Google的所有账户体系中用户唯一的身份标识符，详见：OpenID Connect (opens new window)
+     * 注：建议通过uuid + source的方式唯一确定一个用户，这样可以解决用户身份归属的问题。因为 单个用户ID 在某一平台中是唯一的，但不能保证在所有平台中都是唯一的。
+     */
     @Schema(name = "用户第三方系统的唯一id", description = "在调用方集成该组件时，可以用uuid + source唯一确定一个用")
     private String uuid;
 
@@ -34,7 +45,9 @@ public class AccessUserDetails {
 
     @Schema(name = "用户邮箱")
     private String remark;
-
+    /**
+     * 性别
+     */
     @Schema(name = "性别")
     private AuthUserGender gender;
 
@@ -78,7 +91,7 @@ public class AccessUserDetails {
     private String phoneNumber;
 
     public String getUuid() {
-        return this.uuid;
+        return uuid;
     }
 
     public void setUuid(String uuid) {
@@ -86,7 +99,7 @@ public class AccessUserDetails {
     }
 
     public String getUsername() {
-        return this.username;
+        return username;
     }
 
     public void setUsername(String username) {
@@ -94,7 +107,7 @@ public class AccessUserDetails {
     }
 
     public String getNickname() {
-        return this.nickname;
+        return nickname;
     }
 
     public void setNickname(String nickname) {
@@ -102,7 +115,7 @@ public class AccessUserDetails {
     }
 
     public String getAvatar() {
-        return this.avatar;
+        return avatar;
     }
 
     public void setAvatar(String avatar) {
@@ -110,7 +123,7 @@ public class AccessUserDetails {
     }
 
     public String getBlog() {
-        return this.blog;
+        return blog;
     }
 
     public void setBlog(String blog) {
@@ -118,7 +131,7 @@ public class AccessUserDetails {
     }
 
     public String getCompany() {
-        return this.company;
+        return company;
     }
 
     public void setCompany(String company) {
@@ -126,7 +139,7 @@ public class AccessUserDetails {
     }
 
     public String getLocation() {
-        return this.location;
+        return location;
     }
 
     public void setLocation(String location) {
@@ -134,7 +147,7 @@ public class AccessUserDetails {
     }
 
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
     public void setEmail(String email) {
@@ -142,7 +155,7 @@ public class AccessUserDetails {
     }
 
     public String getRemark() {
-        return this.remark;
+        return remark;
     }
 
     public void setRemark(String remark) {
@@ -150,7 +163,7 @@ public class AccessUserDetails {
     }
 
     public AuthUserGender getGender() {
-        return this.gender;
+        return gender;
     }
 
     public void setGender(AuthUserGender gender) {
@@ -158,7 +171,7 @@ public class AccessUserDetails {
     }
 
     public String getSource() {
-        return this.source;
+        return source;
     }
 
     public void setSource(String source) {
@@ -166,7 +179,7 @@ public class AccessUserDetails {
     }
 
     public String getAccessToken() {
-        return this.accessToken;
+        return accessToken;
     }
 
     public void setAccessToken(String accessToken) {
@@ -174,7 +187,7 @@ public class AccessUserDetails {
     }
 
     public Integer getExpireIn() {
-        return this.expireIn;
+        return expireIn;
     }
 
     public void setExpireIn(Integer expireIn) {
@@ -182,7 +195,7 @@ public class AccessUserDetails {
     }
 
     public String getRefreshToken() {
-        return this.refreshToken;
+        return refreshToken;
     }
 
     public void setRefreshToken(String refreshToken) {
@@ -190,7 +203,7 @@ public class AccessUserDetails {
     }
 
     public Integer getRefreshTokenExpireIn() {
-        return this.refreshTokenExpireIn;
+        return refreshTokenExpireIn;
     }
 
     public void setRefreshTokenExpireIn(Integer refreshTokenExpireIn) {
@@ -198,7 +211,7 @@ public class AccessUserDetails {
     }
 
     public String getScope() {
-        return this.scope;
+        return scope;
     }
 
     public void setScope(String scope) {
@@ -206,7 +219,7 @@ public class AccessUserDetails {
     }
 
     public String getTokenType() {
-        return this.tokenType;
+        return tokenType;
     }
 
     public void setTokenType(String tokenType) {
@@ -214,7 +227,7 @@ public class AccessUserDetails {
     }
 
     public String getUid() {
-        return this.uid;
+        return uid;
     }
 
     public void setUid(String uid) {
@@ -222,7 +235,7 @@ public class AccessUserDetails {
     }
 
     public String getOpenId() {
-        return this.openId;
+        return openId;
     }
 
     public void setOpenId(String openId) {
@@ -230,7 +243,7 @@ public class AccessUserDetails {
     }
 
     public String getAccessCode() {
-        return this.accessCode;
+        return accessCode;
     }
 
     public void setAccessCode(String accessCode) {
@@ -238,7 +251,7 @@ public class AccessUserDetails {
     }
 
     public String getUnionId() {
-        return this.unionId;
+        return unionId;
     }
 
     public void setUnionId(String unionId) {
@@ -246,7 +259,7 @@ public class AccessUserDetails {
     }
 
     public String getAppId() {
-        return this.appId;
+        return appId;
     }
 
     public void setAppId(String appId) {
@@ -254,14 +267,39 @@ public class AccessUserDetails {
     }
 
     public String getPhoneNumber() {
-        return this.phoneNumber;
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("uuid", this.uuid).add(SystemConstants.USERNAME, this.username).add("nickname", this.nickname).add(SystemConstants.AVATAR, this.avatar).add("blog", this.blog).add("company", this.company).add("location", this.location).add(SystemConstants.SCOPE_EMAIL, this.email).add("remark", this.remark).add("gender", this.gender).add(SystemConstants.SOURCE, this.source).add("accessToken", this.accessToken).add("expireIn", this.expireIn).add("refreshToken", this.refreshToken).add("refreshTokenExpireIn", this.refreshTokenExpireIn).add("scope", this.scope).add("tokenType", this.tokenType).add("uid", this.uid).add("openId", this.openId).add("accessCode", this.accessCode).add("unionId", this.unionId).add("appId", this.appId).add("phoneNumber", this.phoneNumber).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("uuid", uuid)
+                .add("username", username)
+                .add("nickname", nickname)
+                .add("avatar", avatar)
+                .add("blog", blog)
+                .add("company", company)
+                .add("location", location)
+                .add("email", email)
+                .add("remark", remark)
+                .add("gender", gender)
+                .add("source", source)
+                .add("accessToken", accessToken)
+                .add("expireIn", expireIn)
+                .add("refreshToken", refreshToken)
+                .add("refreshTokenExpireIn", refreshTokenExpireIn)
+                .add("scope", scope)
+                .add("tokenType", tokenType)
+                .add("uid", uid)
+                .add("openId", openId)
+                .add("accessCode", accessCode)
+                .add("unionId", unionId)
+                .add("appId", appId)
+                .add("phoneNumber", phoneNumber)
+                .toString();
     }
 }

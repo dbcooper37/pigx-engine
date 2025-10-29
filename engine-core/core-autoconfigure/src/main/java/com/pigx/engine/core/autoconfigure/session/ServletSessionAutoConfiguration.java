@@ -1,4 +1,4 @@
-package com.pigx.engine.autoconfigure.session;
+package com.pigx.engine.core.autoconfigure.session;
 
 import com.pigx.engine.core.autoconfigure.jackson2.Jackson2AutoConfiguration;
 import com.pigx.engine.core.foundation.condition.ConditionalOnServletApplication;
@@ -16,38 +16,39 @@ import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisIndexedHttpSession;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
-@AutoConfiguration(after = {Jackson2AutoConfiguration.class})
+
+@AutoConfiguration(after = Jackson2AutoConfiguration.class)
 @ConditionalOnServletApplication
 @ConditionalOnClass({SessionRepository.class})
 @EnableRedisIndexedHttpSession
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/session/ServletSessionAutoConfiguration.class */
 public class ServletSessionAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(ServletSessionAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Servlet Spring Session] Configure.");
+        log.info("[PIGXD] |- Auto [Servlet Spring Session] Configure.");
     }
 
     @Bean
     public SpringSessionRememberMeServices springSessionRememberMeServices() {
         SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
-        log.trace("[Herodotus] |- Bean [Spring Session Remember Me Services] Configure.");
+        log.trace("[PIGXD] |- Bean [Spring Session Remember Me Services] Configure.");
         return rememberMeServices;
     }
 
     @Bean
     public SessionRepositoryCustomizer<RedisIndexedSessionRepository> sessionRepositoryCustomizer() {
-        return sessionRepository -> {
-            sessionRepository.setCleanupCron("* * * 31 2 ?");
-        };
+        // 关闭 Spring Session 自身的清理任务，让 Redis 自行清理过期内容
+        // 如果不关闭，经常会出现 java.lang.IllegalStateException: LettuceConnectionFactory has been STOPPED. Use start() to initialize it 问题
+        // cleanup-cron 参数默认值通常是 "0 * * * * *"（每分钟跑一次）。通过将其设置为一个无效的 cron 表达式（如 "* * * 31 2 ?"），Spring Session 就不会创建那个后台调度任务，自然也就不会在关闭时发生冲突了
+        // * * * 31 2 ? 此表达式是指2月31日执行，但是该日期不存在，所以永远不会执行
+        return (sessionRepository) -> sessionRepository.setCleanupCron("* * * 31 2 ?");
     }
 
     @Configuration(proxyBeanMethods = false)
     @EnableSpringHttpSession
-    /* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/session/ServletSessionAutoConfiguration$SpringHttpSessionConfiguration.class */
     static class SpringHttpSessionConfiguration {
-        SpringHttpSessionConfiguration() {
-        }
+
     }
 }

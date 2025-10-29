@@ -1,14 +1,17 @@
 package com.pigx.engine.core.identity.domain;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/* loaded from: core-identity-3.5.7.0.jar:cn/herodotus/engine/core/identity/domain/AccessPrincipal.class */
+
 public class AccessPrincipal {
+
+    /* ---------- 共性参数 ---------- */
 
     @Schema(name = "后回调时带的参数code", title = "访问AuthorizeUrl后回调时带的参数code")
     private String code;
+
+    /* ---------- 微信小程序常用参数 ---------- */
 
     @Schema(name = "小程序appId", title = "小程序appId")
     private String appId;
@@ -34,6 +37,8 @@ public class AccessPrincipal {
     @Schema(name = "签名", title = "微信小程序签名")
     private String signature;
 
+    /* ---------- Just Auth 标准参数 ---------- */
+
     @Schema(name = "后回调时带的参数auth_code", title = "该参数目前只使用于支付宝登录")
     private String auth_code;
 
@@ -49,11 +54,13 @@ public class AccessPrincipal {
     @Schema(name = "回调后返回的oauth_verifier", title = "Twitter回调后返回的oauth_verifier")
     private String oauth_verifier;
 
+    /* ---------- 手机短信验证码 ---------- */
+
     @Schema(name = "手机号码", title = "手机短信登录唯一标识")
     private String mobile;
 
     public String getCode() {
-        return this.code;
+        return code;
     }
 
     public void setCode(String code) {
@@ -61,7 +68,7 @@ public class AccessPrincipal {
     }
 
     public String getAppId() {
-        return this.appId;
+        return appId;
     }
 
     public void setAppId(String appId) {
@@ -69,7 +76,7 @@ public class AccessPrincipal {
     }
 
     public String getEncryptedData() {
-        return this.encryptedData;
+        return encryptedData;
     }
 
     public void setEncryptedData(String encryptedData) {
@@ -77,7 +84,7 @@ public class AccessPrincipal {
     }
 
     public String getIv() {
-        return this.iv;
+        return iv;
     }
 
     public void setIv(String iv) {
@@ -85,7 +92,7 @@ public class AccessPrincipal {
     }
 
     public String getOpenId() {
-        return this.openId;
+        return openId;
     }
 
     public void setOpenId(String openId) {
@@ -93,7 +100,7 @@ public class AccessPrincipal {
     }
 
     public String getSessionKey() {
-        return this.sessionKey;
+        return sessionKey;
     }
 
     public void setSessionKey(String sessionKey) {
@@ -101,7 +108,7 @@ public class AccessPrincipal {
     }
 
     public String getUnionId() {
-        return this.unionId;
+        return unionId;
     }
 
     public void setUnionId(String unionId) {
@@ -109,7 +116,7 @@ public class AccessPrincipal {
     }
 
     public String getRawData() {
-        return this.rawData;
+        return rawData;
     }
 
     public void setRawData(String rawData) {
@@ -117,7 +124,7 @@ public class AccessPrincipal {
     }
 
     public String getSignature() {
-        return this.signature;
+        return signature;
     }
 
     public void setSignature(String signature) {
@@ -125,7 +132,7 @@ public class AccessPrincipal {
     }
 
     public String getAuth_code() {
-        return this.auth_code;
+        return auth_code;
     }
 
     public void setAuth_code(String auth_code) {
@@ -133,7 +140,7 @@ public class AccessPrincipal {
     }
 
     public String getState() {
-        return this.state;
+        return state;
     }
 
     public void setState(String state) {
@@ -141,7 +148,7 @@ public class AccessPrincipal {
     }
 
     public String getAuthorization_code() {
-        return this.authorization_code;
+        return authorization_code;
     }
 
     public void setAuthorization_code(String authorization_code) {
@@ -149,7 +156,7 @@ public class AccessPrincipal {
     }
 
     public String getOauth_token() {
-        return this.oauth_token;
+        return oauth_token;
     }
 
     public void setOauth_token(String oauth_token) {
@@ -157,7 +164,7 @@ public class AccessPrincipal {
     }
 
     public String getOauth_verifier() {
-        return this.oauth_verifier;
+        return oauth_verifier;
     }
 
     public void setOauth_verifier(String oauth_verifier) {
@@ -165,14 +172,31 @@ public class AccessPrincipal {
     }
 
     public String getMobile() {
-        return this.mobile;
+        return mobile;
     }
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add(SystemConstants.CODE, this.code).add("appId", this.appId).add("encryptedData", this.encryptedData).add("iv", this.iv).add("openId", this.openId).add("sessionKey", this.sessionKey).add("unionId", this.unionId).add("rawData", this.rawData).add("signature", this.signature).add("auth_code", this.auth_code).add("state", this.state).add("authorization_code", this.authorization_code).add("oauth_token", this.oauth_token).add("oauth_verifier", this.oauth_verifier).add("mobile", this.mobile).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("code", code)
+                .add("appId", appId)
+                .add("encryptedData", encryptedData)
+                .add("iv", iv)
+                .add("openId", openId)
+                .add("sessionKey", sessionKey)
+                .add("unionId", unionId)
+                .add("rawData", rawData)
+                .add("signature", signature)
+                .add("auth_code", auth_code)
+                .add("state", state)
+                .add("authorization_code", authorization_code)
+                .add("oauth_token", oauth_token)
+                .add("oauth_verifier", oauth_verifier)
+                .add("mobile", mobile)
+                .toString();
     }
 }

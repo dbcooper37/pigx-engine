@@ -1,55 +1,50 @@
 package com.pigx.engine.logic.upms.entity.security;
 
-import com.pigx.engine.core.definition.constant.ErrorCodeMapperBuilderOrdered;
-import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
-import com.pigx.engine.logic.upms.domain.generator.SysInterfaceIdGenerator;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
+import com.pigx.engine.logic.upms.domain.generator.SysInterfaceIdGenerator;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-@Table(name = "sys_interface", indexes = {@Index(name = "sys_interface_id_idx", columnList = "interface_id")})
+
 @Schema(name = "系统应用接口")
 @Entity
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/entity/security/SysInterface.class */
+@Table(name = "sys_interface", indexes = {@Index(name = "sys_interface_id_idx", columnList = "interface_id")})
 public class SysInterface extends AbstractSysEntity {
 
-    @Id
     @Schema(name = "接口ID")
+    @Id
     @SysInterfaceIdGenerator
     @Column(name = "interface_id", length = 64)
     private String interfaceId;
 
-    @Column(name = "interface_code", length = 128)
     @Schema(name = "接口代码")
+    @Column(name = "interface_code", length = 128)
     private String interfaceCode;
 
-    @Column(name = "request_method", length = ErrorCodeMapperBuilderOrdered.CAPTCHA)
     @Schema(name = "请求方法")
+    @Column(name = "request_method", length = 20)
     private String requestMethod;
 
-    @Column(name = "service_id", length = 128)
     @Schema(name = "服务ID")
+    @Column(name = "service_id", length = 128)
     private String serviceId;
 
-    @Column(name = "class_name", length = 512)
     @Schema(name = "接口所在类")
+    @Column(name = "class_name", length = 512)
     private String className;
 
-    @Column(name = "method_name", length = 128)
     @Schema(name = "接口对应方法")
+    @Column(name = "method_name", length = 128)
     private String methodName;
 
-    @Column(name = "url", length = 2048)
     @Schema(name = "请求URL")
+    @Column(name = "url", length = 2048)
     private String url;
 
     public String getInterfaceId() {
-        return this.interfaceId;
+        return interfaceId;
     }
 
     public void setInterfaceId(String interfaceId) {
@@ -57,7 +52,7 @@ public class SysInterface extends AbstractSysEntity {
     }
 
     public String getInterfaceCode() {
-        return this.interfaceCode;
+        return interfaceCode;
     }
 
     public void setInterfaceCode(String interfaceCode) {
@@ -65,7 +60,7 @@ public class SysInterface extends AbstractSysEntity {
     }
 
     public String getRequestMethod() {
-        return this.requestMethod;
+        return requestMethod;
     }
 
     public void setRequestMethod(String requestMethod) {
@@ -73,7 +68,7 @@ public class SysInterface extends AbstractSysEntity {
     }
 
     public String getServiceId() {
-        return this.serviceId;
+        return serviceId;
     }
 
     public void setServiceId(String serviceId) {
@@ -81,7 +76,7 @@ public class SysInterface extends AbstractSysEntity {
     }
 
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     public void setClassName(String className) {
@@ -89,7 +84,7 @@ public class SysInterface extends AbstractSysEntity {
     }
 
     public String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     public void setMethodName(String methodName) {
@@ -97,13 +92,14 @@ public class SysInterface extends AbstractSysEntity {
     }
 
     public String getUrl() {
-        return this.url;
+        return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -112,15 +108,24 @@ public class SysInterface extends AbstractSysEntity {
             return false;
         }
         SysInterface that = (SysInterface) o;
-        return Objects.equal(this.interfaceId, that.interfaceId) && Objects.equal(this.serviceId, that.serviceId);
+        return Objects.equal(interfaceId, that.interfaceId) && Objects.equal(serviceId, that.serviceId);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.interfaceId, this.serviceId});
+        return Objects.hashCode(interfaceId, serviceId);
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("interfaceId", this.interfaceId).add("interfaceCode", this.interfaceCode).add("requestMethod", this.requestMethod).add("serviceId", this.serviceId).add("className", this.className).add("methodName", this.methodName).add("url", this.url).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("interfaceId", interfaceId)
+                .add("interfaceCode", interfaceCode)
+                .add("requestMethod", requestMethod)
+                .add("serviceId", serviceId)
+                .add("className", className)
+                .add("methodName", methodName)
+                .add("url", url)
+                .toString();
     }
 }

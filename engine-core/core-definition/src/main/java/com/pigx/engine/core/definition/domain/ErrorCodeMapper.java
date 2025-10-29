@@ -1,22 +1,24 @@
 package com.pigx.engine.core.definition.domain;
 
 import com.pigx.engine.core.definition.constant.ErrorCodes;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/ErrorCodeMapper.class */
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+
 public class ErrorCodeMapper {
+
     private static volatile ErrorCodeMapper instance;
-    private final Map<Feedback, Integer> dictionary = new LinkedHashMap<Feedback, Integer>() { // from class: com.pigx.engine.core.definition.domain.ErrorCodeMapper.1
-        {
-            put(ErrorCodes.OK, Integer.valueOf(ErrorCodes.OK.getSequence()));
-            put(ErrorCodes.NO_CONTENT, Integer.valueOf(ErrorCodes.NO_CONTENT.getSequence()));
-        }
-    };
+
+    private final Map<Feedback, Integer> dictionary;
 
     private ErrorCodeMapper() {
+        dictionary = new LinkedHashMap<>() {{
+            put(ErrorCodes.OK, ErrorCodes.OK.getSequence());
+            put(ErrorCodes.NO_CONTENT, ErrorCodes.NO_CONTENT.getSequence());
+        }};
     }
 
     public static ErrorCodeMapper getInstance() {
@@ -31,12 +33,12 @@ public class ErrorCodeMapper {
     }
 
     private Integer getErrorCode(Feedback feedback) {
-        return this.dictionary.get(feedback);
+        return dictionary.get(feedback);
     }
 
     public void append(Map<Feedback, Integer> indexes) {
         if (MapUtils.isNotEmpty(indexes)) {
-            this.dictionary.putAll(indexes);
+            dictionary.putAll(indexes);
         }
     }
 

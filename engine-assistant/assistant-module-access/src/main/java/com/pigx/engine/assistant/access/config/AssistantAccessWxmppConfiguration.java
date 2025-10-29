@@ -13,26 +13,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-@EnableConfigurationProperties({WxmppProperties.class})
+
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWxmppEnabled
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/config/AssistantAccessWxmppConfiguration.class */
+@EnableConfigurationProperties(WxmppProperties.class)
 public class AssistantAccessWxmppConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(AssistantAccessWxmppConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Assistant Access Wxmpp] Configure.");
+        log.debug("[PIGXD] |- Module [Assistant Access Wxmpp] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public WxmppProcessor wxmppProcessor(WxmppProperties wxmppProperties, StringRedisTemplate stringRedisTemplate) {
         WxmppProcessor wxmppProcessor = new WxmppProcessor();
         wxmppProcessor.setWxmppProperties(wxmppProperties);
         wxmppProcessor.setWxmppLogHandler(new WxmppLogHandler());
         wxmppProcessor.setStringRedisTemplate(stringRedisTemplate);
-        log.trace("[Herodotus] |- Bean [Wxmpp Processor] Configure.");
+        log.trace("[PIGXD] |- Bean [Wxmpp Processor] Configure.");
         return wxmppProcessor;
     }
 }

@@ -1,40 +1,52 @@
 package com.pigx.engine.oauth2.core.enums;
 
-import com.pigx.engine.core.definition.enums.BaseUiEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ImmutableMap;
+import com.pigx.engine.core.definition.enums.BaseUiEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Schema(name = "令牌格式")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-/* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/enums/TokenFormat.class */
 public enum TokenFormat implements BaseUiEnum<Integer> {
+
+    /**
+     * enum
+     */
     SELF_CONTAINED(0, "self-contained", "自包含格式令牌"),
     REFERENCE(1, "reference", "引用（不透明）令牌");
 
-    private static final Map<String, TokenFormat> INDEX_MAP = new HashMap();
-    private static final List<Map<String, Object>> JSON_STRUCTURE = new ArrayList();
+    private static final Map<String, TokenFormat> INDEX_MAP = new HashMap<>();
+    private static final List<Map<String, Object>> JSON_STRUCTURE = new ArrayList<>();
+
+    static {
+        for (TokenFormat tokenFormat : TokenFormat.values()) {
+            INDEX_MAP.put(tokenFormat.getFormat(), tokenFormat);
+            JSON_STRUCTURE.add(tokenFormat.getValue(),
+                    ImmutableMap.<String, Object>builder()
+                            // 使用数字作为 value, 适用于单选，同时数据库只存 value值即可
+                            // 使用具体的字符串值作为value, 适用于多选，同时数据库存储以逗号分隔拼接的字符串
+                            .put("value", tokenFormat.getValue())
+                            .put("key", tokenFormat.name())
+                            .put("text", tokenFormat.getDescription())
+                            .put("format", tokenFormat.getFormat())
+                            .put("index", tokenFormat.ordinal())
+                            .build());
+        }
+    }
 
     @Schema(name = "枚举值")
     private final Integer value;
-
     @Schema(name = "格式")
     private final String format;
-
     @Schema(name = "文字")
     private final String description;
-
-    static {
-        for (TokenFormat tokenFormat : values()) {
-            INDEX_MAP.put(tokenFormat.getFormat(), tokenFormat);
-            JSON_STRUCTURE.add(tokenFormat.getValue().intValue(), ImmutableMap.builder().put("value", tokenFormat.getValue()).put("key", tokenFormat.name()).put("text", tokenFormat.getDescription()).put("format", tokenFormat.getFormat()).put("index", Integer.valueOf(tokenFormat.ordinal())).build());
-        }
-    }
 
     TokenFormat(Integer value, String method, String description) {
         this.value = value;
@@ -50,18 +62,26 @@ public enum TokenFormat implements BaseUiEnum<Integer> {
         return JSON_STRUCTURE;
     }
 
-    @Override // com.pigx.engine.core.definition.enums.EnumValue
+    /**
+     * 不加@JsonValue，转换的时候转换出完整的对象。
+     * 加了@JsonValue，只会显示相应的属性的值
+     * <p>
+     * 不使用@JsonValue @JsonDeserializer类里面要做相应的处理
+     *
+     * @return Enum枚举值
+     */
     @JsonValue
+    @Override
     public Integer getValue() {
-        return this.value;
+        return value;
     }
 
     public String getFormat() {
-        return this.format;
+        return format;
     }
 
-    @Override // com.pigx.engine.core.definition.enums.EnumDescription
+    @Override
     public String getDescription() {
-        return this.description;
+        return description;
     }
 }

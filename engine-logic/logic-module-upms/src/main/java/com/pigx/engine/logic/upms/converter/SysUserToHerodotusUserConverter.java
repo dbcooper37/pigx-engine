@@ -7,30 +7,39 @@ import com.pigx.engine.data.core.enums.DataItemStatus;
 import com.pigx.engine.logic.upms.entity.security.SysPermission;
 import com.pigx.engine.logic.upms.entity.security.SysRole;
 import com.pigx.engine.logic.upms.entity.security.SysUser;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.convert.converter.Converter;
 
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/converter/SysUserToHerodotusUserConverter.class */
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+
 public class SysUserToHerodotusUserConverter implements Converter<SysUser, HerodotusUser> {
+    @Override
     public HerodotusUser convert(SysUser sysUser) {
+
         Set<HerodotusGrantedAuthority> authorities = new HashSet<>();
+
         Set<String> roles = new HashSet<>();
         for (SysRole sysRole : sysUser.getRoles()) {
             roles.add(sysRole.getRoleCode());
             authorities.add(new HerodotusGrantedAuthority(SecurityUtils.wellFormRolePrefix(sysRole.getRoleCode())));
             Set<SysPermission> sysPermissions = sysRole.getPermissions();
             if (CollectionUtils.isNotEmpty(sysPermissions)) {
-                sysPermissions.forEach(sysAuthority -> {
-                    authorities.add(new HerodotusGrantedAuthority(sysAuthority.getPermissionCode()));
-                });
+                sysPermissions.forEach(sysAuthority -> authorities.add(new HerodotusGrantedAuthority((sysAuthority.getPermissionCode()))));
             }
         }
+
         String employeeId = ObjectUtils.isNotEmpty(sysUser.getEmployee()) ? sysUser.getEmployee().getEmployeeId() : null;
-        return new HerodotusUser(sysUser.getUserId(), sysUser.getUsername(), sysUser.getPassword(), isEnabled(sysUser), isAccountNonExpired(sysUser), isCredentialsNonExpired(sysUser), isNonLocked(sysUser), authorities, roles, employeeId, sysUser.getAvatar());
+
+        return new HerodotusUser(sysUser.getUserId(), sysUser.getUsername(), sysUser.getPassword(),
+                isEnabled(sysUser),
+                isAccountNonExpired(sysUser),
+                isCredentialsNonExpired(sysUser),
+                isNonLocked(sysUser),
+                authorities, roles, employeeId, sysUser.getAvatar());
     }
 
     private boolean isEnabled(SysUser sysUser) {
@@ -38,20 +47,22 @@ public class SysUserToHerodotusUserConverter implements Converter<SysUser, Herod
     }
 
     private boolean isNonLocked(SysUser sysUser) {
-        return sysUser.getStatus() != DataItemStatus.LOCKING;
+        return !(sysUser.getStatus() == DataItemStatus.LOCKING);
     }
 
     private boolean isNonExpired(LocalDateTime localDateTime) {
         if (ObjectUtils.isEmpty(localDateTime)) {
             return true;
+        } else {
+            return localDateTime.isAfter(LocalDateTime.now());
         }
-        return localDateTime.isAfter(LocalDateTime.now());
     }
 
     private boolean isAccountNonExpired(SysUser sysUser) {
         if (sysUser.getStatus() == DataItemStatus.EXPIRED) {
             return false;
         }
+
         return isNonExpired(sysUser.getAccountExpireAt());
     }
 

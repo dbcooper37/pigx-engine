@@ -1,17 +1,21 @@
-package com.pigx.engine.caffeine.enhance;
+package com.pigx.engine.cache.caffeine.enhance;
 
 import com.github.benmanes.caffeine.cache.Expiry;
 
-/* loaded from: cache-module-caffeine-3.5.7.0.jar:cn/herodotus/engine/cache/caffeine/enhance/CaffeineNeverExpire.class */
+
 public class CaffeineNeverExpire<K, V> implements Expiry<K, V> {
+
+    @Override
     public long expireAfterCreate(K key, V value, long currentTime) {
         return Long.MAX_VALUE;
     }
 
+    @Override
     public long expireAfterUpdate(K key, V value, long currentTime, long currentDuration) {
         return currentDuration;
     }
 
+    @Override
     public long expireAfterRead(K key, V value, long currentTime, long currentDuration) {
         return currentDuration;
     }

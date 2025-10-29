@@ -1,19 +1,24 @@
 package com.pigx.engine.logic.identity.enums;
 
-import com.pigx.engine.core.definition.enums.BaseUiEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.ImmutableMap;
+import com.pigx.engine.core.definition.enums.BaseUiEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+
 
 @Schema(name = "OAuth2 Client 认证方式")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-/* loaded from: logic-module-identity-3.5.7.0.jar:cn/herodotus/engine/logic/identity/enums/AuthenticationMethod.class */
 public enum AuthenticationMethod implements BaseUiEnum<String> {
+
+    /**
+     * enum
+     */
     CLIENT_SECRET_BASIC(ClientAuthenticationMethod.CLIENT_SECRET_BASIC.getValue(), "基于Client Secret的Basic验证模式"),
     CLIENT_SECRET_POST(ClientAuthenticationMethod.CLIENT_SECRET_POST.getValue(), "基于Client Secret的Post验证模式"),
     CLIENT_SECRET_JWT(ClientAuthenticationMethod.CLIENT_SECRET_JWT.getValue(), "基于Client Secret的JWT验证模式"),
@@ -22,21 +27,26 @@ public enum AuthenticationMethod implements BaseUiEnum<String> {
     TLS_CLIENT_AUTH(ClientAuthenticationMethod.TLS_CLIENT_AUTH.getValue(), "TSL 客户端认证"),
     SELF_SIGNED_TLS_CLIENT_AUTH(ClientAuthenticationMethod.SELF_SIGNED_TLS_CLIENT_AUTH.getValue(), "自签名 TSL 客户端认证");
 
-    private static final Map<Integer, AuthenticationMethod> INDEX_MAP = new HashMap();
-    private static final List<Map<String, Object>> JSON_STRUCTURE = new ArrayList();
+    private static final Map<Integer, AuthenticationMethod> INDEX_MAP = new HashMap<>();
+    private static final List<Map<String, Object>> JSON_STRUCTURE = new ArrayList<>();
+
+    static {
+        for (AuthenticationMethod authenticationMethod : AuthenticationMethod.values()) {
+            INDEX_MAP.put(authenticationMethod.ordinal(), authenticationMethod);
+            JSON_STRUCTURE.add(authenticationMethod.ordinal(),
+                    ImmutableMap.<String, Object>builder()
+                            .put("value", authenticationMethod.getValue())
+                            .put("key", authenticationMethod.name())
+                            .put("text", authenticationMethod.getDescription())
+                            .put("index", authenticationMethod.ordinal())
+                            .build());
+        }
+    }
 
     @Schema(name = "认证方法")
     private final String value;
-
     @Schema(name = "文字")
     private final String description;
-
-    static {
-        for (AuthenticationMethod authenticationMethod : values()) {
-            INDEX_MAP.put(Integer.valueOf(authenticationMethod.ordinal()), authenticationMethod);
-            JSON_STRUCTURE.add(authenticationMethod.ordinal(), ImmutableMap.builder().put("value", authenticationMethod.getValue()).put("key", authenticationMethod.name()).put("text", authenticationMethod.getDescription()).put("index", Integer.valueOf(authenticationMethod.ordinal())).build());
-        }
-    }
 
     AuthenticationMethod(String value, String description) {
         this.value = value;
@@ -51,13 +61,13 @@ public enum AuthenticationMethod implements BaseUiEnum<String> {
         return JSON_STRUCTURE;
     }
 
-    @Override // com.pigx.engine.core.definition.enums.EnumDescription
+    @Override
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
-    @Override // com.pigx.engine.core.definition.enums.EnumValue
+    @Override
     public String getValue() {
-        return this.value;
+        return value;
     }
 }

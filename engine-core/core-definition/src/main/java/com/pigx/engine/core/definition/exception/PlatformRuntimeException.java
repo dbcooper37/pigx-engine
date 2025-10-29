@@ -3,9 +3,11 @@ package com.pigx.engine.core.definition.exception;
 import com.pigx.engine.core.definition.constant.ErrorCodes;
 import com.pigx.engine.core.definition.domain.Feedback;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/exception/PlatformRuntimeException.class */
+
 public class PlatformRuntimeException extends AbstractRuntimeException {
+
     public PlatformRuntimeException() {
+        super();
     }
 
     public PlatformRuntimeException(String message) {
@@ -24,6 +26,7 @@ public class PlatformRuntimeException extends AbstractRuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
+    @Override
     public Feedback getFeedback() {
         return ErrorCodes.INTERNAL_SERVER_ERROR;
     }

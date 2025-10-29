@@ -1,16 +1,10 @@
-package com.pigx.engine.redisson.config;
+package com.pigx.engine.cache.redisson.config;
 
 import com.pigx.engine.cache.redisson.annotation.ConditionalOnRedisson;
 import com.pigx.engine.cache.redisson.properties.RedissonProperties;
-import com.pigx.engine.core.definition.constant.Jackson2CustomizerOrder;
 import com.pigx.engine.core.definition.constant.SymbolConstants;
 import com.pigx.engine.core.foundation.utils.ResourceResolverUtils;
 import jakarta.annotation.PostConstruct;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,12 +24,18 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@ConditionalOnRedisson
-@EnableConfigurationProperties({RedissonProperties.class})
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+
 @Configuration(proxyBeanMethods = false)
-/* loaded from: cache-module-redisson-3.5.7.0.jar:cn/herodotus/engine/cache/redisson/config/CacheRedissonConfiguration.class */
+@ConditionalOnRedisson
+@EnableConfigurationProperties(RedissonProperties.class)
 public class CacheRedissonConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(CacheRedissonConfiguration.class);
+
     private final RedissonProperties redissonProperties;
     private final RedisProperties redisProperties;
 
@@ -46,114 +46,99 @@ public class CacheRedissonConfiguration {
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Cache Redisson] Configure.");
+        log.debug("[PIGXD] |- Module [Cache Redisson] Configure.");
     }
 
     private File readConfigFile() {
-        String configFile = this.redissonProperties.getConfig();
+        String configFile = redissonProperties.getConfig();
         if (StringUtils.isNotBlank(configFile)) {
             return ResourceResolverUtils.getFile(configFile);
         }
+
         return null;
     }
 
     private Config getConfigByFile() {
         try {
             File configFile = readConfigFile();
-            if (ObjectUtils.isNotEmpty(configFile) && Strings.CI.endsWith(configFile.getName(), SymbolConstants.SUFFIX_YAML)) {
-                return Config.fromYAML(configFile);
+            if (ObjectUtils.isNotEmpty(configFile)) {
+                if (Strings.CI.endsWith(configFile.getName(), SymbolConstants.SUFFIX_YAML)) {
+                    return Config.fromYAML(configFile);
+                }
             }
-            return null;
         } catch (IOException e) {
-            log.error("[Herodotus] |- Redisson loading the config file error!");
-            return null;
+            log.error("[PIGXD] |- Redisson loading the config file error!");
         }
+
+        return null;
     }
 
     private Config getDefaultConfig() {
         Config config = new Config();
-        switch (AnonymousClass1.$SwitchMap$cn$herodotus$engine$cache$redisson$properties$RedissonProperties$Mode[this.redissonProperties.getMode().ordinal()]) {
-            case Jackson2CustomizerOrder.CUSTOMIZER_DEFAULT /* 1 */:
+
+        switch (redissonProperties.getMode()) {
+            case CLUSTER -> {
                 ClusterServersConfig clusterServersConfig = config.useClusterServers();
-                ClusterServersConfig redissonClusterConfig = this.redissonProperties.getClusterServersConfig();
+                // 未配置redisson的cluster配置时，使用 spring.data.redis 的配置
+                ClusterServersConfig redissonClusterConfig = redissonProperties.getClusterServersConfig();
                 if (ObjectUtils.isNotEmpty(redissonClusterConfig)) {
                     BeanUtils.copyProperties(redissonClusterConfig, clusterServersConfig, ClusterServersConfig.class);
                     clusterServersConfig.setNodeAddresses(redissonClusterConfig.getNodeAddresses());
                 }
                 if (CollectionUtils.isEmpty(clusterServersConfig.getNodeAddresses())) {
-                    List<String> nodes = this.redisProperties.getCluster().getNodes();
-                    Stream map = nodes.stream().map(a -> {
-                        return this.redissonProperties.getProtocol() + a;
-                    });
-                    Objects.requireNonNull(clusterServersConfig);
-                    map.forEach(xva$0 -> {
-                        clusterServersConfig.addNodeAddress(new String[]{xva$0});
-                    });
+                    // 使用 spring.data.redis 的
+                    List<String> nodes = redisProperties.getCluster().getNodes();
+                    nodes.stream().map(a -> redissonProperties.getProtocol() + a).forEach(clusterServersConfig::addNodeAddress);
                 }
-                if (StringUtils.isBlank(clusterServersConfig.getPassword()) && StringUtils.isNotBlank(this.redisProperties.getPassword())) {
-                    clusterServersConfig.setPassword(this.redisProperties.getPassword());
-                    break;
+                if (StringUtils.isBlank(clusterServersConfig.getPassword()) && StringUtils.isNotBlank(redisProperties.getPassword())) {
+                    // 使用 spring.data.redis 的
+                    clusterServersConfig.setPassword(redisProperties.getPassword());
                 }
-                break;
-            case Jackson2CustomizerOrder.CUSTOMIZER_XSS /* 2 */:
+            }
+            case SENTINEL -> {
                 SentinelServersConfig sentinelServersConfig = config.useSentinelServers();
-                SentinelServersConfig redissonSentinelConfig = this.redissonProperties.getSentinelServersConfig();
+                SentinelServersConfig redissonSentinelConfig = redissonProperties.getSentinelServersConfig();
                 if (ObjectUtils.isNotEmpty(redissonSentinelConfig)) {
                     BeanUtils.copyProperties(redissonSentinelConfig, sentinelServersConfig, SentinelServersConfig.class);
                     sentinelServersConfig.setSentinelAddresses(redissonSentinelConfig.getSentinelAddresses());
                 }
                 if (CollectionUtils.isEmpty(sentinelServersConfig.getSentinelAddresses())) {
-                    List<String> nodes2 = this.redisProperties.getSentinel().getNodes();
-                    Stream map2 = nodes2.stream().map(a2 -> {
-                        return this.redissonProperties.getProtocol() + a2;
-                    });
-                    Objects.requireNonNull(sentinelServersConfig);
-                    map2.forEach(xva$02 -> {
-                        sentinelServersConfig.addSentinelAddress(new String[]{xva$02});
-                    });
+                    // 使用 spring.data.redis 的配置
+                    List<String> nodes = redisProperties.getSentinel().getNodes();
+                    nodes.stream().map(a -> redissonProperties.getProtocol() + a).forEach(sentinelServersConfig::addSentinelAddress);
                 }
-                if (StringUtils.isBlank(sentinelServersConfig.getPassword()) && StringUtils.isNotBlank(this.redisProperties.getPassword())) {
-                    sentinelServersConfig.setPassword(this.redisProperties.getPassword());
+                if (StringUtils.isBlank(sentinelServersConfig.getPassword()) && StringUtils.isNotBlank(redisProperties.getPassword())) {
+                    // 使用 spring.data.redis 的配置
+                    sentinelServersConfig.setPassword(redisProperties.getPassword());
                 }
                 if (StringUtils.isBlank(sentinelServersConfig.getMasterName())) {
-                    sentinelServersConfig.setMasterName(this.redisProperties.getSentinel().getMaster());
-                    break;
+                    // 使用 spring.data.redis 的配置
+                    sentinelServersConfig.setMasterName(redisProperties.getSentinel().getMaster());
                 }
-                break;
-            default:
+                // database 不做处理，以免不生效
+            }
+            default -> {
                 SingleServerConfig singleServerConfig = config.useSingleServer();
-                if (ObjectUtils.isNotEmpty(this.redissonProperties.getSingleServerConfig())) {
-                    BeanUtils.copyProperties(this.redissonProperties.getSingleServerConfig(), singleServerConfig, SingleServerConfig.class);
+                if (ObjectUtils.isNotEmpty(redissonProperties.getSingleServerConfig())) {
+                    BeanUtils.copyProperties(redissonProperties.getSingleServerConfig(), singleServerConfig, SingleServerConfig.class);
                 }
                 if (StringUtils.isBlank(singleServerConfig.getAddress())) {
-                    singleServerConfig.setAddress(this.redissonProperties.getProtocol() + this.redisProperties.getHost() + ":" + this.redisProperties.getPort());
+                    // 使用 spring.data.redis 的配置
+                    singleServerConfig.setAddress(redissonProperties.getProtocol() + redisProperties.getHost() + SymbolConstants.COLON + redisProperties.getPort());
                 }
-                if (StringUtils.isBlank(singleServerConfig.getPassword()) && StringUtils.isNotBlank(this.redisProperties.getPassword())) {
-                    singleServerConfig.setPassword(this.redisProperties.getPassword());
+                if (StringUtils.isBlank(singleServerConfig.getPassword()) && StringUtils.isNotBlank(redisProperties.getPassword())) {
+                    // 使用 spring.data.redis 的配置
+                    singleServerConfig.setPassword(redisProperties.getPassword());
                 }
-                singleServerConfig.setDatabase(this.redisProperties.getDatabase());
-                break;
+                // 单机模式下，database使用redis的
+                singleServerConfig.setDatabase(redisProperties.getDatabase());
+            }
         }
+
         config.setCodec(new JsonJacksonCodec());
-        config.setLockWatchdogTimeout(30000L);
+        //默认情况下，看门狗的检查锁的超时时间是30秒钟
+        config.setLockWatchdogTimeout(1000 * 30);
         return config;
-    }
-
-    /* renamed from: com.pigx.engine.cache.redisson.config.CacheRedissonConfiguration$1, reason: invalid class name */
-    /* loaded from: cache-module-redisson-3.5.7.0.jar:cn/herodotus/engine/cache/redisson/config/CacheRedissonConfiguration$1.class */
-    static /* synthetic */ class AnonymousClass1 {
-        static final /* synthetic */ int[] $SwitchMap$cn$herodotus$engine$cache$redisson$properties$RedissonProperties$Mode = new int[RedissonProperties.Mode.values().length];
-
-        static {
-            try {
-                $SwitchMap$cn$herodotus$engine$cache$redisson$properties$RedissonProperties$Mode[RedissonProperties.Mode.CLUSTER.ordinal()] = 1;
-            } catch (NoSuchFieldError e) {
-            }
-            try {
-                $SwitchMap$cn$herodotus$engine$cache$redisson$properties$RedissonProperties$Mode[RedissonProperties.Mode.SENTINEL.ordinal()] = 2;
-            } catch (NoSuchFieldError e2) {
-            }
-        }
     }
 
     @Bean
@@ -162,8 +147,11 @@ public class CacheRedissonConfiguration {
         if (ObjectUtils.isEmpty(config)) {
             config = getDefaultConfig();
         }
+
         RedissonClient redissonClient = Redisson.create(config);
-        log.trace("[Herodotus] |- Bean [Redisson Client] Configure.");
+
+        log.trace("[PIGXD] |- Bean [Redisson Client] Configure.");
+
         return redissonClient;
     }
 }

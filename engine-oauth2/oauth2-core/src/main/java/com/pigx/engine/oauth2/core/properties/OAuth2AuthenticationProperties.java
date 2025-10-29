@@ -1,25 +1,45 @@
 package com.pigx.engine.oauth2.core.properties;
 
-import com.pigx.engine.core.definition.constant.BaseConstants;
-import com.pigx.engine.core.definition.constant.SystemConstants;
-import com.pigx.engine.core.foundation.enums.CaptchaCategory;
-import com.pigx.engine.core.foundation.enums.Certificate;
 import com.google.common.base.MoreObjects;
-import java.time.Duration;
+import com.pigx.engine.core.definition.constant.SymbolConstants;
+import com.pigx.engine.core.foundation.enums.Certificate;
+import com.pigx.engine.oauth2.core.constants.OAuth2Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
+import org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter;
 
-@ConfigurationProperties(prefix = BaseConstants.PROPERTY_OAUTH2_AUTHENTICATION)
-/* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/properties/OAuth2AuthenticationProperties.class */
+import java.time.Duration;
+
+
+@ConfigurationProperties(prefix = OAuth2Constants.PROPERTY_OAUTH2_AUTHENTICATION)
 public class OAuth2AuthenticationProperties {
+
+    /**
+     * 开启登录失败限制
+     */
     private SignInFailureLimited signInFailureLimited = new SignInFailureLimited();
+
+    /**
+     * 同一终端登录限制
+     */
     private SignInEndpointLimited signInEndpointLimited = new SignInEndpointLimited();
+
+    /**
+     * 账户踢出限制
+     */
     private SignInKickOutLimited signInKickOutLimited = new SignInKickOutLimited();
+
+    /**
+     * JWT的密钥或者密钥对(JSON Web Key) 配置
+     */
     private Jwk jwk = new Jwk();
+
     private FormLogin formLogin = new FormLogin();
 
     public SignInEndpointLimited getSignInEndpointLimited() {
-        return this.signInEndpointLimited;
+        return signInEndpointLimited;
     }
 
     public void setSignInEndpointLimited(SignInEndpointLimited signInEndpointLimited) {
@@ -27,7 +47,7 @@ public class OAuth2AuthenticationProperties {
     }
 
     public SignInFailureLimited getSignInFailureLimited() {
-        return this.signInFailureLimited;
+        return signInFailureLimited;
     }
 
     public void setSignInFailureLimited(SignInFailureLimited signInFailureLimited) {
@@ -35,7 +55,7 @@ public class OAuth2AuthenticationProperties {
     }
 
     public SignInKickOutLimited getSignInKickOutLimited() {
-        return this.signInKickOutLimited;
+        return signInKickOutLimited;
     }
 
     public void setSignInKickOutLimited(SignInKickOutLimited signInKickOutLimited) {
@@ -43,7 +63,7 @@ public class OAuth2AuthenticationProperties {
     }
 
     public FormLogin getFormLogin() {
-        return this.formLogin;
+        return formLogin;
     }
 
     public void setFormLogin(FormLogin formLogin) {
@@ -51,33 +71,49 @@ public class OAuth2AuthenticationProperties {
     }
 
     public Jwk getJwk() {
-        return this.jwk;
+        return jwk;
     }
 
     public void setJwk(Jwk jwk) {
         this.jwk = jwk;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("signInFailureLimited", this.signInFailureLimited).add("signInEndpointLimited", this.signInEndpointLimited).add("signInKickOutLimited", this.signInKickOutLimited).add("jwk", this.jwk).add("formLogin", this.formLogin).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("signInFailureLimited", signInFailureLimited)
+                .add("signInEndpointLimited", signInEndpointLimited)
+                .add("signInKickOutLimited", signInKickOutLimited)
+                .add("jwk", jwk)
+                .add("formLogin", formLogin)
+                .toString();
     }
 
-    /* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/properties/OAuth2AuthenticationProperties$Jwk.class */
     public static class Jwk {
+
+        /**
+         * 证书策略：standard OAuth2 标准证书模式；custom 自定义证书模式
+         */
         private Certificate certificate = Certificate.CUSTOM;
+        /**
+         * jks证书文件路径
+         */
         private String jksKeyStore = "classpath*:certificate/herodotus-cloud.jks";
+        /**
+         * jks证书密码
+         */
         private String jksKeyPassword = "Herodotus-Cloud";
+        /**
+         * jks证书密钥库密码
+         */
         private String jksStorePassword = "Herodotus-Cloud";
+        /**
+         * jks证书别名
+         */
         private String jksKeyAlias = "herodotus-cloud";
 
-        /* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/properties/OAuth2AuthenticationProperties$Jwk$Strategy.class */
-        private enum Strategy {
-            STANDARD,
-            CUSTOM
-        }
-
         public Certificate getCertificate() {
-            return this.certificate;
+            return certificate;
         }
 
         public void setCertificate(Certificate certificate) {
@@ -85,7 +121,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getJksKeyStore() {
-            return this.jksKeyStore;
+            return jksKeyStore;
         }
 
         public void setJksKeyStore(String jksKeyStore) {
@@ -93,7 +129,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getJksKeyPassword() {
-            return this.jksKeyPassword;
+            return jksKeyPassword;
         }
 
         public void setJksKeyPassword(String jksKeyPassword) {
@@ -101,7 +137,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getJksStorePassword() {
-            return this.jksStorePassword;
+            return jksStorePassword;
         }
 
         public void setJksStorePassword(String jksStorePassword) {
@@ -109,27 +145,52 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getJksKeyAlias() {
-            return this.jksKeyAlias;
+            return jksKeyAlias;
         }
 
         public void setJksKeyAlias(String jksKeyAlias) {
             this.jksKeyAlias = jksKeyAlias;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add("certificate", this.certificate).add("jksKeyStore", this.jksKeyStore).add("jksKeyPassword", this.jksKeyPassword).add("jksStorePassword", this.jksStorePassword).add("jksKeyAlias", this.jksKeyAlias).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("certificate", certificate)
+                    .add("jksKeyStore", jksKeyStore)
+                    .add("jksKeyPassword", jksKeyPassword)
+                    .add("jksStorePassword", jksStorePassword)
+                    .add("jksKeyAlias", jksKeyAlias)
+                    .toString();
+        }
+
+        private enum Strategy {
+            STANDARD, CUSTOM
         }
     }
 
-    /* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/properties/OAuth2AuthenticationProperties$SignInFailureLimited.class */
     public static class SignInFailureLimited {
+        /**
+         * 是否开启登录失败检测，默认开启
+         */
         private Boolean enabled = true;
+
+        /**
+         * 允许允许最大失败次数
+         */
         private Integer maxTimes = 5;
+
+        /**
+         * 是否自动解锁被锁定用户，默认开启
+         */
         private Boolean autoUnlock = true;
+
+        /**
+         * 记录失败次数的缓存过期时间，默认：2小时。
+         */
         private Duration expire = Duration.ofHours(2);
 
         public Boolean getEnabled() {
-            return this.enabled;
+            return enabled;
         }
 
         public void setEnabled(Boolean enabled) {
@@ -137,7 +198,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public Integer getMaxTimes() {
-            return this.maxTimes;
+            return maxTimes;
         }
 
         public void setMaxTimes(Integer maxTimes) {
@@ -145,7 +206,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public Duration getExpire() {
-            return this.expire;
+            return expire;
         }
 
         public void setExpire(Duration expire) {
@@ -153,25 +214,37 @@ public class OAuth2AuthenticationProperties {
         }
 
         public Boolean getAutoUnlock() {
-            return this.autoUnlock;
+            return autoUnlock;
         }
 
         public void setAutoUnlock(Boolean autoUnlock) {
             this.autoUnlock = autoUnlock;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add(BaseConstants.PROPERTY_NAME_ENABLED, this.enabled).add("maxTimes", this.maxTimes).add("autoUnlock", this.autoUnlock).add("expire", this.expire).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("enabled", enabled)
+                    .add("maxTimes", maxTimes)
+                    .add("autoUnlock", autoUnlock)
+                    .add("expire", expire)
+                    .toString();
         }
     }
 
-    /* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/properties/OAuth2AuthenticationProperties$SignInEndpointLimited.class */
     public static class SignInEndpointLimited {
+        /**
+         * 同一终端登录限制是否开启，默认开启。
+         */
         private Boolean enabled = false;
+
+        /**
+         * 统一终端，允许同时登录的最大数量
+         */
         private Integer maximum = 1;
 
         public Boolean getEnabled() {
-            return this.enabled;
+            return enabled;
         }
 
         public void setEnabled(Boolean enabled) {
@@ -179,53 +252,101 @@ public class OAuth2AuthenticationProperties {
         }
 
         public Integer getMaximum() {
-            return this.maximum;
+            return maximum;
         }
 
         public void setMaximum(Integer maximum) {
             this.maximum = maximum;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add(BaseConstants.PROPERTY_NAME_ENABLED, this.enabled).add("maximum", this.maximum).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("enabled", enabled)
+                    .add("maximum", maximum)
+                    .toString();
         }
     }
 
-    /* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/properties/OAuth2AuthenticationProperties$SignInKickOutLimited.class */
     public static class SignInKickOutLimited {
+        /**
+         * 是否开启 Session 踢出功能，默认开启
+         */
         private Boolean enabled = true;
 
         public Boolean getEnabled() {
-            return this.enabled;
+            return enabled;
         }
 
         public void setEnabled(Boolean enabled) {
             this.enabled = enabled;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add(BaseConstants.PROPERTY_NAME_ENABLED, this.enabled).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("enabled", enabled)
+                    .toString();
         }
     }
 
-    /* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/properties/OAuth2AuthenticationProperties$FormLogin.class */
     public static class FormLogin {
-        private String authenticationUrl;
-        private String registrationUrl;
-        private String forgotPasswordUrl;
-        private String usernameParameter = SystemConstants.USERNAME;
-        private String passwordParameter = SystemConstants.PASSWORD;
-        private String rememberMeParameter = "remember-me";
+        /**
+         * UI 界面用户名标输入框 name 属性值
+         */
+        private String usernameParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
+        /**
+         * UI 界面密码标输入框 name 属性值
+         */
+        private String passwordParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
+        /**
+         * UI 界面Remember Me name 属性值
+         */
+        private String rememberMeParameter = AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
+        /**
+         * UI 界面验证码 name 属性值
+         */
         private String captchaParameter = "captcha";
-        private String loginPageUrl = "/login";
-        private String failureUrl = this.loginPageUrl + "?error";
-        private String logoutSuccessUrl = "/login?logout";
+        /**
+         * 登录页面地址
+         */
+        private String loginPageUrl = DefaultLoginPageGeneratingFilter.DEFAULT_LOGIN_PAGE_URL;
+        /**
+         * 登录失败重定向地址
+         */
+        private String failureUrl = loginPageUrl + SymbolConstants.QUESTION + DefaultLoginPageGeneratingFilter.ERROR_PARAMETER_NAME;
+        /**
+         * 表单登录认证地址
+         */
+        private String authenticationUrl;
+        /**
+         * 注销成功地址
+         */
+        private String logoutSuccessUrl = DefaultLoginPageGeneratingFilter.DEFAULT_LOGIN_PAGE_URL + "?logout";
+        /**
+         * 自定义用户注册页面地址
+         */
+        private String registrationUrl;
+        /**
+         * 自定义忘记密码页面地址
+         */
+        private String forgotPasswordUrl;
+
+        /**
+         * Cookie 有效期，默认：30天
+         */
         private Duration cookieMaxAge = Duration.ofDays(30);
+        /**
+         * 验证码是否开启，默认 true，显示
+         */
         private Boolean captchaEnabled = true;
-        private String category = CaptchaCategory.HUTOOL_GIF_CAPTCHA;
+        /**
+         * 验证码类别，默认为 Hutool Gif 类型
+         */
+        private String category = "HUTOOL_GIF";
 
         public String getAuthenticationUrl() {
-            return this.authenticationUrl;
+            return authenticationUrl;
         }
 
         public void setAuthenticationUrl(String authenticationUrl) {
@@ -233,7 +354,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public Boolean getCaptchaEnabled() {
-            return this.captchaEnabled;
+            return captchaEnabled;
         }
 
         public void setCaptchaEnabled(Boolean captchaEnabled) {
@@ -241,7 +362,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getCaptchaParameter() {
-            return this.captchaParameter;
+            return captchaParameter;
         }
 
         public void setCaptchaParameter(String captchaParameter) {
@@ -249,7 +370,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getCategory() {
-            return this.category;
+            return category;
         }
 
         public void setCategory(String category) {
@@ -257,7 +378,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public Duration getCookieMaxAge() {
-            return this.cookieMaxAge;
+            return cookieMaxAge;
         }
 
         public void setCookieMaxAge(Duration cookieMaxAge) {
@@ -265,7 +386,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getFailureUrl() {
-            return this.failureUrl;
+            return failureUrl;
         }
 
         public void setFailureUrl(String failureUrl) {
@@ -273,7 +394,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getForgotPasswordUrl() {
-            return this.forgotPasswordUrl;
+            return forgotPasswordUrl;
         }
 
         public void setForgotPasswordUrl(String forgotPasswordUrl) {
@@ -281,7 +402,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getLoginPageUrl() {
-            return this.loginPageUrl;
+            return loginPageUrl;
         }
 
         public void setLoginPageUrl(String loginPageUrl) {
@@ -289,7 +410,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getLogoutSuccessUrl() {
-            return this.logoutSuccessUrl;
+            return logoutSuccessUrl;
         }
 
         public void setLogoutSuccessUrl(String logoutSuccessUrl) {
@@ -297,7 +418,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getPasswordParameter() {
-            return this.passwordParameter;
+            return passwordParameter;
         }
 
         public void setPasswordParameter(String passwordParameter) {
@@ -305,7 +426,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getRegistrationUrl() {
-            return this.registrationUrl;
+            return registrationUrl;
         }
 
         public void setRegistrationUrl(String registrationUrl) {
@@ -313,7 +434,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getRememberMeParameter() {
-            return this.rememberMeParameter;
+            return rememberMeParameter;
         }
 
         public void setRememberMeParameter(String rememberMeParameter) {
@@ -321,7 +442,7 @@ public class OAuth2AuthenticationProperties {
         }
 
         public String getUsernameParameter() {
-            return this.usernameParameter;
+            return usernameParameter;
         }
 
         public void setUsernameParameter(String usernameParameter) {
@@ -329,15 +450,30 @@ public class OAuth2AuthenticationProperties {
         }
 
         public Boolean isRegistrationEnabled() {
-            return Boolean.valueOf(StringUtils.isNotBlank(this.registrationUrl));
+            return StringUtils.isNotBlank(registrationUrl);
         }
 
         public Boolean isForgotPasswordEnabled() {
-            return Boolean.valueOf(StringUtils.isNotBlank(this.forgotPasswordUrl));
+            return StringUtils.isNotBlank(forgotPasswordUrl);
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add("authenticationUrl", this.authenticationUrl).add("usernameParameter", this.usernameParameter).add("passwordParameter", this.passwordParameter).add("rememberMeParameter", this.rememberMeParameter).add("captchaParameter", this.captchaParameter).add("loginPageUrl", this.loginPageUrl).add("failureUrl", this.failureUrl).add("logoutSuccessUrl", this.logoutSuccessUrl).add("registrationUrl", this.registrationUrl).add("forgotPasswordUrl", this.forgotPasswordUrl).add("cookieMaxAge", this.cookieMaxAge).add("captchaEnabled", this.captchaEnabled).add("category", this.category).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("authenticationUrl", authenticationUrl)
+                    .add("usernameParameter", usernameParameter)
+                    .add("passwordParameter", passwordParameter)
+                    .add("rememberMeParameter", rememberMeParameter)
+                    .add("captchaParameter", captchaParameter)
+                    .add("loginPageUrl", loginPageUrl)
+                    .add("failureUrl", failureUrl)
+                    .add("logoutSuccessUrl", logoutSuccessUrl)
+                    .add("registrationUrl", registrationUrl)
+                    .add("forgotPasswordUrl", forgotPasswordUrl)
+                    .add("cookieMaxAge", cookieMaxAge)
+                    .add("captchaEnabled", captchaEnabled)
+                    .add("category", category)
+                    .toString();
         }
     }
 }

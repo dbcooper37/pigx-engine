@@ -1,10 +1,12 @@
 package com.pigx.engine.rest.servlet.upms.event;
 
-import java.util.Map;
 import org.springframework.context.ApplicationEvent;
 
-/* loaded from: rest-module-servlet-upms-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/upms/event/AutomaticSignInEvent.class */
+import java.util.Map;
+
+
 public class AutomaticSignInEvent extends ApplicationEvent {
+
     private final Map<String, Object> callbackParams;
 
     public AutomaticSignInEvent(Map<String, Object> callbackParams) {
@@ -13,6 +15,6 @@ public class AutomaticSignInEvent extends ApplicationEvent {
     }
 
     public Map<String, Object> getCallbackParams() {
-        return this.callbackParams;
+        return callbackParams;
     }
 }

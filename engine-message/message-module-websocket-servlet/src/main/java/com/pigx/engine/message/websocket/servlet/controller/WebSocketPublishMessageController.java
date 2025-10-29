@@ -17,31 +17,42 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
-/* loaded from: message-module-websocket-servlet-3.5.7.0.jar:cn/herodotus/engine/message/websocket/servlet/controller/WebSocketPublishMessageController.class */
 public class WebSocketPublishMessageController extends AbstractApplicationContextAware {
+
     private static final Logger log = LoggerFactory.getLogger(WebSocketPublishMessageController.class);
+
     private final WebSocketMessageSender webSocketMessageSender;
 
     public WebSocketPublishMessageController(WebSocketMessageSender webSocketMessageSender) {
         this.webSocketMessageSender = webSocketMessageSender;
     }
 
-    @MessageMapping({"/public/notice"})
-    @SendTo({MessageConstants.WEBSOCKET_DESTINATION_BROADCAST_NOTICE})
+    @MessageMapping("/public/notice")
+    @SendTo(MessageConstants.WEBSOCKET_DESTINATION_BROADCAST_NOTICE)
     public String notice(String message, StompHeaderAccessor headerAccessor) {
         System.out.println("---message---" + message);
         if (ObjectUtils.isNotEmpty(headerAccessor)) {
             System.out.println("---id---" + headerAccessor.getUser().getName());
         }
+
         return message;
     }
 
-    @MessageMapping({"/private/message"})
+    /**
+     * 发送私信消息。
+     *
+     * @param detail         前端数据 {@link DialogueMessage}
+     * @param headerAccessor 在WebSocketChannelInterceptor拦截器中绑定上的对象
+     */
+    @MessageMapping("/private/message")
     public void sendPrivateMessage(@Payload DialogueMessage detail, StompHeaderAccessor headerAccessor) {
+
         WebSocketMessage response = new WebSocketMessage();
         response.setUser(detail.getReceiverId());
         response.setDestination(MessageConstants.WEBSOCKET_DESTINATION_PERSONAL_MESSAGE);
+
         if (StringUtils.isNotBlank(detail.getReceiverId()) && StringUtils.isNotBlank(detail.getReceiverName())) {
             if (StringUtils.isBlank(detail.getSenderId()) && StringUtils.isBlank(detail.getSenderName())) {
                 WebSocketPrincipal sender = (WebSocketPrincipal) headerAccessor.getUser();
@@ -49,11 +60,14 @@ public class WebSocketPublishMessageController extends AbstractApplicationContex
                 detail.setSenderName(sender.getUsername());
                 detail.setSenderAvatar(sender.getAvatar());
             }
-            publishEvent(new SendDialogueMessageEvent(detail));
+
+            this.publishEvent(new SendDialogueMessageEvent(detail));
+
             response.setPayload("私信发送成功");
         } else {
             response.setPayload("私信发送失败，参数错误");
         }
-        this.webSocketMessageSender.toUser(response);
+
+        webSocketMessageSender.toUser(response);
     }
 }

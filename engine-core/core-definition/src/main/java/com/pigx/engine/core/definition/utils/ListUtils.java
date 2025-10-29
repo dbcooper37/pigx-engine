@@ -1,22 +1,39 @@
 package com.pigx.engine.core.definition.utils;
 
-import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/utils/ListUtils.class */
+import java.util.List;
+
+
 public class ListUtils {
+
+    /**
+     * 将两个已排序的集合a和b合并到一个单独的已排序列表中，以便保留元素的自然顺序。
+     *
+     * @param appendResources  自定义配置
+     * @param defaultResources 默认配置
+     * @return 合并后的List
+     */
     public static List<String> merge(List<String> appendResources, List<String> defaultResources) {
         if (CollectionUtils.isEmpty(appendResources)) {
             return defaultResources;
+        } else {
+            return CollectionUtils.collate(defaultResources, appendResources);
         }
-        return CollectionUtils.collate(defaultResources, appendResources);
     }
 
+    /**
+     * 将 List 转换为 String[]
+     *
+     * @param resources List
+     * @return String[]
+     */
     public static String[] toStringArray(List<String> resources) {
         if (CollectionUtils.isNotEmpty(resources)) {
             String[] result = new String[resources.size()];
-            return (String[]) resources.toArray(result);
+            return resources.toArray(result);
+        } else {
+            return new String[]{};
         }
-        return new String[0];
     }
 }

@@ -1,10 +1,12 @@
 package com.pigx.engine.core.definition.feedback;
 
 import com.pigx.engine.core.definition.domain.Feedback;
+import org.apache.hc.core5.http.HttpStatus;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/feedback/NotFoundFeedback.class */
+
 public class NotFoundFeedback extends Feedback {
+
     public NotFoundFeedback(String message) {
-        super(message, 404);
+        super(message, HttpStatus.SC_NOT_FOUND);
     }
 }

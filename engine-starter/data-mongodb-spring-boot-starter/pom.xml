@@ -6,15 +6,17 @@
         <artifactId>engine-starter</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>data-mongodb-spring-boot-starter</artifactId>
     <name>data-mongodb-spring-boot-starter</name>
-
-    <packaging>jar</packaging>
-
-    <description>Data MongoDB starter</description>
-
+    <description>PigX Cloud 微服务基座组件库 MongoDB 数据访问层自动配置 Starter</description>
     <dependencies>
-        <!-- add dependencies as needed -->
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>data-core-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+        </dependency>
     </dependencies>
 </project>

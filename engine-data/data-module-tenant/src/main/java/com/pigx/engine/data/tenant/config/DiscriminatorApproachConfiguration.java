@@ -8,23 +8,21 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration(proxyBeanMethods = false)
-/* loaded from: data-module-tenant-3.5.7.0.jar:cn/herodotus/engine/data/tenant/config/DiscriminatorApproachConfiguration.class */
-class DiscriminatorApproachConfiguration {
-    private static final Logger log = LoggerFactory.getLogger(DiscriminatorApproachConfiguration.class);
 
-    DiscriminatorApproachConfiguration() {
-    }
+@Configuration(proxyBeanMethods = false)
+class DiscriminatorApproachConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(DiscriminatorApproachConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Discriminator Approach] Configure.");
+        log.debug("[PIGXD] |- Module [Discriminator Approach] Configure.");
     }
 
     @Bean
     public HibernatePropertiesCustomizer herodotusTenantIdentifierResolver() {
         HerodotusTenantIdentifierResolver resolver = new HerodotusTenantIdentifierResolver();
-        log.trace("[Herodotus] |- Bean [Current Tenant Identifier Resolver] Configure.");
+        log.trace("[PIGXD] |- Bean [Current Tenant Identifier Resolver] Configure.");
         return resolver;
     }
 }

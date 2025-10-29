@@ -1,4 +1,4 @@
-package com.pigx.engine.redis.config;
+package com.pigx.engine.cache.redis.config;
 
 import com.pigx.engine.cache.core.properties.CacheProperties;
 import com.pigx.engine.cache.redis.enhance.HerodotusRedisCacheManager;
@@ -21,29 +21,43 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@EnableConfigurationProperties({CacheProperties.class})
+
 @Configuration(proxyBeanMethods = false)
-/* loaded from: cache-module-redis-3.5.7.0.jar:cn/herodotus/engine/cache/redis/config/CacheRedisConfiguration.class */
+@EnableConfigurationProperties(CacheProperties.class)
 public class CacheRedisConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(CacheRedisConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Cache Redis] Configure.");
+        log.debug("[PIGXD] |- Module [Cache Redis] Configure.");
     }
 
     private RedisSerializer<String> keySerializer() {
         return new StringRedisSerializer();
     }
 
+    /**
+     * 命名为 springSessionDefaultRedisSerializer 是因为 Spring Session 会用到。
+     * {@link org.springframework.session.data.redis.config.annotation.web.http.AbstractRedisHttpSessionConfiguration}
+     * {@link org.springframework.session.data.redis.config.annotation.web.server.RedisWebSessionConfiguration}
+     *
+     * @return {@link RedisSerializer}
+     */
+//    @Bean(name = "springSessionDefaultRedisSerializer")
     private RedisSerializer<Object> valueSerializer() {
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        log.trace("[Herodotus] |- Bean [Jackson2Json Redis Serializer] Configure.");
-        return jackson2JsonRedisSerializer;
+        RedisSerializer<Object> redisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        log.trace("[PIGXD] |- Bean [Jackson2Json Redis Serializer] Configure.");
+        return redisSerializer;
     }
 
+    /**
+     * 重新配置一个RedisTemplate
+     *
+     * @return {@link RedisTemplate}
+     */
+    @Bean(name = "redisTemplate")
     @ConditionalOnMissingBean
-    @Bean(name = {"redisTemplate"})
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -53,17 +67,19 @@ public class CacheRedisConfiguration {
         redisTemplate.setHashValueSerializer(valueSerializer());
         redisTemplate.setDefaultSerializer(valueSerializer());
         redisTemplate.afterPropertiesSet();
-        log.trace("[Herodotus] |- Bean [Redis Template] Configure.");
+
+        log.trace("[PIGXD] |- Bean [Redis Template] Configure.");
+
         return redisTemplate;
     }
 
+    @Bean(name = "stringRedisTemplate")
     @ConditionalOnMissingBean
-    @Bean(name = {"stringRedisTemplate"})
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
         stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
         stringRedisTemplate.afterPropertiesSet();
-        log.trace("[Herodotus] |- Bean [String Redis Template] Configure.");
+        log.trace("[PIGXD] |- Bean [String Redis Template] Configure.");
         return stringRedisTemplate;
     }
 
@@ -71,35 +87,39 @@ public class CacheRedisConfiguration {
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        log.trace("[Herodotus] |- Bean [Redis Message Listener Container] Configure.");
+        log.trace("[PIGXD] |- Bean [Redis Message Listener Container] Configure.");
         return container;
     }
 
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory, CacheProperties cacheProperties) {
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
+
+        // 注意：这里 RedisCacheConfiguration 每一个方法调用之后，都会返回一个新的 RedisCacheConfiguration 对象，所以要注意对象的引用关系。
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().entryTtl(cacheProperties.getExpire());
-        boolean allowNullValues = cacheProperties.getAllowNullValues().booleanValue();
+
+        boolean allowNullValues = cacheProperties.getAllowNullValues();
         if (!allowNullValues) {
+            // 注意：这里 RedisCacheConfiguration 每一个方法调用之后，都会返回一个新的 RedisCacheConfiguration 对象，所以要注意对象的引用关系。
             redisCacheConfiguration = redisCacheConfiguration.disableCachingNullValues();
         }
+
         HerodotusRedisCacheManager herodotusRedisCacheManager = new HerodotusRedisCacheManager(redisCacheWriter, redisCacheConfiguration, cacheProperties);
         herodotusRedisCacheManager.setTransactionAware(false);
         herodotusRedisCacheManager.afterPropertiesSet();
-        log.trace("[Herodotus] |- Bean [Redis Cache Manager] Configure.");
+        log.trace("[PIGXD] |- Bean [Redis Cache Manager] Configure.");
         return herodotusRedisCacheManager;
     }
 
     @Configuration(proxyBeanMethods = false)
-    @ComponentScan({"com.pigx.engine.cache.redis.utils"})
-    /* loaded from: cache-module-redis-3.5.7.0.jar:cn/herodotus/engine/cache/redis/config/CacheRedisConfiguration$RedisUtilsConfiguration.class */
+    @ComponentScan({
+            "com.pigx.engine.cache.redis.utils"
+    })
     static class RedisUtilsConfiguration {
-        RedisUtilsConfiguration() {
-        }
 
         @PostConstruct
         public void postConstruct() {
-            CacheRedisConfiguration.log.debug("[Herodotus] |- Module [Cache Redis Utils] Configure.");
+            log.debug("[PIGXD] |- Module [Cache Redis Utils] Configure.");
         }
     }
 }

@@ -10,11 +10,22 @@
     <artifactId>servlet-message-spring-boot-starter</artifactId>
     <name>servlet-message-spring-boot-starter</name>
 
-    <packaging>jar</packaging>
-
-    <description>Servlet message starter</description>
+    <description>PigX Cloud 微服务基座组件库 Servlet 环境消息模块自动配置 Starter</description>
 
     <dependencies>
-        <!-- add dependencies as needed -->
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>message-module-websocket-servlet</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>webmvc-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>rest-module-servlet-message</artifactId>
+        </dependency>
     </dependencies>
 </project>

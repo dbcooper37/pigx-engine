@@ -3,16 +3,23 @@ package com.pigx.engine.core.definition.exception;
 import com.pigx.engine.core.definition.constant.ErrorCodes;
 import com.pigx.engine.core.definition.domain.Feedback;
 import com.pigx.engine.core.definition.domain.Result;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/exception/GlobalExceptionHandler.class */
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 统一异常处理器
+ *
+ * @author gengwei.zheng
+ */
 public class GlobalExceptionHandler {
+
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    private static final Map<String, Feedback> EXCEPTION_DICTIONARY = new HashMap();
+
+    private static final Map<String, Feedback> EXCEPTION_DICTIONARY = new HashMap<>();
 
     static {
         EXCEPTION_DICTIONARY.put("AccessDeniedException", ErrorCodes.ACCESS_DENIED);
@@ -38,28 +45,31 @@ public class GlobalExceptionHandler {
         EXCEPTION_DICTIONARY.put("TransactionRollbackException", ErrorCodes.TRANSACTION_ROLLBACK);
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
     public static Result<String> resolveException(Exception ex, String path) {
-        log.trace("[Herodotus] |- Path : [{}], Exception：", path, ex);
-        if (ex instanceof HerodotusException) {
-            HerodotusException exception = (HerodotusException) ex;
+
+        log.trace("[PIGXD] |- Path : [{}], Exception：", path, ex);
+
+        if (ex instanceof HerodotusException exception) {
             Result<String> result = exception.getResult();
             result.path(path);
-            log.error("[Herodotus] |- Error is : {}", result);
+            log.error("[PIGXD] |- Error is : {}", result);
+            return result;
+        } else {
+            Result<String> result = Result.failure();
+            String exceptionName = ex.getClass().getSimpleName();
+            if (StringUtils.isNotEmpty(exceptionName) && EXCEPTION_DICTIONARY.containsKey(exceptionName)) {
+                Feedback feedback = EXCEPTION_DICTIONARY.get(exceptionName);
+                result = Result.failure(feedback, exceptionName);
+            } else {
+                log.warn("[PIGXD] |- Can not find the exception name [{}] in dictionary, please do optimize ", exceptionName);
+            }
+
+            result.path(path);
+            result.stackTrace(ex.getStackTrace());
+            result.detail(ex.getMessage());
+
+            log.error("[PIGXD] |- Error is : {}", result, ex);
             return result;
         }
-        Result<String> result2 = Result.failure();
-        String exceptionName = ex.getClass().getSimpleName();
-        if (StringUtils.isNotEmpty(exceptionName) && EXCEPTION_DICTIONARY.containsKey(exceptionName)) {
-            Feedback feedback = EXCEPTION_DICTIONARY.get(exceptionName);
-            result2 = Result.failure(feedback, exceptionName);
-        } else {
-            log.warn("[Herodotus] |- Can not find the exception name [{}] in dictionary, please do optimize ", exceptionName);
-        }
-        result2.path(path);
-        result2.stackTrace(ex.getStackTrace());
-        result2.detail(ex.getMessage());
-        log.error("[Herodotus] |- Error is : {}", result2, ex);
-        return result2;
     }
 }

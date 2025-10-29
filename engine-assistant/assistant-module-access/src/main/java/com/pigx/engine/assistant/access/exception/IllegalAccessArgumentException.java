@@ -4,9 +4,11 @@ import com.pigx.engine.assistant.access.constant.AccessErrorCodes;
 import com.pigx.engine.core.definition.domain.Feedback;
 import com.pigx.engine.core.definition.exception.PlatformRuntimeException;
 
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/exception/IllegalAccessArgumentException.class */
+
 public class IllegalAccessArgumentException extends PlatformRuntimeException {
+
     public IllegalAccessArgumentException() {
+        super();
     }
 
     public IllegalAccessArgumentException(String message) {
@@ -25,7 +27,7 @@ public class IllegalAccessArgumentException extends PlatformRuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    @Override // com.pigx.engine.core.definition.exception.PlatformRuntimeException, com.pigx.engine.core.definition.exception.HerodotusException
+    @Override
     public Feedback getFeedback() {
         return AccessErrorCodes.ILLEGAL_ACCESS_ARGUMENT;
     }

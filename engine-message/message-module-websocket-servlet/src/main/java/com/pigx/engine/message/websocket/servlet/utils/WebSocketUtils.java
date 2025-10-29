@@ -9,21 +9,22 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
 
-/* loaded from: message-module-websocket-servlet-3.5.7.0.jar:cn/herodotus/engine/message/websocket/servlet/utils/WebSocketUtils.class */
+
 public class WebSocketUtils {
+
     public static HttpServletRequest getHttpServletRequest(ServerHttpRequest serverHttpRequest) {
-        if (serverHttpRequest instanceof ServletServerHttpRequest) {
-            ServletServerHttpRequest request = (ServletServerHttpRequest) serverHttpRequest;
+        if (serverHttpRequest instanceof ServletServerHttpRequest request) {
             return request.getServletRequest();
         }
+
         return null;
     }
 
     public static HttpServletResponse getHttpServletResponse(ServerHttpResponse serverHttpResponse) {
-        if (serverHttpResponse instanceof ServletServerHttpResponse) {
-            ServletServerHttpResponse response = (ServletServerHttpResponse) serverHttpResponse;
+        if (serverHttpResponse instanceof ServletServerHttpResponse response) {
             return response.getServletResponse();
         }
+
         return null;
     }
 

@@ -2,13 +2,16 @@ package com.pigx.engine.web.core.constant;
 
 import com.pigx.engine.core.definition.constant.BaseConstants;
 
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/constant/WebConstants.class */
+
 public interface WebConstants extends BaseConstants {
-    public static final String PROPERTY_PREFIX_SWAGGER = "herodotus.platform.swagger";
-    public static final String PROPERTY_SERVICE_REST_SCAN = "herodotus.service.scan";
-    public static final String ITEM_SCAN_ENABLED = "herodotus.service.scan.enabled";
-    public static final String ITEM_PROTECT_CRYPTO_STRATEGY = "herodotus.crypto.crypto-strategy";
-    public static final String CACHE_NAME_TOKEN_IDEMPOTENT = "cache:token:idempotent:";
-    public static final String CACHE_NAME_TOKEN_ACCESS_LIMITED = "cache:token:access_limited:";
-    public static final String CACHE_NAME_TOKEN_SECURE_KEY = "cache:token:secure_key:";
+
+    String PROPERTY_PREFIX_SWAGGER = PROPERTY_PREFIX_PLATFORM + ".swagger";
+    String PROPERTY_SERVICE_REST_SCAN = PROPERTY_PREFIX_SERVICE + ".scan";
+
+    String ITEM_SCAN_ENABLED = PROPERTY_SERVICE_REST_SCAN + PROPERTY_ENABLED;
+    String ITEM_PROTECT_CRYPTO_STRATEGY = PROPERTY_PREFIX_CRYPTO + ".crypto-strategy";
+
+    String CACHE_NAME_TOKEN_IDEMPOTENT = CACHE_TOKEN_BASE_PREFIX + "idempotent:";
+    String CACHE_NAME_TOKEN_ACCESS_LIMITED = CACHE_TOKEN_BASE_PREFIX + "access_limited:";
+    String CACHE_NAME_TOKEN_SECURE_KEY = CACHE_TOKEN_BASE_PREFIX + "secure_key:";
 }

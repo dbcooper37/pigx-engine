@@ -14,32 +14,33 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableConfigurationProperties({WxappProperties.class})
+
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWxappEnabled
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/config/AssistantAccessWxappConfiguration.class */
+@EnableConfigurationProperties(WxappProperties.class)
 public class AssistantAccessWxappConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(AssistantAccessWxappConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Assistant Access Wxapp] Configure.");
+        log.debug("[PIGXD] |- Module [Assistant Access Wxapp] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public WxappProcessor wxappProcessor(WxappProperties wxappProperties) {
         WxappProcessor wxappProcessor = new WxappProcessor(wxappProperties);
-        log.trace("[Herodotus] |- Bean [Wxapp Processor] Configure.");
+        log.trace("[PIGXD] |- Bean [Wxapp Processor] Configure.");
         return wxappProcessor;
     }
 
+    @Bean(AccountCategory.WECHAT_MINI_APP_HANDLER)
+    @ConditionalOnBean(WxappProcessor.class)
     @ConditionalOnMissingBean
-    @ConditionalOnBean({WxappProcessor.class})
-    @Bean({AccountCategory.WECHAT_MINI_APP_HANDLER})
     public WxappAccessHandler wxappAccessHandler(WxappProcessor wxappProcessor) {
         WxappAccessHandler wxappAccessHandler = new WxappAccessHandler(wxappProcessor);
-        log.trace("[Herodotus] |- Bean [Wxapp Access Handler] Configure.");
+        log.trace("[PIGXD] |- Bean [Wxapp Access Handler] Configure.");
         return wxappAccessHandler;
     }
 }

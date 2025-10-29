@@ -3,53 +3,70 @@ package com.pigx.engine.web.service.secure;
 import com.pigx.engine.web.core.annotation.AccessLimited;
 import com.pigx.engine.web.core.exception.FrequentRequestsException;
 import com.pigx.engine.web.service.stamp.AccessLimitedStampManager;
-import java.time.Duration;
-import java.time.format.DateTimeParseException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/secure/AccessLimitedHandler.class */
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
+
+
 public class AccessLimitedHandler {
+
     private static final Logger log = LoggerFactory.getLogger(AccessLimitedHandler.class);
 
     public static boolean handle(String key, AccessLimited accessLimited, String url, AccessLimitedStampManager accessLimitedStampManager) {
+
         if (StringUtils.isNotBlank(key)) {
+
             int maxTimes = accessLimitedStampManager.getSecureProperties().getAccessLimited().getMaxTimes();
             Duration expireDuration = Duration.ZERO;
+
             int annotationMaxTimes = accessLimited.maxTimes();
             if (annotationMaxTimes != 0) {
                 maxTimes = annotationMaxTimes;
             }
+
             String annotationDuration = accessLimited.duration();
             if (StringUtils.isNotBlank(annotationDuration)) {
                 try {
                     expireDuration = Duration.parse(annotationDuration);
                 } catch (DateTimeParseException e) {
-                    log.warn("[Herodotus] |- AccessLimited duration value is incorrect, on api [{}].", url);
+                    log.warn("[PIGXD] |- AccessLimited duration value is incorrect, on api [{}].", url);
                 }
             }
+
             String expireKey = key + "_expire";
             Long times = accessLimitedStampManager.get(key);
-            if (ObjectUtils.isEmpty(times) || times.longValue() == 0) {
+
+            if (ObjectUtils.isEmpty(times) || times == 0L) {
                 if (!expireDuration.isZero()) {
+                    // 如果注解上配置了Duration且没有配置错可以正常解析，那么使用注解上的配置值
                     accessLimitedStampManager.create(key, expireDuration);
-                    accessLimitedStampManager.put(expireKey, Long.valueOf(System.currentTimeMillis()), expireDuration);
-                    return true;
+                    accessLimitedStampManager.put(expireKey, System.currentTimeMillis(), expireDuration);
+                } else {
+                    // 如果注解上没有配置Duration或者配置错无法正常解析，那么使用StampProperties的配置值
+                    accessLimitedStampManager.create(key);
+                    accessLimitedStampManager.put(expireKey, System.currentTimeMillis());
                 }
-                accessLimitedStampManager.create(key);
-                accessLimitedStampManager.put(expireKey, Long.valueOf(System.currentTimeMillis()));
                 return true;
+            } else {
+                log.debug("[PIGXD] |- AccessLimited request [{}] times.", times);
+
+                if (times <= maxTimes) {
+                    Duration newDuration = accessLimitedStampManager.calculateRemainingTime(expireDuration, expireKey);
+                    // 不管是注解上配置Duration值还是StampProperties中配置的Duration值，是不会变的
+                    // 所以第一次存入expireKey对应的System.currentTimeMillis()时间后，这个值也不应该变化。
+                    // 因此，这里只更新访问次数的标记值
+                    accessLimitedStampManager.put(key, times + 1L, newDuration);
+                    return true;
+                } else {
+                    throw new FrequentRequestsException("Requests are too frequent. Please try again later!");
+                }
             }
-            log.debug("[Herodotus] |- AccessLimited request [{}] times.", times);
-            if (times.longValue() <= maxTimes) {
-                Duration newDuration = accessLimitedStampManager.calculateRemainingTime(expireDuration, expireKey);
-                accessLimitedStampManager.put(key, Long.valueOf(times.longValue() + 1), newDuration);
-                return true;
-            }
-            throw new FrequentRequestsException("Requests are too frequent. Please try again later!");
         }
+
         return true;
     }
 }

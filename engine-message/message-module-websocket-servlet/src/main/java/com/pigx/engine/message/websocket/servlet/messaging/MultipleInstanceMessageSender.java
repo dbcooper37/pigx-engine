@@ -8,21 +8,22 @@ import com.pigx.engine.message.core.event.StreamMessageSendingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/* loaded from: message-module-websocket-servlet-3.5.7.0.jar:cn/herodotus/engine/message/websocket/servlet/messaging/MultipleInstanceMessageSender.class */
+
 public class MultipleInstanceMessageSender extends SingleInstanceMessageSender {
+
     private static final Logger log = LoggerFactory.getLogger(MultipleInstanceMessageSender.class);
 
     public MultipleInstanceMessageSender(WebSocketMessagingTemplate webSocketMessagingTemplate) {
         super(webSocketMessagingTemplate);
     }
 
-    @Override // com.pigx.engine.message.websocket.servlet.definition.AbstractWebSocketMessageSender, com.pigx.engine.message.websocket.servlet.definition.WebSocketMessageSender
+    @Override
     public void toUser(String user, String destination, Object payload) {
         syncToUserMessage(user, destination, payload);
         super.toUser(user, destination, payload);
     }
 
-    @Override // com.pigx.engine.message.websocket.servlet.definition.AbstractWebSocketMessageSender, com.pigx.engine.message.websocket.servlet.definition.WebSocketMessageSender
+    @Override
     public void toAll(String destination, Object payload) {
         syncToAllMessage(destination, payload);
         super.toAll(destination, payload);
@@ -32,7 +33,8 @@ public class MultipleInstanceMessageSender extends SingleInstanceMessageSender {
         StreamMessage streamMessage = new StreamMessage();
         streamMessage.setBindingName(MessageConstants.MULTIPLE_INSTANCE_OUTPUT);
         streamMessage.setPayload(webSocketMessage);
-        log.debug("[Herodotus] |- Sync message to other WebSocket instance.");
+
+        log.debug("[PIGXD] |- Sync message to other WebSocket instance.");
         ServiceContextHolder.publishEvent(new StreamMessageSendingEvent(streamMessage));
     }
 

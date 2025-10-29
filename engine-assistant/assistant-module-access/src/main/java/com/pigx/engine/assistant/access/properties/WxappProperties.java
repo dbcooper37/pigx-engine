@@ -1,22 +1,38 @@
 package com.pigx.engine.assistant.access.properties;
 
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.assistant.access.constant.AccessConstants;
 import com.pigx.engine.assistant.access.definition.enums.MiniProgramState;
-import com.google.common.base.MoreObjects;
-import java.io.Serializable;
-import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.io.Serializable;
+import java.util.List;
+
+
 @ConfigurationProperties(prefix = AccessConstants.PROPERTY_ACCESS_WXAPP)
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/properties/WxappProperties.class */
 public class WxappProperties implements Serializable {
+
+    /**
+     * 是否开启
+     */
     private Boolean enabled;
+    /**
+     * 默认App Id
+     */
     private String defaultAppId;
+
+    /**
+     * 小程序配置列表
+     */
     private List<Config> configs;
+
+    /**
+     * 小程序订阅消息配置列表
+     */
     private List<Subscribe> subscribes;
 
     public String getDefaultAppId() {
-        return this.defaultAppId;
+        return defaultAppId;
     }
 
     public void setDefaultAppId(String defaultAppId) {
@@ -24,7 +40,7 @@ public class WxappProperties implements Serializable {
     }
 
     public List<Config> getConfigs() {
-        return this.configs;
+        return configs;
     }
 
     public void setConfigs(List<Config> configs) {
@@ -32,7 +48,7 @@ public class WxappProperties implements Serializable {
     }
 
     public List<Subscribe> getSubscribes() {
-        return this.subscribes;
+        return subscribes;
     }
 
     public void setSubscribes(List<Subscribe> subscribes) {
@@ -40,23 +56,41 @@ public class WxappProperties implements Serializable {
     }
 
     public Boolean getEnabled() {
-        return this.enabled;
+        return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
-    /* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/properties/WxappProperties$Config.class */
     public static class Config {
+        /**
+         * 设置微信小程序的appid
+         */
         private String appId;
+
+        /**
+         * 设置微信小程序的Secret
+         */
         private String secret;
+
+        /**
+         * 设置微信小程序消息服务器配置的token
+         */
         private String token;
+
+        /**
+         * 设置微信小程序消息服务器配置的EncodingAESKey
+         */
         private String aesKey;
+
+        /**
+         * 消息格式，XML或者JSON
+         */
         private String messageDataFormat;
 
         public String getAppId() {
-            return this.appId;
+            return appId;
         }
 
         public void setAppId(String appId) {
@@ -64,7 +98,7 @@ public class WxappProperties implements Serializable {
         }
 
         public String getSecret() {
-            return this.secret;
+            return secret;
         }
 
         public void setSecret(String secret) {
@@ -72,7 +106,7 @@ public class WxappProperties implements Serializable {
         }
 
         public String getToken() {
-            return this.token;
+            return token;
         }
 
         public void setToken(String token) {
@@ -80,7 +114,7 @@ public class WxappProperties implements Serializable {
         }
 
         public String getAesKey() {
-            return this.aesKey;
+            return aesKey;
         }
 
         public void setAesKey(String aesKey) {
@@ -88,27 +122,45 @@ public class WxappProperties implements Serializable {
         }
 
         public String getMessageDataFormat() {
-            return this.messageDataFormat;
+            return messageDataFormat;
         }
 
         public void setMessageDataFormat(String messageDataFormat) {
             this.messageDataFormat = messageDataFormat;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add("appid", this.appId).add("secret", this.secret).add("token", this.token).add("aesKey", this.aesKey).add("messageDataFormat", this.messageDataFormat).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("appid", appId)
+                    .add("secret", secret)
+                    .add("token", token)
+                    .add("aesKey", aesKey)
+                    .add("messageDataFormat", messageDataFormat)
+                    .toString();
         }
     }
 
-    /* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/properties/WxappProperties$Subscribe.class */
     public static class Subscribe {
+
+        /**
+         * 订阅消息指定的小程序跳转页面地址
+         */
         private String redirectPage;
+        /**
+         * 订阅消息模版ID
+         */
         private String templateId;
+
+        /**
+         * 自定义Message区分ID，用于获取不同的SubscribeMessageHandler
+         */
         private String subscribeId;
+
         private MiniProgramState miniProgramState = MiniProgramState.formal;
 
         public String getRedirectPage() {
-            return this.redirectPage;
+            return redirectPage;
         }
 
         public void setRedirectPage(String redirectPage) {
@@ -116,7 +168,7 @@ public class WxappProperties implements Serializable {
         }
 
         public String getTemplateId() {
-            return this.templateId;
+            return templateId;
         }
 
         public void setTemplateId(String templateId) {
@@ -124,7 +176,7 @@ public class WxappProperties implements Serializable {
         }
 
         public MiniProgramState getMiniProgramState() {
-            return this.miniProgramState;
+            return miniProgramState;
         }
 
         public void setMiniProgramState(MiniProgramState miniProgramState) {
@@ -132,15 +184,21 @@ public class WxappProperties implements Serializable {
         }
 
         public String getSubscribeId() {
-            return this.subscribeId;
+            return subscribeId;
         }
 
         public void setSubscribeId(String subscribeId) {
             this.subscribeId = subscribeId;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add("redirectPage", this.redirectPage).add("templateId", this.templateId).add("subscribeId", this.subscribeId).add("miniProgramState", this.miniProgramState).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("redirectPage", redirectPage)
+                    .add("templateId", templateId)
+                    .add("subscribeId", subscribeId)
+                    .add("miniProgramState", miniProgramState)
+                    .toString();
         }
     }
 }

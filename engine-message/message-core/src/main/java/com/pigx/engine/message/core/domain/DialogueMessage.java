@@ -3,7 +3,7 @@ package com.pigx.engine.message.core.domain;
 import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/* loaded from: message-core-3.5.7.0.jar:cn/herodotus/engine/message/core/domain/DialogueMessage.class */
+
 public class DialogueMessage {
 
     @Schema(name = "对话详情ID")
@@ -34,7 +34,7 @@ public class DialogueMessage {
     private String senderAvatar;
 
     public String getDetailId() {
-        return this.detailId;
+        return detailId;
     }
 
     public void setDetailId(String detailId) {
@@ -42,7 +42,7 @@ public class DialogueMessage {
     }
 
     public String getReceiverId() {
-        return this.receiverId;
+        return receiverId;
     }
 
     public void setReceiverId(String receiverId) {
@@ -50,7 +50,7 @@ public class DialogueMessage {
     }
 
     public String getReceiverName() {
-        return this.receiverName;
+        return receiverName;
     }
 
     public void setReceiverName(String receiverName) {
@@ -58,7 +58,7 @@ public class DialogueMessage {
     }
 
     public String getReceiverAvatar() {
-        return this.receiverAvatar;
+        return receiverAvatar;
     }
 
     public void setReceiverAvatar(String receiverAvatar) {
@@ -66,7 +66,7 @@ public class DialogueMessage {
     }
 
     public String getContent() {
-        return this.content;
+        return content;
     }
 
     public void setContent(String content) {
@@ -74,7 +74,7 @@ public class DialogueMessage {
     }
 
     public String getDialogueId() {
-        return this.dialogueId;
+        return dialogueId;
     }
 
     public void setDialogueId(String dialogueId) {
@@ -82,7 +82,7 @@ public class DialogueMessage {
     }
 
     public String getSenderId() {
-        return this.senderId;
+        return senderId;
     }
 
     public void setSenderId(String senderId) {
@@ -90,7 +90,7 @@ public class DialogueMessage {
     }
 
     public String getSenderName() {
-        return this.senderName;
+        return senderName;
     }
 
     public void setSenderName(String senderName) {
@@ -98,14 +98,25 @@ public class DialogueMessage {
     }
 
     public String getSenderAvatar() {
-        return this.senderAvatar;
+        return senderAvatar;
     }
 
     public void setSenderAvatar(String senderAvatar) {
         this.senderAvatar = senderAvatar;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("detailId", this.detailId).add("receiverId", this.receiverId).add("receiverName", this.receiverName).add("receiverAvatar", this.receiverAvatar).add("content", this.content).add("dialogueId", this.dialogueId).add("senderId", this.senderId).add("senderName", this.senderName).add("senderAvatar", this.senderAvatar).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("detailId", detailId)
+                .add("receiverId", receiverId)
+                .add("receiverName", receiverName)
+                .add("receiverAvatar", receiverAvatar)
+                .add("content", content)
+                .add("dialogueId", dialogueId)
+                .add("senderId", senderId)
+                .add("senderName", senderName)
+                .add("senderAvatar", senderAvatar)
+                .toString();
     }
 }

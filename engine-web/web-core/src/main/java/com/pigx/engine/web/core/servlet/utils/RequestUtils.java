@@ -3,11 +3,18 @@ package com.pigx.engine.web.core.servlet.utils;
 import com.pigx.engine.web.core.definition.utils.HttpUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/servlet/utils/RequestUtils.class */
+
 public class RequestUtils {
+
+    /**
+     * 判断请求是否为 HTML 类型
+     *
+     * @param request 请求对象 {@link HttpServletRequest}
+     * @return true 请求体数据类型为 html，false 请求体数据类型不是 html
+     */
     public static boolean isHtml(HttpServletRequest request) {
         String accept = HeaderUtils.getAccept(request);
         String contentType = HeaderUtils.getContentType(request);
-        return HttpUtils.isHtml(accept, contentType).booleanValue();
+        return HttpUtils.isHtml(accept, contentType);
     }
 }

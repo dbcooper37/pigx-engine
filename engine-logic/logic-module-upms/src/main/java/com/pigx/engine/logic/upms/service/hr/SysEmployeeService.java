@@ -1,6 +1,5 @@
 package com.pigx.engine.logic.upms.service.hr;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.pigx.engine.core.foundation.exception.transaction.TransactionalRollbackException;
 import com.pigx.engine.data.core.jpa.repository.BaseJpaRepository;
 import com.pigx.engine.data.core.jpa.service.AbstractJpaService;
@@ -12,16 +11,7 @@ import com.pigx.engine.logic.upms.enums.Gender;
 import com.pigx.engine.logic.upms.enums.Identity;
 import com.pigx.engine.logic.upms.repository.hr.SysEmployeeRepository;
 import com.pigx.engine.logic.upms.service.security.SysUserService;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
-import java.lang.invoke.SerializedLambda;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import jakarta.persistence.criteria.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,114 +24,19 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+
 @Service
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/service/hr/SysEmployeeService.class */
 public class SysEmployeeService extends AbstractJpaService<SysEmployee, String> {
+
     private static final Logger log = LoggerFactory.getLogger(SysEmployeeService.class);
+
     private final SysEmployeeRepository sysEmployeeRepository;
     private final SysOwnershipService sysOwnershipService;
     private final SysUserService sysUserService;
-
-    private static /* synthetic */ Object $deserializeLambda$(SerializedLambda lambda) {
-        switch (lambda.getImplMethodName()) {
-            case "lambda$findByCondition$ae6272d0$1":
-                if (lambda.getImplMethodKind() == 5 && lambda.getFunctionalInterfaceClass().equals("org/springframework/data/jpa/domain/Specification") && lambda.getFunctionalInterfaceMethodName().equals("toPredicate") && lambda.getFunctionalInterfaceMethodSignature().equals("(Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;") && lambda.getImplClass().equals("cn/herodotus/engine/logic/upms/service/hr/SysEmployeeService") && lambda.getImplMethodSignature().equals("(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcn/herodotus/engine/logic/upms/enums/Gender;Lcn/herodotus/engine/logic/upms/enums/Identity;Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;")) {
-                    SysEmployeeService sysEmployeeService = (SysEmployeeService) lambda.getCapturedArg(0);
-                    String str = (String) lambda.getCapturedArg(1);
-                    String str2 = (String) lambda.getCapturedArg(2);
-                    String str3 = (String) lambda.getCapturedArg(3);
-                    String str4 = (String) lambda.getCapturedArg(4);
-                    String str5 = (String) lambda.getCapturedArg(5);
-                    Gender gender = (Gender) lambda.getCapturedArg(6);
-                    Identity identity = (Identity) lambda.getCapturedArg(7);
-                    return (root, criteriaQuery, criteriaBuilder) -> {
-                        List<Predicate> predicates = new ArrayList<>();
-                        if (StringUtils.isNotBlank(str)) {
-                            predicates.add(criteriaBuilder.like(root.get("employeeName"), like(str)));
-                        }
-                        if (StringUtils.isNotBlank(str2)) {
-                            predicates.add(criteriaBuilder.like(root.get("mobilePhoneNumber"), like(str2)));
-                        }
-                        if (StringUtils.isNotBlank(str3)) {
-                            predicates.add(criteriaBuilder.like(root.get("officePhoneNumber"), like(str3)));
-                        }
-                        if (StringUtils.isNotBlank(str4)) {
-                            predicates.add(criteriaBuilder.like(root.get(SystemConstants.SCOPE_EMAIL), like(str4)));
-                        }
-                        if (StringUtils.isNotBlank(str5)) {
-                            predicates.add(criteriaBuilder.like(root.get("pkiEmail"), like(str5)));
-                        }
-                        if (ObjectUtils.isNotEmpty(gender)) {
-                            predicates.add(criteriaBuilder.equal(root.get("gender"), gender));
-                        }
-                        if (ObjectUtils.isNotEmpty(identity)) {
-                            predicates.add(criteriaBuilder.equal(root.get("identity"), identity));
-                        }
-                        Predicate[] predicateArray = new Predicate[predicates.size()];
-                        criteriaQuery.where(criteriaBuilder.and((Predicate[]) predicates.toArray(predicateArray)));
-                        return criteriaQuery.getRestriction();
-                    };
-                }
-                break;
-            case "lambda$findAllocatable$abd588da$1":
-                if (lambda.getImplMethodKind() == 5 && lambda.getFunctionalInterfaceClass().equals("org/springframework/data/jpa/domain/Specification") && lambda.getFunctionalInterfaceMethodName().equals("toPredicate") && lambda.getFunctionalInterfaceMethodSignature().equals("(Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;") && lambda.getImplClass().equals("cn/herodotus/engine/logic/upms/service/hr/SysEmployeeService") && lambda.getImplMethodSignature().equals("(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcn/herodotus/engine/logic/upms/enums/Gender;Lcn/herodotus/engine/logic/upms/enums/Identity;Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;")) {
-                    SysEmployeeService sysEmployeeService2 = (SysEmployeeService) lambda.getCapturedArg(0);
-                    String str6 = (String) lambda.getCapturedArg(1);
-                    String str7 = (String) lambda.getCapturedArg(2);
-                    String str8 = (String) lambda.getCapturedArg(3);
-                    String str9 = (String) lambda.getCapturedArg(4);
-                    String str10 = (String) lambda.getCapturedArg(5);
-                    Gender gender2 = (Gender) lambda.getCapturedArg(6);
-                    Identity identity2 = (Identity) lambda.getCapturedArg(7);
-                    return (root2, criteriaQuery2, criteriaBuilder2) -> {
-                        Subquery<SysOwnership> subQuery = criteriaQuery2.subquery(SysOwnership.class);
-                        Root<SysOwnership> subRoot = subQuery.from(SysOwnership.class);
-                        List<Predicate> subPredicates = new ArrayList<>();
-                        subPredicates.add(criteriaBuilder2.equal(subRoot.get(SystemConstants.EMPLOYEE_ID), root2.get(SystemConstants.EMPLOYEE_ID)));
-                        if (StringUtils.isNotBlank(str6)) {
-                            subPredicates.add(criteriaBuilder2.equal(subRoot.get("organizationId"), str6));
-                        }
-                        if (StringUtils.isNotBlank(str7)) {
-                            subPredicates.add(criteriaBuilder2.equal(subRoot.get("departmentId"), str7));
-                        }
-                        Predicate[] subPredicateArray = new Predicate[subPredicates.size()];
-                        subQuery.where(criteriaBuilder2.and((Predicate[]) subPredicates.toArray(subPredicateArray)));
-                        subQuery.select(subRoot.get("ownershipId"));
-                        List<Predicate> rootPredicates = new ArrayList<>();
-                        rootPredicates.add(criteriaBuilder2.not(criteriaBuilder2.exists(subQuery)));
-                        if (StringUtils.isNotBlank(str8)) {
-                            rootPredicates.add(criteriaBuilder2.like(root2.get("employeeName"), like(str8)));
-                        }
-                        if (StringUtils.isNotBlank(str9)) {
-                            rootPredicates.add(criteriaBuilder2.like(root2.get("mobilePhoneNumber"), like(str9)));
-                        }
-                        if (StringUtils.isNotBlank(str10)) {
-                            rootPredicates.add(criteriaBuilder2.like(root2.get(SystemConstants.SCOPE_EMAIL), like(str10)));
-                        }
-                        if (ObjectUtils.isNotEmpty(gender2)) {
-                            rootPredicates.add(criteriaBuilder2.equal(root2.get("gender"), gender2));
-                        }
-                        if (ObjectUtils.isNotEmpty(identity2)) {
-                            rootPredicates.add(criteriaBuilder2.equal(root2.get("identity"), identity2));
-                        }
-                        Predicate[] rootPredicateArray = new Predicate[rootPredicates.size()];
-                        criteriaQuery2.where(criteriaBuilder2.and((Predicate[]) rootPredicates.toArray(rootPredicateArray)));
-                        return criteriaQuery2.getRestriction();
-                    };
-                }
-                break;
-            case "lambda$findByDepartmentId$faf0822b$1":
-                if (lambda.getImplMethodKind() == 6 && lambda.getFunctionalInterfaceClass().equals("org/springframework/data/jpa/domain/Specification") && lambda.getFunctionalInterfaceMethodName().equals("toPredicate") && lambda.getFunctionalInterfaceMethodSignature().equals("(Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;") && lambda.getImplClass().equals("cn/herodotus/engine/logic/upms/service/hr/SysEmployeeService") && lambda.getImplMethodSignature().equals("(Ljava/lang/String;Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;")) {
-                    String str11 = (String) lambda.getCapturedArg(0);
-                    return (root3, criteriaQuery3, criteriaBuilder3) -> {
-                        Join<SysEmployee, SysDepartment> join = root3.join("departments", JoinType.LEFT);
-                        return criteriaBuilder3.equal(join.get("departmentId"), str11);
-                    };
-                }
-                break;
-        }
-        throw new IllegalArgumentException("Invalid lambda deserialization");
-    }
 
     public SysEmployeeService(SysEmployeeRepository sysEmployeeRepository, SysOwnershipService sysOwnershipService, SysUserService sysUserService) {
         this.sysEmployeeRepository = sysEmployeeRepository;
@@ -149,145 +44,224 @@ public class SysEmployeeService extends AbstractJpaService<SysEmployee, String> 
         this.sysUserService = sysUserService;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaReadableService
+    @Override
     public BaseJpaRepository<SysEmployee, String> getRepository() {
-        return this.sysEmployeeRepository;
+        return sysEmployeeRepository;
     }
 
+    /**
+     * 根据动态条件分页查询人员信息
+     * <p>
+     * Predicate类：一个简单或复杂的谓词类型，用来拼接条件。
+     * Criteria 查询是以元模型的概念为基础的，元模型是为具体持久化单元的受管实体定义的，这些实体可以是实体类，嵌入类或者映射的父类。
+     * Root接口：代表Criteria查询的根对象，能够提供查询用到的数据库字段。
+     * CriteriaQuery接口：代表一个specific的顶层查询对象，用来执行最后的操作，它包含着查询的各个部分，比如：select 、from、where、group by、order by等注意：CriteriaQuery对象只对实体类型或嵌入式类型的Criteria查询起作用。
+     * CriteriaBuilder接口：表示具体的比较条件。
+     *
+     * @param pageNumber        当前页码
+     * @param pageSize          每页显示数据条目
+     * @param employeeName      人员姓名
+     * @param mobilePhoneNumber 手机号码
+     * @param officePhoneNumber 办公电话
+     * @param email             电子邮件
+     * @param pkiEmail          PKI电子邮件
+     * @param gender            性别 {@link Gender}
+     * @param identity          身份 {@link Identity}
+     * @return 人员你的分页数据
+     */
     public Page<SysEmployee> findByCondition(int pageNumber, int pageSize, String employeeName, String mobilePhoneNumber, String officePhoneNumber, String email, String pkiEmail, Gender gender, Identity identity) {
-        PageRequest pageRequestOf = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
         Specification<SysEmployee> specification = (root, criteriaQuery, criteriaBuilder) -> {
+
             List<Predicate> predicates = new ArrayList<>();
+
             if (StringUtils.isNotBlank(employeeName)) {
                 predicates.add(criteriaBuilder.like(root.get("employeeName"), like(employeeName)));
             }
+
             if (StringUtils.isNotBlank(mobilePhoneNumber)) {
                 predicates.add(criteriaBuilder.like(root.get("mobilePhoneNumber"), like(mobilePhoneNumber)));
             }
+
             if (StringUtils.isNotBlank(officePhoneNumber)) {
                 predicates.add(criteriaBuilder.like(root.get("officePhoneNumber"), like(officePhoneNumber)));
             }
+
             if (StringUtils.isNotBlank(email)) {
-                predicates.add(criteriaBuilder.like(root.get(SystemConstants.SCOPE_EMAIL), like(email)));
+                predicates.add(criteriaBuilder.like(root.get("email"), like(email)));
             }
+
             if (StringUtils.isNotBlank(pkiEmail)) {
                 predicates.add(criteriaBuilder.like(root.get("pkiEmail"), like(pkiEmail)));
             }
+
             if (ObjectUtils.isNotEmpty(gender)) {
                 predicates.add(criteriaBuilder.equal(root.get("gender"), gender));
             }
+
             if (ObjectUtils.isNotEmpty(identity)) {
                 predicates.add(criteriaBuilder.equal(root.get("identity"), identity));
             }
+
             Predicate[] predicateArray = new Predicate[predicates.size()];
-            criteriaQuery.where(criteriaBuilder.and((Predicate[]) predicates.toArray(predicateArray)));
+            criteriaQuery.where(criteriaBuilder.and(predicates.toArray(predicateArray)));
             return criteriaQuery.getRestriction();
         };
-        return findByPage((Specification) specification, (Pageable) pageRequestOf);
+
+        return this.findByPage(specification, pageable);
     }
 
+    /**
+     * 根据单位ID和部门ID，查找当前部门下未被设置人员归属的人员。
+     * <p>
+     * 业务描述：
+     * 目前采用人事归属的方式设置单位、部门、人员的关系，而不采用传统的：用人员关联单位ID、部门ID的方式进行机构人员关系的创建。
+     * 人事归属的方式解决了什么问题，主要的考虑是：
+     * （1）使用人事归属的方式，可以支持一般的组织机构、党组机构、团组机构等多种机构类型，而人员始终就是一套人员。
+     * （2）传统MIS中用人员关联单位ID、部门ID的方式创建关系，只能支持一种组织机构。如果同一套系统或者从灵活度的角度要支持多种机构，那么只能通过每种机构关系创建一个人员信息，而每个人员信息又对应一个用户。同一个人员有多套信息和多个用户信息，导致维护起来非常混乱。
+     * （3）这种结构与Camunda或者Flowable、Activity等工作流结构对应，便于信息的同步与管理。
+     * organization --> tenant
+     * department   --> group
+     * employee     --> user
+     * <p>
+     * 当然有更好的设计方式，可以告诉我进行修改
+     * <p>
+     * 实现描述：
+     * 因为涉及到Page问题，所以采用Specification的方式，如果不涉及分页，按照如下的优先级和方式可能更好。
+     * （1） 在repository中，定义JPQL
+     * （2） 在repository中，定义原生SQL
+     * （3） 在数据库中编写SQL View，然后进行ORM映射
+     *
+     * @param pageNumber     当前页码
+     * @param pageSize       每页显示数据条目
+     * @param organizationId 单位ID：如果所有部门的ID都是唯一的，那么单位ID可以为空
+     * @param departmentId   部门ID
+     * @return 当前部门下可以进行人事归属设置的人员分页信息，排除已设置过的人员信息
+     */
     public Page<SysEmployee> findAllocatable(int pageNumber, int pageSize, String organizationId, String departmentId, String employeeName, String mobilePhoneNumber, String email, Gender gender, Identity identity) {
-        PageRequest pageRequestOf = PageRequest.of(pageNumber, pageSize);
-        Specification<SysEmployee> specification = (root2, criteriaQuery2, criteriaBuilder2) -> {
-            Subquery<SysOwnership> subQuery = criteriaQuery2.subquery(SysOwnership.class);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        // exist sql 结构示例： SELECT * FROM article WHERE EXISTS (SELECT * FROM user WHERE article.uid = user.uid)
+        Specification<SysEmployee> specification = (root, criteriaQuery, criteriaBuilder) -> {
+
+            // 构造Not Exist子查询
+            Subquery<SysOwnership> subQuery = criteriaQuery.subquery(SysOwnership.class);
             Root<SysOwnership> subRoot = subQuery.from(SysOwnership.class);
+
+            // 构造Not Exist 子查询的where条件
             List<Predicate> subPredicates = new ArrayList<>();
-            subPredicates.add(criteriaBuilder2.equal(subRoot.get(SystemConstants.EMPLOYEE_ID), root2.get(SystemConstants.EMPLOYEE_ID)));
+            subPredicates.add(criteriaBuilder.equal(subRoot.get("employeeId"), root.get("employeeId")));
             if (StringUtils.isNotBlank(organizationId)) {
-                subPredicates.add(criteriaBuilder2.equal(subRoot.get("organizationId"), organizationId));
+                subPredicates.add(criteriaBuilder.equal(subRoot.get("organizationId"), organizationId));
             }
             if (StringUtils.isNotBlank(departmentId)) {
-                subPredicates.add(criteriaBuilder2.equal(subRoot.get("departmentId"), departmentId));
+                subPredicates.add(criteriaBuilder.equal(subRoot.get("departmentId"), departmentId));
             }
+
             Predicate[] subPredicateArray = new Predicate[subPredicates.size()];
-            subQuery.where(criteriaBuilder2.and((Predicate[]) subPredicates.toArray(subPredicateArray)));
+            subQuery.where(criteriaBuilder.and(subPredicates.toArray(subPredicateArray)));
+
+            // 构造完整的子查询语句
+            //这句话不加会报错，因为他不知道你子查询要查出什么字段。就是上面示例中的子查询中的“select *”的作用
             subQuery.select(subRoot.get("ownershipId"));
+
             List<Predicate> rootPredicates = new ArrayList<>();
-            rootPredicates.add(criteriaBuilder2.not(criteriaBuilder2.exists(subQuery)));
+            rootPredicates.add(criteriaBuilder.not(criteriaBuilder.exists(subQuery)));
             if (StringUtils.isNotBlank(employeeName)) {
-                rootPredicates.add(criteriaBuilder2.like(root2.get("employeeName"), like(employeeName)));
+                rootPredicates.add(criteriaBuilder.like(root.get("employeeName"), like(employeeName)));
             }
+
             if (StringUtils.isNotBlank(mobilePhoneNumber)) {
-                rootPredicates.add(criteriaBuilder2.like(root2.get("mobilePhoneNumber"), like(mobilePhoneNumber)));
+                rootPredicates.add(criteriaBuilder.like(root.get("mobilePhoneNumber"), like(mobilePhoneNumber)));
             }
+
             if (StringUtils.isNotBlank(email)) {
-                rootPredicates.add(criteriaBuilder2.like(root2.get(SystemConstants.SCOPE_EMAIL), like(email)));
+                rootPredicates.add(criteriaBuilder.like(root.get("email"), like(email)));
             }
+
             if (ObjectUtils.isNotEmpty(gender)) {
-                rootPredicates.add(criteriaBuilder2.equal(root2.get("gender"), gender));
+                rootPredicates.add(criteriaBuilder.equal(root.get("gender"), gender));
             }
+
             if (ObjectUtils.isNotEmpty(identity)) {
-                rootPredicates.add(criteriaBuilder2.equal(root2.get("identity"), identity));
+                rootPredicates.add(criteriaBuilder.equal(root.get("identity"), identity));
             }
+
             Predicate[] rootPredicateArray = new Predicate[rootPredicates.size()];
-            criteriaQuery2.where(criteriaBuilder2.and((Predicate[]) rootPredicates.toArray(rootPredicateArray)));
-            return criteriaQuery2.getRestriction();
+            // 构造完整SQL
+            // 正确的结构参考：select * from sys_employee e where not exists (select ownership_id from sys_ownership o where o.employee_id = e.employee_id and o.organization = 1? and o.department_id = 2?) and XXXXXX.... limit ?
+            criteriaQuery.where(criteriaBuilder.and(rootPredicates.toArray(rootPredicateArray)));
+            return criteriaQuery.getRestriction();
         };
-        return findByPage((Specification) specification, (Pageable) pageRequestOf);
+
+        return this.findByPage(specification, pageable);
     }
 
     public Page<SysEmployee> findByDepartmentId(int pageNumber, int pageSize, String departmentId) {
-        PageRequest pageRequestOf = PageRequest.of(pageNumber, pageSize);
-        Specification<SysEmployee> specification = (root3, criteriaQuery3, criteriaBuilder3) -> {
-            Join<SysEmployee, SysDepartment> join = root3.join("departments", JoinType.LEFT);
-            return criteriaBuilder3.equal(join.get("departmentId"), departmentId);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Specification<SysEmployee> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<SysEmployee, SysDepartment> join = root.join("departments", JoinType.LEFT);
+            return criteriaBuilder.equal(join.get("departmentId"), departmentId);
         };
-        return findByPage((Specification) specification, (Pageable) pageRequestOf);
+
+        return this.findByPage(specification, pageable);
     }
 
-    @Transactional(rollbackFor = {TransactionalRollbackException.class})
+    @Transactional(rollbackFor = TransactionalRollbackException.class)
     public SysEmployee authorize(String employeeId) {
-        Optional map = findById(employeeId).map(entity -> {
-            SysUser sysUser = this.sysUserService.register(entity);
-            return (SysUser) Optional.ofNullable(sysUser).map(item -> {
-                item.setEmployee(entity);
-                return item;
-            }).orElse(null);
-        });
-        SysUserService sysUserService = this.sysUserService;
-        Objects.requireNonNull(sysUserService);
-        return (SysEmployee) map.map((v1) -> {
-            return r1.saveAndFlush(v1);
-        }).map((v0) -> {
-            return v0.getEmployee();
-        }).orElse(null);
+        Optional<SysEmployee> sysEmployee = this.findById(employeeId);
+
+        return sysEmployee.map(entity -> {
+                    SysUser sysUser = sysUserService.register(entity);
+                    return Optional.ofNullable(sysUser)
+                            .map(item -> {
+                                item.setEmployee(entity);
+                                return item;
+                            }).orElse(null);
+                })
+                .map(sysUserService::saveAndFlush)
+                .map(SysUser::getEmployee)
+                .orElse(null);
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaWriteableService, com.pigx.engine.data.core.service.BaseService
-    @Transactional(rollbackFor = {TransactionalRollbackException.class})
+    @Transactional(rollbackFor = TransactionalRollbackException.class)
+    @Override
     public void deleteById(String employeeId) {
-        this.sysOwnershipService.deleteByEmployeeId(employeeId);
-        super.deleteById((SysEmployeeService) employeeId);
+        sysOwnershipService.deleteByEmployeeId(employeeId);
+        super.deleteById(employeeId);
     }
 
-    @Transactional(rollbackFor = {TransactionalRollbackException.class})
+    @Transactional(rollbackFor = TransactionalRollbackException.class)
     public boolean deployAllocatable(List<SysEmployee> sysEmployees, List<SysOwnership> sysOwnerships) {
         if (CollectionUtils.isNotEmpty(sysEmployees) && CollectionUtils.isNotEmpty(sysOwnerships)) {
-            List<SysEmployee> result = this.sysEmployeeRepository.saveAllAndFlush(sysEmployees);
+            List<SysEmployee> result = sysEmployeeRepository.saveAllAndFlush(sysEmployees);
             if (CollectionUtils.isNotEmpty(result)) {
-                this.sysOwnershipService.saveAll(sysOwnerships);
+                sysOwnershipService.saveAll(sysOwnerships);
                 return true;
             }
-            return false;
         }
+
         return false;
     }
 
-    @Transactional(rollbackFor = {TransactionalRollbackException.class})
+    @Transactional(rollbackFor = TransactionalRollbackException.class)
     public boolean removeAllocatable(String organizationId, String departmentId, String employeeId) {
         Optional<SysEmployee> sysEmployee = super.findById(employeeId);
-        return ((Boolean) sysEmployee.map(entity -> {
+        return sysEmployee.map(entity -> {
             SysDepartment sysDepartment = new SysDepartment();
             sysDepartment.setDepartmentId(departmentId);
             entity.getDepartments().remove(sysDepartment);
-            return (SysEmployee) super.save(entity);
+            return super.save(entity);
         }).map(result -> {
-            this.sysOwnershipService.delete(organizationId, departmentId, employeeId);
+            sysOwnershipService.delete(organizationId, departmentId, employeeId);
             return true;
-        }).orElse(false)).booleanValue();
+        }).orElse(false);
     }
 
     public SysEmployee findByEmployeeName(String employeeName) {
-        return this.sysEmployeeRepository.findByEmployeeName(employeeName);
+        return sysEmployeeRepository.findByEmployeeName(employeeName);
     }
+
 }

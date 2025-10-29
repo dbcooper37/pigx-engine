@@ -4,8 +4,9 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.springframework.security.core.GrantedAuthority;
 
-/* loaded from: core-identity-3.5.7.0.jar:cn/herodotus/engine/core/identity/domain/HerodotusGrantedAuthority.class */
+
 public class HerodotusGrantedAuthority implements GrantedAuthority {
+
     private String authority;
 
     public HerodotusGrantedAuthority() {
@@ -15,6 +16,7 @@ public class HerodotusGrantedAuthority implements GrantedAuthority {
         this.authority = authority;
     }
 
+    @Override
     public String getAuthority() {
         return this.authority;
     }
@@ -23,6 +25,7 @@ public class HerodotusGrantedAuthority implements GrantedAuthority {
         this.authority = authority;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -31,14 +34,18 @@ public class HerodotusGrantedAuthority implements GrantedAuthority {
             return false;
         }
         HerodotusGrantedAuthority that = (HerodotusGrantedAuthority) o;
-        return Objects.equal(this.authority, that.authority);
+        return Objects.equal(authority, that.authority);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.authority});
+        return Objects.hashCode(authority);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("authority", this.authority).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("authority", authority)
+                .toString();
     }
 }

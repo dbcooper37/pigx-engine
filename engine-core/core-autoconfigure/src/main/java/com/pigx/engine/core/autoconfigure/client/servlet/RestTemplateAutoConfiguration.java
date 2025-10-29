@@ -1,8 +1,7 @@
-package com.pigx.engine.autoconfigure.client.servlet;
+package com.pigx.engine.core.autoconfigure.client.servlet;
 
 import com.pigx.engine.core.foundation.condition.ConditionalOnServletApplication;
 import jakarta.annotation.PostConstruct;
-import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -13,27 +12,45 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+
+
 @AutoConfiguration(after = {org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration.class})
 @ConditionalOnServletApplication
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/client/servlet/RestTemplateAutoConfiguration.class */
 public class RestTemplateAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(RestTemplateAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [RestTemplate] Configure.");
+        log.info("[PIGXD] |- Auto [RestTemplate] Configure.");
     }
 
+    /**
+     * 使用 @LoadBalanced 注解表示使用 loadbalancer 实现客户端负载均衡
+     *
+     * @return RestTemplate
+     */
     @Bean
     @LoadBalanced
     public RestTemplate getRestTemplate(RestTemplateBuilder restTemplateBuilder) {
-        ResponseErrorHandler responseErrorHandler = new ResponseErrorHandler() { // from class: com.pigx.engine.core.autoconfigure.client.servlet.RestTemplateAutoConfiguration.1
+
+        /*
+         * 默认的 RestTemplate 有个机制是请求状态码非200 就抛出异常，会中断接下来的操作。
+         * 如果不想中断对结果数据得解析，可以通过覆盖默认的 ResponseErrorHandler ，
+         * 对hasError修改下，让他一直返回true，即是不检查状态码及抛异常了
+         */
+        ResponseErrorHandler responseErrorHandler = new ResponseErrorHandler() {
+            @Override
             public boolean hasError(ClientHttpResponse response) throws IOException {
                 return true;
             }
         };
-        RestTemplate restTemplate = restTemplateBuilder.errorHandler(responseErrorHandler).build();
-        log.trace("[Herodotus] |- Bean [LoadBalanced Rest Template] Configure.");
+
+        RestTemplate restTemplate = restTemplateBuilder
+                .errorHandler(responseErrorHandler)
+                .build();
+        log.trace("[PIGXD] |- Bean [LoadBalanced Rest Template] Configure.");
         return restTemplate;
     }
 }

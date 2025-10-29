@@ -1,39 +1,29 @@
 package com.pigx.engine.logic.upms.entity.security;
 
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
 import com.pigx.engine.logic.upms.constants.LogicUpmsConstants;
-import com.google.common.base.MoreObjects;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UuidGenerator;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_ROLE)
-@Cacheable
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "sys_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"role_code"})}, indexes = {@Index(name = "sys_role_rid_idx", columnList = "role_id"), @Index(name = "sys_role_rcd_idx", columnList = "role_code")})
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/entity/security/SysRole.class */
+@Table(name = "sys_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"role_code"})},
+        indexes = {@Index(name = "sys_role_rid_idx", columnList = "role_id"), @Index(name = "sys_role_rcd_idx", columnList = "role_code")})
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_ROLE)
 public class SysRole extends AbstractSysEntity {
 
     @Id
-    @Column(name = "role_id", length = 64)
     @UuidGenerator
+    @Column(name = "role_id", length = 64)
     private String roleId;
 
     @Column(name = "role_code", length = 128, unique = true)
@@ -42,14 +32,31 @@ public class SysRole extends AbstractSysEntity {
     @Column(name = "role_name", length = 128)
     private String roleName;
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_PERMISSION)
+    /**
+     * 用户 - 角色关系定义:
+     * (1) 加上fetch=FetchType.LAZY  或 @Fetch(FetchMode.SELECT), 输出结果与上面相同，说明默认设置是fetch=FetchType.LAZY 和 @Fetch(FetchMode.SELECT) 下面四种配置等效，都是N+1条sql的懒加载
+     * (2) 加上fetch=FetchType.Eager 和 @Fetch(FetchMode.SELECT), 同样是N+1条sql，不过和上面情况不同的是，N条sql会在criteria.list()时执行
+     * (3) 加上@Fetch(FetchMode.JOIN), 那么Hibernate将强行设置为fetch=FetchType.EAGER, 用户设置fetch=FetchType.LAZY将不会生效
+     * 从输出可看出，在执行criteria.list()时通过一条sql 获取了所有的City和Hotel。
+     * 使用@Fetch(FetchMode.JOIN)需要注意的是：它在Join查询时是Full Join, 所以会有重复City出现
+     * (4) 加上@Fetch(FetchMode.SUBSELECT), 那么Hibernate将强行设置为fetch=FetchType.EAGER, 用户设置fetch=FetchType.LAZY将不会生效 从输出可看出，在执行criteria.list()时通过两条sql分别获取City和Hotel
+     * <p>
+     * Refer: <a href="https://www.jianshu.com/p/23bd82a7b96e">...</a>
+     */
+
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_PERMISSION)
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "sys_role_permission", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns = {@JoinColumn(name = "permission_id")}, uniqueConstraints = {@UniqueConstraint(columnNames = {"role_id", "permission_id"})}, indexes = {@Index(name = "sys_role_permission_rid_idx", columnList = "role_id"), @Index(name = "sys_role_permission_pid_idx", columnList = "permission_id")})
     @Fetch(FetchMode.SUBSELECT)
-    private Set<SysPermission> permissions = new HashSet();
+    @JoinTable(name = "sys_role_permission",
+            joinColumns = {@JoinColumn(name = "role_id")},
+            inverseJoinColumns = {@JoinColumn(name = "permission_id")},
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"role_id", "permission_id"})},
+            indexes = {@Index(name = "sys_role_permission_rid_idx", columnList = "role_id"), @Index(name = "sys_role_permission_pid_idx", columnList = "permission_id")})
+    private Set<SysPermission> permissions = new HashSet<>();
+
 
     public String getRoleId() {
-        return this.roleId;
+        return roleId;
     }
 
     public void setRoleId(String roleId) {
@@ -57,7 +64,7 @@ public class SysRole extends AbstractSysEntity {
     }
 
     public String getRoleCode() {
-        return this.roleCode;
+        return roleCode;
     }
 
     public void setRoleCode(String roleCode) {
@@ -65,7 +72,7 @@ public class SysRole extends AbstractSysEntity {
     }
 
     public String getRoleName() {
-        return this.roleName;
+        return roleName;
     }
 
     public void setRoleName(String roleName) {
@@ -73,30 +80,43 @@ public class SysRole extends AbstractSysEntity {
     }
 
     public Set<SysPermission> getPermissions() {
-        return this.permissions;
+        return permissions;
     }
 
     public void setPermissions(Set<SysPermission> permissions) {
         this.permissions = permissions;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         SysRole sysRole = (SysRole) o;
-        return new EqualsBuilder().append(getRoleId(), sysRole.getRoleId()).isEquals();
+
+        return new EqualsBuilder()
+                .append(getRoleId(), sysRole.getRoleId())
+                .isEquals();
     }
 
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getRoleId()).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(getRoleId())
+                .toHashCode();
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("roleId", this.roleId).add("roleCode", this.roleCode).add("roleName", this.roleName).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("roleId", roleId)
+                .add("roleCode", roleCode)
+                .add("roleName", roleName)
+                .toString();
     }
 }

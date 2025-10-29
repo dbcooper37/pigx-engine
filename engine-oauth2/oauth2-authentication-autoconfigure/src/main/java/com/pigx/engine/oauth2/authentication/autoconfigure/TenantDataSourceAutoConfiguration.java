@@ -8,18 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
-/* JADX WARN: Classes with same name are omitted:
-  
- */
+
 @AutoConfiguration
 @ConditionalOnMultiTenant(MultiTenant.DATABASE)
-@ComponentScan(basePackages = {"com.pigx.engine.oauth2.authentication.autoconfigure.tenant"})
-/* loaded from: oauth2-authentication-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/autoconfigure/TenantDataSourceAutoConfiguration.class */
+@ComponentScan(basePackages = {
+        "com.pigx.engine.oauth2.authentication.autoconfigure.tenant",
+})
 public class TenantDataSourceAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(TenantDataSourceAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Tenant Data Source] Configure.");
+        log.info("[PIGXD] |- Auto [Tenant Data Source] Configure.");
     }
 }

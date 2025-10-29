@@ -17,25 +17,36 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+
 @Configuration(proxyBeanMethods = false)
-@EnableJpaRepositories(basePackages = {"com.pigx.engine.logic.upms.repository.security", "com.pigx.engine.logic.upms.repository.hr"})
-@EntityScan(basePackages = {"com.pigx.engine.logic.upms.entity.security", "com.pigx.engine.logic.upms.entity.hr"})
-@ComponentScan(basePackages = {"com.pigx.engine.logic.upms.service.assistant", "com.pigx.engine.logic.upms.service.security", "com.pigx.engine.logic.upms.service.hr"})
+@EntityScan(basePackages = {
+        "com.pigx.engine.logic.upms.entity.security",
+        "com.pigx.engine.logic.upms.entity.hr",
+})
+@EnableJpaRepositories(basePackages = {
+        "com.pigx.engine.logic.upms.repository.security",
+        "com.pigx.engine.logic.upms.repository.hr",
+})
+@ComponentScan(basePackages = {
+        "com.pigx.engine.logic.upms.service.assistant",
+        "com.pigx.engine.logic.upms.service.security",
+        "com.pigx.engine.logic.upms.service.hr",
+})
 @Import({AssistantAccessConfiguration.class})
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/config/LogicUpmsConfiguration.class */
 public class LogicUpmsConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(LogicUpmsConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Logic Upms] Configure.");
+        log.debug("[PIGXD] |- Module [Logic Upms] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public SocialAuthenticationHandler socialAuthenticationHandler(SysUserService sysUserService, SysSocialUserService sysSocialUserService, AccessHandlerStrategyFactory accessHandlerStrategyFactory) {
         DefaultSocialAuthenticationHandler defaultSocialAuthenticationHandler = new DefaultSocialAuthenticationHandler(sysUserService, sysSocialUserService, accessHandlerStrategyFactory);
-        log.trace("[Herodotus] |- Bean [Default Social Authentication Handler] Configure.");
+        log.trace("[PIGXD] |- Bean [Default Social Authentication Handler] Configure.");
         return defaultSocialAuthenticationHandler;
     }
 }

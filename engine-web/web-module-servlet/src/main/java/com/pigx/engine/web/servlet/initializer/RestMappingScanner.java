@@ -1,18 +1,13 @@
 package com.pigx.engine.web.servlet.initializer;
 
+import cn.hutool.v7.crypto.SecureUtil;
 import com.pigx.engine.core.definition.constant.SymbolConstants;
 import com.pigx.engine.message.core.definition.strategy.RestMappingScanEventManager;
 import com.pigx.engine.message.core.domain.RestMapping;
 import com.pigx.engine.web.core.support.WebPropertyFinder;
 import com.pigx.engine.web.service.initializer.AbstractRestMappingScanner;
 import com.pigx.engine.web.service.properties.ServiceProperties;
-import cn.hutool.v7.crypto.SecureUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -26,23 +21,39 @@ import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondit
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-/* loaded from: web-module-servlet-3.5.7.0.jar:cn/herodotus/engine/web/servlet/initializer/RestMappingScanner.class */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+
 public class RestMappingScanner extends AbstractRestMappingScanner {
+
     private static final Logger log = LoggerFactory.getLogger(RestMappingScanner.class);
 
     public RestMappingScanner(ServiceProperties.Scan scan, RestMappingScanEventManager restMappingScanEventManager) {
         super(scan, restMappingScanEventManager);
     }
 
-    @Override // com.pigx.engine.web.service.initializer.AbstractRestMappingScanner
     public void onApplicationEvent(ApplicationContext applicationContext) {
+
         String contextPath = getContextPath(applicationContext);
+
+        // 1、获取服务ID：该服务ID对于微服务是必需的。
         String serviceId = WebPropertyFinder.getApplicationName(applicationContext);
+
+        // 2、只针对有EnableResourceServer注解的微服务进行扫描。如果变为单体架构目前不会用到EnableResourceServer所以增加的了一个Architecture判断
         if (notExecuteScanning()) {
-            log.warn("[Herodotus] |- Can not found scan annotation in Service [{}], Skip!", serviceId);
+            // 只扫描资源服务器
+            log.warn("[PIGXD] |- Can not found scan annotation in Service [{}], Skip!", serviceId);
             return;
         }
+
+        // 3、获取所有接口映射
         Map<String, RequestMappingHandlerMapping> mappings = applicationContext.getBeansOfType(RequestMappingHandlerMapping.class);
+
+        // 4、 获取url与类和方法的对应信息
         List<RestMapping> resources = new ArrayList<>();
         for (RequestMappingHandlerMapping mapping : mappings.values()) {
             Map<RequestMappingInfo, HandlerMethod> handlerMethods = mapping.getHandlerMethods();
@@ -50,37 +61,63 @@ public class RestMappingScanner extends AbstractRestMappingScanner {
                 for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
                     RequestMappingInfo requestMappingInfo = entry.getKey();
                     HandlerMethod handlerMethod = entry.getValue();
-                    if (!isExcludedRequestMapping(handlerMethod)) {
-                        RestMapping restMapping = createRestMapping(serviceId, requestMappingInfo, handlerMethod, contextPath);
-                        if (!ObjectUtils.isEmpty(restMapping)) {
-                            resources.add(restMapping);
-                        }
+
+                    // 4.1、如果是被排除的requestMapping，那么就进行不扫描
+                    if (isExcludedRequestMapping(handlerMethod)) {
+                        continue;
                     }
+
+                    // 4.2、拼装扫描信息
+                    RestMapping restMapping = createRestMapping(serviceId, requestMappingInfo, handlerMethod, contextPath);
+                    if (ObjectUtils.isEmpty(restMapping)) {
+                        continue;
+                    }
+
+                    resources.add(restMapping);
                 }
             }
         }
+
         complete(serviceId, resources);
     }
 
     private RestMapping createRestMapping(String serviceId, RequestMappingInfo info, HandlerMethod method, String contextPath) {
+        // 4.2.1、获取类名
+        // method.getMethod().getDeclaringClass().getName() 取到的是注解实际所在类的名字，比如注解在父类叫BaseController，那么拿到的就是BaseController
+        // method.getBeanType().getName() 取到的是注解实际Bean的名字，比如注解在在父类叫BaseController，而实际类是SysUserController，那么拿到的就是SysUserController
         String className = method.getBeanType().getName();
+
+        // 4.2.2、检测该类是否在GroupIds列表中
         if (isLegalGroup(className)) {
             return null;
         }
-        method.getBeanType().getSimpleName();
+
+        // 5.2.3、获取不包含包路径的类名
+        String classSimpleName = method.getBeanType().getSimpleName();
+
+        // 4.2.4、获取RequestMapping注解对应的方法名
         String methodName = method.getMethod().getName();
+
+        // 5.2.5、获取注解对应的请求类型
         RequestMethodsRequestCondition requestMethodsRequestCondition = info.getMethodsCondition();
         String requestMethods = StringUtils.join(requestMethodsRequestCondition.getMethods(), SymbolConstants.COMMA);
+
+        // 5.2.6、获取主机对应的请求路径
         PathPatternsRequestCondition pathPatternsCondition = info.getPathPatternsCondition();
         Set<String> patternValues = pathPatternsCondition.getPatternValues();
         if (CollectionUtils.isEmpty(patternValues)) {
             return null;
         }
-        String urls = (String) patternValues.stream().map(url -> {
-            return toInterface(contextPath, url);
-        }).collect(Collectors.joining(SymbolConstants.COMMA));
-        String flag = serviceId + "-" + requestMethods + "-" + urls;
+
+        String urls = patternValues.stream()
+                .map(url -> toInterface(contextPath, url))
+                .collect(Collectors.joining(SymbolConstants.COMMA));
+
+        // 5.2.8、根据serviceId, requestMethods, urls生成的MD5值，作为自定义主键
+        String flag = serviceId + SymbolConstants.DASH + requestMethods + SymbolConstants.DASH + urls;
         String id = SecureUtil.md5(flag);
+
+        // 5.2.9、组装对象
         RestMapping restMapping = new RestMapping();
         restMapping.setMappingId(id);
         restMapping.setMappingCode(createCode(urls, requestMethods));

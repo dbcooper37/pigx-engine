@@ -1,12 +1,12 @@
 package com.pigx.engine.rest.servlet.identity.dto;
 
-import com.pigx.engine.core.definition.domain.AbstractDto;
 import com.google.common.base.MoreObjects;
+import com.pigx.engine.core.definition.domain.AbstractDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
+
 @Schema(name = "机要传递实体")
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/dto/SessionExchange.class */
 public class SessionExchange extends AbstractDto {
 
     @NotBlank(message = "confidential参数不能为空")
@@ -18,7 +18,7 @@ public class SessionExchange extends AbstractDto {
     private String sessionId;
 
     public String getPublicKey() {
-        return this.publicKey;
+        return publicKey;
     }
 
     public void setPublicKey(String publicKey) {
@@ -26,14 +26,18 @@ public class SessionExchange extends AbstractDto {
     }
 
     public String getSessionId() {
-        return this.sessionId;
+        return sessionId;
     }
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("publicKey", this.publicKey).add("sessionId", this.sessionId).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("publicKey", publicKey)
+                .add("sessionId", sessionId)
+                .toString();
     }
 }

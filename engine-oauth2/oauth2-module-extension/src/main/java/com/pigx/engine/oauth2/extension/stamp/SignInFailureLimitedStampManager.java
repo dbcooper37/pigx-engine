@@ -1,16 +1,17 @@
 package com.pigx.engine.oauth2.extension.stamp;
 
+import cn.hutool.v7.crypto.SecureUtil;
 import com.pigx.engine.cache.jetcache.stamp.AbstractCountStampManager;
 import com.pigx.engine.oauth2.core.constants.OAuth2Constants;
 import com.pigx.engine.oauth2.core.properties.OAuth2AuthenticationProperties;
 import com.pigx.engine.oauth2.extension.dto.SignInErrorStatus;
-import cn.hutool.v7.crypto.SecureUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 
+
 @Component
-/* loaded from: oauth2-module-extension-3.5.7.0.jar:cn/herodotus/engine/oauth2/extension/stamp/SignInFailureLimitedStampManager.class */
 public class SignInFailureLimitedStampManager extends AbstractCountStampManager {
+
     private final OAuth2AuthenticationProperties authenticationProperties;
 
     public SignInFailureLimitedStampManager(OAuth2AuthenticationProperties authenticationProperties) {
@@ -18,34 +19,39 @@ public class SignInFailureLimitedStampManager extends AbstractCountStampManager 
         this.authenticationProperties = authenticationProperties;
     }
 
-    @Override // com.pigx.engine.cache.jetcache.stamp.StampManager
+    @Override
     public Long nextStamp(String key) {
         return 1L;
     }
 
     public OAuth2AuthenticationProperties getAuthenticationProperties() {
-        return this.authenticationProperties;
+        return authenticationProperties;
     }
 
     public SignInErrorStatus errorStatus(String username) {
-        int maxTimes = this.authenticationProperties.getSignInFailureLimited().getMaxTimes().intValue();
+        int maxTimes = authenticationProperties.getSignInFailureLimited().getMaxTimes();
         Long storedTimes = get(SecureUtil.md5(username));
+
         int errorTimes = 0;
         if (ObjectUtils.isNotEmpty(storedTimes)) {
             errorTimes = storedTimes.intValue();
         }
+
         int remainTimes = maxTimes;
         if (errorTimes != 0) {
             remainTimes = maxTimes - errorTimes;
         }
+
         boolean isLocked = false;
         if (errorTimes == maxTimes) {
             isLocked = true;
         }
+
         SignInErrorStatus status = new SignInErrorStatus();
         status.setErrorTimes(errorTimes);
         status.setRemainTimes(remainTimes);
-        status.setLocked(Boolean.valueOf(isLocked));
+        status.setLocked(isLocked);
+
         return status;
     }
 }

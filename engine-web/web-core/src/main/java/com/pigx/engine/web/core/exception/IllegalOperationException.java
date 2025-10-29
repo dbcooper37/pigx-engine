@@ -2,8 +2,9 @@ package com.pigx.engine.web.core.exception;
 
 import com.pigx.engine.core.definition.exception.PlatformRuntimeException;
 
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/exception/IllegalOperationException.class */
+
 public class IllegalOperationException extends PlatformRuntimeException {
+
     public IllegalOperationException() {
     }
 

@@ -3,9 +3,11 @@ package com.pigx.engine.core.foundation.exception.api;
 import com.pigx.engine.core.definition.domain.Feedback;
 import com.pigx.engine.core.definition.exception.PlatformRuntimeException;
 
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/exception/api/OpenApiRequestFailureException.class */
+
 public class OpenApiRequestFailureException extends PlatformRuntimeException {
+
     public OpenApiRequestFailureException() {
+        super();
     }
 
     public OpenApiRequestFailureException(String message) {
@@ -24,7 +26,7 @@ public class OpenApiRequestFailureException extends PlatformRuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    @Override // com.pigx.engine.core.definition.exception.PlatformRuntimeException, com.pigx.engine.core.definition.exception.HerodotusException
+    @Override
     public Feedback getFeedback() {
         return super.getFeedback();
     }

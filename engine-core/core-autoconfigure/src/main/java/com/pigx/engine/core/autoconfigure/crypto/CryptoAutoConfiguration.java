@@ -1,4 +1,4 @@
-package com.pigx.engine.autoconfigure.crypto;
+package com.pigx.engine.core.autoconfigure.crypto;
 
 import com.pigx.engine.core.definition.support.crypto.AsymmetricCryptoProcessor;
 import com.pigx.engine.core.definition.support.crypto.SymmetricCryptoProcessor;
@@ -15,61 +15,56 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableConfigurationProperties({CryptoProperties.class})
+
 @AutoConfiguration
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/crypto/CryptoAutoConfiguration.class */
+@EnableConfigurationProperties(CryptoProperties.class)
 public class CryptoAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(CryptoAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Crypto] Configure.");
+        log.info("[PIGXD] |- Auto [Crypto] Configure.");
     }
 
-    @ConditionalOnCryptoStrategy(CryptoStrategy.SM)
     @Configuration(proxyBeanMethods = false)
-    /* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/crypto/CryptoAutoConfiguration$SMCryptoConfiguration.class */
+    @ConditionalOnCryptoStrategy(CryptoStrategy.SM)
     static class SMCryptoConfiguration {
-        SMCryptoConfiguration() {
-        }
 
-        @ConditionalOnMissingBean
         @Bean
+        @ConditionalOnMissingBean
         public AsymmetricCryptoProcessor asymmetricCryptoProcessor() {
             SM2CryptoProcessor sm2CryptoProcessor = new SM2CryptoProcessor();
-            CryptoAutoConfiguration.log.trace("[Herodotus] |- Strategy [SM Asymmetric SM2 Crypto Processor] Configure.");
+            log.trace("[PIGXD] |- Strategy [SM Asymmetric SM2 Crypto Processor] Configure.");
             return sm2CryptoProcessor;
         }
 
-        @ConditionalOnMissingBean
         @Bean
+        @ConditionalOnMissingBean
         public SymmetricCryptoProcessor symmetricCryptoProcessor() {
             SM4CryptoProcessor sm4CryptoProcessor = new SM4CryptoProcessor();
-            CryptoAutoConfiguration.log.trace("[Herodotus] |- Strategy [SM Symmetric SM4 Crypto Processor] Configure.");
+            log.trace("[PIGXD] |- Strategy [SM Symmetric SM4 Crypto Processor] Configure.");
             return sm4CryptoProcessor;
         }
     }
 
-    @ConditionalOnCryptoStrategy(CryptoStrategy.STANDARD)
     @Configuration(proxyBeanMethods = false)
-    /* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/crypto/CryptoAutoConfiguration$StandardCryptoConfiguration.class */
+    @ConditionalOnCryptoStrategy(CryptoStrategy.STANDARD)
     static class StandardCryptoConfiguration {
-        StandardCryptoConfiguration() {
-        }
 
-        @ConditionalOnMissingBean
         @Bean
+        @ConditionalOnMissingBean
         public AsymmetricCryptoProcessor asymmetricCryptoProcessor() {
             RSACryptoProcessor rsaCryptoProcessor = new RSACryptoProcessor();
-            CryptoAutoConfiguration.log.trace("[Herodotus] |- Strategy [Standard Asymmetric RSA Crypto Processor] Configure.");
+            log.trace("[PIGXD] |- Strategy [Standard Asymmetric RSA Crypto Processor] Configure.");
             return rsaCryptoProcessor;
         }
 
-        @ConditionalOnMissingBean
         @Bean
+        @ConditionalOnMissingBean
         public SymmetricCryptoProcessor symmetricCryptoProcessor() {
             AESCryptoProcessor aesCryptoProcessor = new AESCryptoProcessor();
-            CryptoAutoConfiguration.log.trace("[Herodotus] |- Strategy [Standard Symmetric AES Crypto Processor] Configure.");
+            log.trace("[PIGXD] |- Strategy [Standard Symmetric AES Crypto Processor] Configure.");
             return aesCryptoProcessor;
         }
     }

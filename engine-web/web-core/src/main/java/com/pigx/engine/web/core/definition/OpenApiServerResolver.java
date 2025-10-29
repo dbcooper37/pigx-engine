@@ -1,9 +1,16 @@
 package com.pigx.engine.web.core.definition;
 
 import io.swagger.v3.oas.models.servers.Server;
+
 import java.util.List;
 
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/definition/OpenApiServerResolver.class */
+
 public interface OpenApiServerResolver {
+
+    /**
+     * 获取 Open Api 所需的 Server 地址。
+     *
+     * @return Open Api Servers 值
+     */
     List<Server> getServers();
 }

@@ -3,11 +3,14 @@ package com.pigx.engine.logic.message.repository;
 import com.pigx.engine.data.core.jpa.repository.BaseJpaRepository;
 import com.pigx.engine.logic.message.entity.PullStamp;
 import jakarta.persistence.QueryHint;
-import java.util.Optional;
+import org.hibernate.jpa.AvailableHints;
 import org.springframework.data.jpa.repository.QueryHints;
 
-/* loaded from: logic-module-message-3.5.7.0.jar:cn/herodotus/engine/logic/message/repository/PullStampRepository.class */
+import java.util.Optional;
+
+
 public interface PullStampRepository extends BaseJpaRepository<PullStamp, String> {
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     Optional<PullStamp> findByUserId(String userId);
 }

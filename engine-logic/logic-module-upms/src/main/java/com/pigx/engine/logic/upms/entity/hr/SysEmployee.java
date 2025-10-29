@@ -1,7 +1,9 @@
 package com.pigx.engine.logic.upms.entity.hr;
 
-import com.pigx.engine.core.definition.constant.ErrorCodeMapperBuilderOrdered;
-import com.pigx.engine.core.definition.constant.SystemConstants;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.core.identity.enums.AccountCategory;
 import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
 import com.pigx.engine.logic.upms.constants.LogicUpmsConstants;
@@ -10,117 +12,118 @@ import com.pigx.engine.logic.upms.domain.deserializer.SysUserEmptyToNull;
 import com.pigx.engine.logic.upms.entity.security.SysUser;
 import com.pigx.engine.logic.upms.enums.Gender;
 import com.pigx.engine.logic.upms.enums.Identity;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
-import jakarta.persistence.NamedSubgraph;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.UniqueConstraint;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UuidGenerator;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_EMPLOYEE)
-@Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = SystemConstants.EMPLOYEE_ID)
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+
 @Schema(name = "人员")
-@Cacheable
-@NamedEntityGraph(name = "SysEmployeeWithSysUser.Graph", attributeNodes = {@NamedAttributeNode(value = "user", subgraph = "SysUser.SubGraph")}, subgraphs = {@NamedSubgraph(name = "SysUser.SubGraph", attributeNodes = {@NamedAttributeNode("userId")})})
+@Entity
+@NamedEntityGraph(
+        name = "SysEmployeeWithSysUser.Graph",
+        attributeNodes = {
+                @NamedAttributeNode(value = "user", subgraph = "SysUser.SubGraph")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "SysUser.SubGraph",
+                        attributeNodes = {
+                                @NamedAttributeNode(value = "userId")
+                        }
+                )
+        }
+)
 @Table(name = "sys_employee", indexes = {@Index(name = "sys_employee_id_idx", columnList = "employee_id")})
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/entity/hr/SysEmployee.class */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "employeeId")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_EMPLOYEE)
 public class SysEmployee extends AbstractSysEntity implements SocialUserDetails {
 
-    @Id
     @Schema(name = "人员ID")
+    @Id
     @UuidGenerator
     @Column(name = "employee_id", length = 64)
     private String employeeId;
 
-    @Column(name = "employee_name", length = ErrorCodeMapperBuilderOrdered.MESSAGE)
     @Schema(name = "姓名")
+    @Column(name = "employee_name", length = 50)
     private String employeeName;
 
-    @Column(name = "employee_no", length = ErrorCodeMapperBuilderOrdered.MESSAGE)
     @Schema(name = "工号")
+    @Column(name = "employee_no", length = 50)
     private String employeeNo;
 
-    @Column(name = "mobile_phone_number", length = ErrorCodeMapperBuilderOrdered.MESSAGE)
     @Schema(name = "手机号码")
+    @Column(name = "mobile_phone_number", length = 50)
     private String mobilePhoneNumber;
 
-    @Column(name = "office_phone_number", length = ErrorCodeMapperBuilderOrdered.MESSAGE)
     @Schema(name = "办公电话")
+    @Column(name = "office_phone_number", length = 50)
     private String officePhoneNumber;
 
-    @Column(name = SystemConstants.SCOPE_EMAIL, length = 100)
     @Schema(name = "电子邮箱")
+    @Column(name = "email", length = 100)
     private String email;
 
-    @Column(name = "pki_email", length = 100)
     @Schema(name = "PKI电子邮箱")
+    @Column(name = "pki_email", length = 100)
     private String pkiEmail;
 
-    @Column(name = "a4_biz_emp_id", length = 256)
     @Schema(name = "4A标准人员ID")
+    @Column(name = "a4_biz_emp_id", length = 256)
     private String a4BizEmpId;
 
-    @Column(name = SystemConstants.AVATAR, length = 1000)
     @Schema(name = "头像")
+    @Column(name = "avatar", length = 1000)
     private String avatar;
 
-    @Column(name = "birth_day")
     @Schema(name = "生日")
+    @Column(name = "birth_day")
     @Temporal(TemporalType.DATE)
     private Date birthday;
 
+    @Schema(name = "性别")
     @Column(name = "gender")
     @Enumerated(EnumType.ORDINAL)
-    @Schema(name = "性别")
     private Gender gender = Gender.MAN;
 
+    @Schema(name = "身份")
     @Column(name = "identity")
     @Enumerated(EnumType.ORDINAL)
-    @Schema(name = "身份")
     private Identity identity = Identity.STAFF;
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_DEPARTMENT)
+    /**
+     * 为了尽量保证与工作流用户体系一致，这里采用Employee与Department多对多模式。
+     * <p>
+     * 为了提升访问效率，使用@Fetch(FetchMode.SUBSELECT)，这会让数据一并查出来。
+     * 从业务角度分析，一方面没有采用双向查询，避免使用部门的时候查出大量人员数据；另一方面，以人员为主，维护关联数据。
+     */
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_DEPARTMENT)
     @ManyToMany
-    @JoinTable(name = "sys_employee_department", joinColumns = {@JoinColumn(name = "employee_id")}, inverseJoinColumns = {@JoinColumn(name = "department_id")}, uniqueConstraints = {@UniqueConstraint(columnNames = {"employee_id", "department_id"})}, indexes = {@Index(name = "sys_employee_department_eid_idx", columnList = "employee_id"), @Index(name = "sys_employee_department_did_idx", columnList = "department_id")})
     @Fetch(FetchMode.SUBSELECT)
-    private Set<SysDepartment> departments = new HashSet();
+    @JoinTable(name = "sys_employee_department",
+            joinColumns = {@JoinColumn(name = "employee_id")},
+            inverseJoinColumns = {@JoinColumn(name = "department_id")},
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"employee_id", "department_id"})},
+            indexes = {@Index(name = "sys_employee_department_eid_idx", columnList = "employee_id"), @Index(name = "sys_employee_department_did_idx", columnList = "department_id")})
+    private Set<SysDepartment> departments = new HashSet<>();
 
-    @OneToOne(mappedBy = "employee", cascade = {CascadeType.ALL})
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_USER)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_USER)
     @JsonDeserialize(using = SysUserEmptyToNull.class)
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
     private SysUser user;
 
     public SysUser getUser() {
-        return this.user;
+        return user;
     }
 
     public void setUser(SysUser user) {
@@ -128,7 +131,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public String getEmployeeId() {
-        return this.employeeId;
+        return employeeId;
     }
 
     public void setEmployeeId(String employeeId) {
@@ -136,7 +139,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public String getEmployeeName() {
-        return this.employeeName;
+        return employeeName;
     }
 
     public void setEmployeeName(String employeeName) {
@@ -144,7 +147,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public String getEmployeeNo() {
-        return this.employeeNo;
+        return employeeNo;
     }
 
     public void setEmployeeNo(String employeeNo) {
@@ -152,7 +155,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public String getMobilePhoneNumber() {
-        return this.mobilePhoneNumber;
+        return mobilePhoneNumber;
     }
 
     public void setMobilePhoneNumber(String mobilePhoneNumber) {
@@ -160,7 +163,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public String getOfficePhoneNumber() {
-        return this.officePhoneNumber;
+        return officePhoneNumber;
     }
 
     public void setOfficePhoneNumber(String officePhoneNumber) {
@@ -168,7 +171,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
     public void setEmail(String email) {
@@ -176,7 +179,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public String getPkiEmail() {
-        return this.pkiEmail;
+        return pkiEmail;
     }
 
     public void setPkiEmail(String pkiEmail) {
@@ -184,29 +187,29 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public String getA4BizEmpId() {
-        return this.a4BizEmpId;
+        return a4BizEmpId;
     }
 
     public void setA4BizEmpId(String a4BizEmpId) {
         this.a4BizEmpId = a4BizEmpId;
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.SocialUserDetails
+    @Override
     public String getUuid() {
         return this.employeeId;
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.SocialUserDetails
+    @Override
     public String getSource() {
         return AccountCategory.INSTITUTION.getKey();
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.SocialUserDetails
+    @Override
     public String getPhoneNumber() {
-        return getMobilePhoneNumber();
+        return this.getMobilePhoneNumber();
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.SocialUserDetails
+    @Override
     public String getAvatar() {
         return this.avatar;
     }
@@ -215,18 +218,18 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
         this.avatar = avatar;
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.SocialUserDetails
+    @Override
     public String getUsername() {
-        return getEmployeeName();
+        return this.getEmployeeName();
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.SocialUserDetails
+    @Override
     public String getNickname() {
-        return getEmail();
+        return this.getEmail();
     }
 
     public Date getBirthday() {
-        return this.birthday;
+        return birthday;
     }
 
     public void setBirthday(Date birthday) {
@@ -234,7 +237,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public Gender getGender() {
-        return this.gender;
+        return gender;
     }
 
     public void setGender(Gender gender) {
@@ -242,7 +245,7 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public Identity getIdentity() {
-        return this.identity;
+        return identity;
     }
 
     public void setIdentity(Identity identity) {
@@ -250,30 +253,52 @@ public class SysEmployee extends AbstractSysEntity implements SocialUserDetails 
     }
 
     public Set<SysDepartment> getDepartments() {
-        return this.departments;
+        return departments;
     }
 
     public void setDepartments(Set<SysDepartment> departments) {
         this.departments = departments;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         SysEmployee that = (SysEmployee) o;
-        return new EqualsBuilder().append(getEmployeeId(), that.getEmployeeId()).isEquals();
+
+        return new EqualsBuilder()
+                .append(getEmployeeId(), that.getEmployeeId())
+                .isEquals();
     }
 
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getEmployeeId()).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(getEmployeeId())
+                .toHashCode();
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add(SystemConstants.EMPLOYEE_ID, this.employeeId).add("employeeName", this.employeeName).add("employeeNo", this.employeeNo).add("mobilePhoneNumber", this.mobilePhoneNumber).add("officePhoneNumber", this.officePhoneNumber).add(SystemConstants.SCOPE_EMAIL, this.email).add("pkiEmail", this.pkiEmail).add("a4BizEmpId", this.a4BizEmpId).add(SystemConstants.AVATAR, this.avatar).add("birthday", this.birthday).add("gender", this.gender).add("identity", this.identity).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("employeeId", employeeId)
+                .add("employeeName", employeeName)
+                .add("employeeNo", employeeNo)
+                .add("mobilePhoneNumber", mobilePhoneNumber)
+                .add("officePhoneNumber", officePhoneNumber)
+                .add("email", email)
+                .add("pkiEmail", pkiEmail)
+                .add("a4BizEmpId", a4BizEmpId)
+                .add("avatar", avatar)
+                .add("birthday", birthday)
+                .add("gender", gender)
+                .add("identity", identity)
+                .toString();
     }
 }

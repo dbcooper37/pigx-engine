@@ -1,18 +1,21 @@
 package com.pigx.engine.core.foundation.condition;
 
 import com.pigx.engine.core.foundation.enums.Architecture;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import org.springframework.context.annotation.Conditional;
+
+import java.lang.annotation.*;
+
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Conditional({OnArchitectureCondition.class})
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/condition/ConditionalOnArchitecture.class */
+@Conditional(OnArchitectureCondition.class)
 public @interface ConditionalOnArchitecture {
+
+    /**
+     * {@link Architecture} 属性必须配置.
+     *
+     * @return 预期的算法
+     */
     Architecture value();
 }

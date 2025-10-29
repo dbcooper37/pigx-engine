@@ -1,10 +1,11 @@
-package com.pigx.engine.autoconfigure.client.servlet.feign;
+package com.pigx.engine.core.autoconfigure.client.servlet.feign;
 
 import com.pigx.engine.core.definition.domain.Result;
 import com.pigx.engine.core.definition.exception.PlatformRuntimeException;
 
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/client/servlet/feign/FeignRemoteCallExceptionWrapper.class */
+
 public class FeignRemoteCallExceptionWrapper extends PlatformRuntimeException {
+
     private final Result<String> result;
 
     public FeignRemoteCallExceptionWrapper(Result<String> result) {
@@ -31,8 +32,8 @@ public class FeignRemoteCallExceptionWrapper extends PlatformRuntimeException {
         this.result = result;
     }
 
-    @Override // com.pigx.engine.core.definition.exception.AbstractRuntimeException, com.pigx.engine.core.definition.exception.HerodotusException
+    @Override
     public Result<String> getResult() {
-        return this.result;
+        return result;
     }
 }

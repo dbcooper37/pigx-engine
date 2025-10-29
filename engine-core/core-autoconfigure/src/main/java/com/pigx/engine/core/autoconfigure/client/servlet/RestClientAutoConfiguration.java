@@ -1,4 +1,4 @@
-package com.pigx.engine.autoconfigure.client.servlet;
+package com.pigx.engine.core.autoconfigure.client.servlet;
 
 import com.pigx.engine.core.foundation.condition.ConditionalOnArchitecture;
 import com.pigx.engine.core.foundation.condition.ConditionalOnServletApplication;
@@ -15,25 +15,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
+
 @AutoConfiguration
-@ConditionalOnClass({RestClient.class})
+@ConditionalOnClass(RestClient.class)
 @ConditionalOnServletApplication
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/client/servlet/RestClientAutoConfiguration.class */
 public class RestClientAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(RestClientAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Rest Client] Configure.");
+        log.info("[PIGXD] |- Auto [Rest Client] Configure.");
     }
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnArchitecture(Architecture.MONOCOQUE)
-    /* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/client/servlet/RestClientAutoConfiguration$RestClientMonocoqueBuilderConfiguration.class */
     static class RestClientMonocoqueBuilderConfiguration {
-        RestClientMonocoqueBuilderConfiguration() {
-        }
-
         @Bean
         public RestClient.Builder restClientBuilder(RestClientBuilderConfigurer restClientBuilderConfigurer) {
             return restClientBuilderConfigurer.configure(RestClient.builder());
@@ -42,11 +39,7 @@ public class RestClientAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnArchitecture(Architecture.DISTRIBUTED)
-    /* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/client/servlet/RestClientAutoConfiguration$RestClientDistributedBuilderConfiguration.class */
     static class RestClientDistributedBuilderConfiguration {
-        RestClientDistributedBuilderConfiguration() {
-        }
-
         @Bean
         @LoadBalanced
         public RestClient.Builder restClientBuilder(RestClientBuilderConfigurer restClientBuilderConfigurer) {
@@ -54,11 +47,11 @@ public class RestClientAutoConfiguration {
         }
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public RestClient restClient(RestClient.Builder restClientBuilder) {
         RestClient restClient = restClientBuilder.build();
-        log.trace("[Herodotus] |- Bean [RestClient] Configure.");
+        log.trace("[PIGXD] |- Bean [RestClient] Configure.");
         return restClient;
     }
 }

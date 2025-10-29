@@ -1,17 +1,20 @@
-package com.pigx.engine.jetcache.utils;
+package com.pigx.engine.cache.jetcache.utils;
 
-import com.pigx.engine.cache.jetcache.enhance.JetCacheCreateCacheFactory;
 import com.alicp.jetcache.Cache;
 import com.alicp.jetcache.anno.CacheType;
-import java.time.Duration;
+import com.pigx.engine.cache.jetcache.enhance.JetCacheCreateCacheFactory;
 import org.apache.commons.lang3.ObjectUtils;
 
-/* loaded from: cache-module-jetcache-3.5.7.0.jar:cn/herodotus/engine/cache/jetcache/utils/JetCacheUtils.class */
+import java.time.Duration;
+
+
 public class JetCacheUtils {
+
     private static volatile JetCacheUtils instance;
     private JetCacheCreateCacheFactory jetCacheCreateCacheFactory;
 
     private JetCacheUtils() {
+
     }
 
     public static JetCacheUtils getInstance() {
@@ -26,11 +29,11 @@ public class JetCacheUtils {
     }
 
     public static <K, V> Cache<K, V> create(String name, Duration expire) {
-        return create(name, expire, (Boolean) true);
+        return create(name, expire, true);
     }
 
     public static <K, V> Cache<K, V> create(String name, Duration expire, Boolean cacheNullValue) {
-        return create(name, expire, cacheNullValue, (Boolean) null);
+        return create(name, expire, cacheNullValue, null);
     }
 
     public static <K, V> Cache<K, V> create(String name, Duration expire, Boolean cacheNullValue, Boolean syncLocal) {
@@ -38,11 +41,11 @@ public class JetCacheUtils {
     }
 
     public static <K, V> Cache<K, V> create(String name, CacheType cacheType) {
-        return create(name, cacheType, (Duration) null);
+        return create(name, cacheType, null);
     }
 
     public static <K, V> Cache<K, V> create(String name, CacheType cacheType, Duration expire) {
-        return create(name, cacheType, expire, (Boolean) true);
+        return create(name, cacheType, expire, true);
     }
 
     public static <K, V> Cache<K, V> create(String name, CacheType cacheType, Duration expire, Boolean cacheNullValue) {
@@ -58,7 +61,7 @@ public class JetCacheUtils {
     }
 
     private JetCacheCreateCacheFactory getJetCacheCreateCacheFactory() {
-        return this.jetCacheCreateCacheFactory;
+        return jetCacheCreateCacheFactory;
     }
 
     public static void setJetCacheCreateCacheFactory(JetCacheCreateCacheFactory jetCacheCreateCacheFactory) {

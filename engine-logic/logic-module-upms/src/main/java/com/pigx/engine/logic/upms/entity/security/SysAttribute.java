@@ -1,77 +1,71 @@
 package com.pigx.engine.logic.upms.entity.security;
 
-import com.pigx.engine.core.definition.constant.ErrorCodeMapperBuilderOrdered;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
 import com.pigx.engine.logic.upms.domain.generator.SysAttributeIdGenerator;
 import com.pigx.engine.logic.upms.domain.listener.SysAttributeEntityListener;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.util.HashSet;
+import java.util.Set;
+
+
 @Schema(name = "系统安全属性数据")
 @Entity
-@EntityListeners({SysAttributeEntityListener.class})
 @Table(name = "sys_attribute", indexes = {@Index(name = "sys_attribute_id_idx", columnList = "attribute_id")})
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/entity/security/SysAttribute.class */
+@EntityListeners(value = {SysAttributeEntityListener.class})
 public class SysAttribute extends AbstractSysEntity {
 
-    @Id
     @Schema(name = "元数据ID")
-    @Column(name = "attribute_id", length = 64)
+    @Id
     @SysAttributeIdGenerator
+    @Column(name = "attribute_id", length = 64)
     private String attributeId;
 
-    @Column(name = "attribute_code", length = 128)
     @Schema(name = "默认权限代码")
+    @Column(name = "attribute_code", length = 128)
     private String attributeCode;
 
-    @Column(name = "request_method", length = ErrorCodeMapperBuilderOrdered.CAPTCHA)
     @Schema(name = "请求方法")
+    @Column(name = "request_method", length = 20)
     private String requestMethod;
 
-    @Column(name = "service_id", length = 128)
     @Schema(name = "服务ID")
+    @Column(name = "service_id", length = 128)
     private String serviceId;
 
-    @Column(name = "class_name", length = 512)
     @Schema(name = "接口所在类")
+    @Column(name = "class_name", length = 512)
     private String className;
 
-    @Column(name = "method_name", length = 128)
     @Schema(name = "接口对应方法")
+    @Column(name = "method_name", length = 128)
     private String methodName;
 
-    @Column(name = "url", length = 2048)
     @Schema(name = "请求URL")
+    @Column(name = "url", length = 2048)
     private String url;
 
-    @Column(name = "web_expression", length = 128)
     @Schema(name = "表达式", description = "Security表达式字符串，通过该值设置动态权限")
+    @Column(name = "web_expression", length = 128)
     private String webExpression;
 
     @Schema(name = "属性对应权限", title = "根据属性关联权限数据")
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "sys_attribute_permission", joinColumns = {@JoinColumn(name = "attribute_id")}, inverseJoinColumns = {@JoinColumn(name = "permission_id")}, uniqueConstraints = {@UniqueConstraint(columnNames = {"attribute_id", "permission_id"})}, indexes = {@Index(name = "sys_attribute_permission_aid_idx", columnList = "attribute_id"), @Index(name = "sys_attribute_permission_pid_idx", columnList = "permission_id")})
     @Fetch(FetchMode.SUBSELECT)
-    private Set<SysPermission> permissions = new HashSet();
+    @JoinTable(name = "sys_attribute_permission",
+            joinColumns = {@JoinColumn(name = "attribute_id")},
+            inverseJoinColumns = {@JoinColumn(name = "permission_id")},
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"attribute_id", "permission_id"})},
+            indexes = {@Index(name = "sys_attribute_permission_aid_idx", columnList = "attribute_id"), @Index(name = "sys_attribute_permission_pid_idx", columnList = "permission_id")})
+    private Set<SysPermission> permissions = new HashSet<>();
 
     public String getAttributeId() {
-        return this.attributeId;
+        return attributeId;
     }
 
     public void setAttributeId(String attributeId) {
@@ -79,7 +73,7 @@ public class SysAttribute extends AbstractSysEntity {
     }
 
     public String getAttributeCode() {
-        return this.attributeCode;
+        return attributeCode;
     }
 
     public void setAttributeCode(String attributeCode) {
@@ -87,7 +81,7 @@ public class SysAttribute extends AbstractSysEntity {
     }
 
     public String getRequestMethod() {
-        return this.requestMethod;
+        return requestMethod;
     }
 
     public void setRequestMethod(String requestMethod) {
@@ -95,7 +89,7 @@ public class SysAttribute extends AbstractSysEntity {
     }
 
     public String getServiceId() {
-        return this.serviceId;
+        return serviceId;
     }
 
     public void setServiceId(String serviceId) {
@@ -103,7 +97,7 @@ public class SysAttribute extends AbstractSysEntity {
     }
 
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     public void setClassName(String className) {
@@ -111,7 +105,7 @@ public class SysAttribute extends AbstractSysEntity {
     }
 
     public String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     public void setMethodName(String methodName) {
@@ -119,7 +113,7 @@ public class SysAttribute extends AbstractSysEntity {
     }
 
     public String getUrl() {
-        return this.url;
+        return url;
     }
 
     public void setUrl(String url) {
@@ -127,7 +121,7 @@ public class SysAttribute extends AbstractSysEntity {
     }
 
     public String getWebExpression() {
-        return this.webExpression;
+        return webExpression;
     }
 
     public void setWebExpression(String webExpression) {
@@ -135,13 +129,14 @@ public class SysAttribute extends AbstractSysEntity {
     }
 
     public Set<SysPermission> getPermissions() {
-        return this.permissions;
+        return permissions;
     }
 
     public void setPermissions(Set<SysPermission> permissions) {
         this.permissions = permissions;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -150,15 +145,25 @@ public class SysAttribute extends AbstractSysEntity {
             return false;
         }
         SysAttribute that = (SysAttribute) o;
-        return Objects.equal(this.attributeId, that.attributeId);
+        return Objects.equal(attributeId, that.attributeId);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.attributeId});
+        return Objects.hashCode(attributeId);
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("attributeId", this.attributeId).add("attributeCode", this.attributeCode).add("requestMethod", this.requestMethod).add("serviceId", this.serviceId).add("className", this.className).add("methodName", this.methodName).add("url", this.url).add("webExpression", this.webExpression).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("attributeId", attributeId)
+                .add("attributeCode", attributeCode)
+                .add("requestMethod", requestMethod)
+                .add("serviceId", serviceId)
+                .add("className", className)
+                .add("methodName", methodName)
+                .add("url", url)
+                .add("webExpression", webExpression)
+                .toString();
     }
 }

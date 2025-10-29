@@ -10,11 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping({"/authorize/authorization"})
-@Tags({@Tag(name = "OAuth2 认证服务接口"), @Tag(name = "OAuth2 认证管理接口")})
+
 @RestController
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/controller/OAuth2AuthorizationController.class */
+@RequestMapping("/authorize/authorization")
+@Tags({
+        @Tag(name = "OAuth2 认证服务接口"),
+        @Tag(name = "OAuth2 认证管理接口")
+})
 public class OAuth2AuthorizationController extends AbstractJpaWriteableController<HerodotusAuthorization, String> {
+
     private final HerodotusAuthorizationService herodotusAuthorizationService;
 
     @Autowired
@@ -22,7 +26,7 @@ public class OAuth2AuthorizationController extends AbstractJpaWriteableControlle
         this.herodotusAuthorizationService = herodotusAuthorizationService;
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
+    @Override
     public BaseJpaWriteableService<HerodotusAuthorization, String> getService() {
         return this.herodotusAuthorizationService;
     }

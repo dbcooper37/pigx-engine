@@ -4,8 +4,8 @@ import com.pigx.engine.core.definition.domain.AbstractDto;
 import com.pigx.engine.web.core.annotation.EnumeratedValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+
 @Schema(name = "排序参数BO对象")
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/definition/dto/Sorter.class */
 public class Sorter extends AbstractDto {
 
     @EnumeratedValue(names = {"ASC", "DESC"}, message = "排序方式的值只能是大写 ASC 或者 DESC")
@@ -16,7 +16,7 @@ public class Sorter extends AbstractDto {
     private String[] properties;
 
     public String getDirection() {
-        return this.direction;
+        return direction;
     }
 
     public void setDirection(String direction) {
@@ -24,7 +24,7 @@ public class Sorter extends AbstractDto {
     }
 
     public String[] getProperties() {
-        return this.properties;
+        return properties;
     }
 
     public void setProperties(String[] properties) {

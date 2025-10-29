@@ -1,77 +1,81 @@
 package com.pigx.engine.logic.identity.converter;
 
-import com.pigx.engine.core.definition.constant.SymbolConstants;
+import cn.hutool.v7.core.date.DateUtil;
 import com.pigx.engine.logic.identity.entity.OAuth2Device;
 import com.pigx.engine.logic.identity.entity.OAuth2Scope;
 import com.pigx.engine.logic.identity.service.OAuth2ScopeService;
 import com.pigx.engine.oauth2.core.enums.AllJwsAlgorithm;
 import com.pigx.engine.oauth2.core.enums.SignatureJwsAlgorithm;
 import com.pigx.engine.oauth2.core.enums.TokenFormat;
-import cn.hutool.v7.core.date.DateUtil;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.util.StringUtils;
 
-/* loaded from: logic-module-identity-3.5.7.0.jar:cn/herodotus/engine/logic/identity/converter/RegisteredClientToOAuth2DeviceConverter.class */
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+
 public class RegisteredClientToOAuth2DeviceConverter implements Converter<RegisteredClient, OAuth2Device> {
+
     private final OAuth2ScopeService scopeService;
 
     public RegisteredClientToOAuth2DeviceConverter(OAuth2ScopeService scopeService) {
         this.scopeService = scopeService;
     }
 
+    @Override
     public OAuth2Device convert(RegisteredClient registeredClient) {
+
         OAuth2Device device = new OAuth2Device();
         device.setDeviceId(registeredClient.getId());
         device.setDeviceName(registeredClient.getClientName());
-        device.setProductId(SymbolConstants.BLANK);
+        device.setProductId("");
         device.setScopes(getOAuth2Scopes(registeredClient.getScopes()));
         device.setClientId(registeredClient.getClientId());
         device.setClientSecret(registeredClient.getClientSecret());
         device.setClientIdIssuedAt(DateUtil.toLocalDateTime(registeredClient.getClientIdIssuedAt()));
         device.setClientSecretExpiresAt(DateUtil.toLocalDateTime(registeredClient.getClientSecretExpiresAt()));
         device.setClientAuthenticationMethods(StringUtils.collectionToCommaDelimitedString(registeredClient.getClientAuthenticationMethods()));
-        device.setAuthorizationGrantTypes(StringUtils.collectionToCommaDelimitedString((Collection) registeredClient.getAuthorizationGrantTypes().stream().map((v0) -> {
-            return v0.getValue();
-        }).collect(Collectors.toSet())));
+        device.setAuthorizationGrantTypes(StringUtils.collectionToCommaDelimitedString(registeredClient.getAuthorizationGrantTypes().stream().map(AuthorizationGrantType::getValue).collect(Collectors.toSet())));
         device.setRedirectUris(StringUtils.collectionToCommaDelimitedString(registeredClient.getRedirectUris()));
         device.setPostLogoutRedirectUris(StringUtils.collectionToCommaDelimitedString(registeredClient.getRedirectUris()));
+
         ClientSettings clientSettings = registeredClient.getClientSettings();
-        device.setRequireProofKey(Boolean.valueOf(clientSettings.isRequireProofKey()));
-        device.setRequireAuthorizationConsent(Boolean.valueOf(clientSettings.isRequireAuthorizationConsent()));
+        device.setRequireProofKey(clientSettings.isRequireProofKey());
+        device.setRequireAuthorizationConsent(clientSettings.isRequireAuthorizationConsent());
         device.setJwkSetUrl(clientSettings.getJwkSetUrl());
         if (ObjectUtils.isNotEmpty(clientSettings.getTokenEndpointAuthenticationSigningAlgorithm())) {
             device.setAuthenticationSigningAlgorithm(AllJwsAlgorithm.valueOf(clientSettings.getTokenEndpointAuthenticationSigningAlgorithm().getName()));
         }
+
         TokenSettings tokenSettings = registeredClient.getTokenSettings();
         device.setAuthorizationCodeValidity(tokenSettings.getAuthorizationCodeTimeToLive());
         device.setAccessTokenValidity(tokenSettings.getAccessTokenTimeToLive());
         device.setDeviceCodeValidity(tokenSettings.getDeviceCodeTimeToLive());
         device.setRefreshTokenValidity(tokenSettings.getRefreshTokenTimeToLive());
         device.setAccessTokenFormat(TokenFormat.get(tokenSettings.getAccessTokenFormat().getValue()));
-        device.setReuseRefreshTokens(Boolean.valueOf(tokenSettings.isReuseRefreshTokens()));
+        device.setReuseRefreshTokens(tokenSettings.isReuseRefreshTokens());
         device.setIdTokenSignatureAlgorithm(SignatureJwsAlgorithm.valueOf(tokenSettings.getIdTokenSignatureAlgorithm().getName()));
+
         return device;
     }
 
     private Set<OAuth2Scope> getOAuth2Scopes(Set<String> scopes) {
         if (CollectionUtils.isNotEmpty(scopes)) {
             List<String> scopeCodes = new ArrayList<>(scopes);
-            List<OAuth2Scope> result = this.scopeService.findByScopeCodeIn(scopeCodes);
+            List<OAuth2Scope> result = scopeService.findByScopeCodeIn(scopeCodes);
             if (CollectionUtils.isNotEmpty(result)) {
-                return new HashSet(result);
+                return new HashSet<>(result);
             }
         }
-        return new HashSet();
+        return new HashSet<>();
     }
 }

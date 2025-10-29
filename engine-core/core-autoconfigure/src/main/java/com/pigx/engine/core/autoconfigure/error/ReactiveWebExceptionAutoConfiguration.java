@@ -1,4 +1,4 @@
-package com.pigx.engine.autoconfigure.error;
+package com.pigx.engine.core.autoconfigure.error;
 
 import com.pigx.engine.core.foundation.condition.ConditionalOnReactiveApplication;
 import jakarta.annotation.PostConstruct;
@@ -23,22 +23,29 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.result.view.ViewResolver;
 
-@EnableConfigurationProperties({ServerProperties.class, WebProperties.class})
-@AutoConfiguration(before = {ErrorWebFluxAutoConfiguration.class})
-@ConditionalOnClass({WebFluxConfigurer.class})
+
+@AutoConfiguration(before = ErrorWebFluxAutoConfiguration.class)
 @ConditionalOnReactiveApplication
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/error/ReactiveWebExceptionAutoConfiguration.class */
+@ConditionalOnClass(WebFluxConfigurer.class)
+@EnableConfigurationProperties({ServerProperties.class, WebProperties.class})
 public class ReactiveWebExceptionAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(ReactiveWebExceptionAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Reactive Web Exception] Configure.");
+        log.info("[PIGXD] |- Auto [Reactive Web Exception] Configure.");
     }
 
     @Bean
     @Order(-2)
-    public ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes, WebProperties webProperties, ServerProperties serverProperties, ObjectProvider<ViewResolver> viewResolvers, ServerCodecConfigurer serverCodecConfigurer, ApplicationContext applicationContext) {
+    public ErrorWebExceptionHandler errorWebExceptionHandler(
+            ErrorAttributes errorAttributes,
+            WebProperties webProperties,
+            ServerProperties serverProperties,
+            ObjectProvider<ViewResolver> viewResolvers,
+            ServerCodecConfigurer serverCodecConfigurer,
+            ApplicationContext applicationContext) {
         HerodotusGlobalErrorWebExceptionHandler handler = new HerodotusGlobalErrorWebExceptionHandler(errorAttributes, webProperties.getResources(), serverProperties.getError(), applicationContext);
         handler.setViewResolvers(viewResolvers.orderedStream().toList());
         handler.setMessageWriters(serverCodecConfigurer.getWriters());
@@ -46,8 +53,8 @@ public class ReactiveWebExceptionAutoConfiguration {
         return handler;
     }
 
-    @ConditionalOnMissingBean(value = {ErrorAttributes.class}, search = SearchStrategy.CURRENT)
     @Bean
+    @ConditionalOnMissingBean(value = ErrorAttributes.class, search = SearchStrategy.CURRENT)
     public DefaultErrorAttributes errorAttributes() {
         return new DefaultErrorAttributes();
     }

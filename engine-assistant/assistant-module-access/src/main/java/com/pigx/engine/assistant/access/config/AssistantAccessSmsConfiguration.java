@@ -13,30 +13,31 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableConfigurationProperties({SmsProperties.class})
+
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnSmsEnabled
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/config/AssistantAccessSmsConfiguration.class */
+@EnableConfigurationProperties({SmsProperties.class})
 public class AssistantAccessSmsConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(AssistantAccessSmsConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Assistant Access SMS] Configure.");
+        log.debug("[PIGXD] |- Module [Assistant Access SMS] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public VerificationCodeStampManager verificationCodeStampManager(SmsProperties smsProperties) {
         VerificationCodeStampManager verificationCodeStampManager = new VerificationCodeStampManager(smsProperties);
-        log.trace("[Herodotus] |- Bean [Verification Code Stamp Manager] Configure.");
+        log.trace("[PIGXD] |- Bean [Verification Code Stamp Manager] Configure.");
         return verificationCodeStampManager;
     }
 
-    @Bean({AccountCategory.PHONE_NUMBER_HANDLER})
+    @Bean(AccountCategory.PHONE_NUMBER_HANDLER)
     public PhoneNumberAccessHandler phoneNumberAccessHandler(VerificationCodeStampManager verificationCodeStampManager) {
         PhoneNumberAccessHandler phoneNumberAuthenticationHandler = new PhoneNumberAccessHandler(verificationCodeStampManager);
-        log.trace("[Herodotus] |- Bean [Phone Number SignIn Handler] Configure.");
+        log.trace("[PIGXD] |- Bean [Phone Number SignIn Handler] Configure.");
         return phoneNumberAuthenticationHandler;
     }
 }

@@ -8,15 +8,20 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-@EnableConfigurationProperties({MultiTenantProperties.class})
+
 @Configuration(proxyBeanMethods = false)
-@Import({DiscriminatorApproachConfiguration.class, SchemaApproachConfiguration.class, DatabaseApproachConfiguration.class})
-/* loaded from: data-module-tenant-3.5.7.0.jar:cn/herodotus/engine/data/tenant/config/DataTenantConfiguration.class */
+@EnableConfigurationProperties(MultiTenantProperties.class)
+@Import({
+        DiscriminatorApproachConfiguration.class,
+        SchemaApproachConfiguration.class,
+        DatabaseApproachConfiguration.class,
+})
 public class DataTenantConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(DataTenantConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Tenant] Configure.");
+        log.debug("[PIGXD] |- Module [Tenant] Configure.");
     }
 }

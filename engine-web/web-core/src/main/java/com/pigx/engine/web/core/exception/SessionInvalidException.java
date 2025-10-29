@@ -4,9 +4,11 @@ import com.pigx.engine.core.definition.domain.Feedback;
 import com.pigx.engine.core.definition.exception.PlatformRuntimeException;
 import com.pigx.engine.web.core.constant.WebErrorCodes;
 
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/exception/SessionInvalidException.class */
+
 public class SessionInvalidException extends PlatformRuntimeException {
+
     public SessionInvalidException() {
+        super();
     }
 
     public SessionInvalidException(String message) {
@@ -25,7 +27,7 @@ public class SessionInvalidException extends PlatformRuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    @Override // com.pigx.engine.core.definition.exception.PlatformRuntimeException, com.pigx.engine.core.definition.exception.HerodotusException
+    @Override
     public Feedback getFeedback() {
         return WebErrorCodes.SESSION_INVALID;
     }

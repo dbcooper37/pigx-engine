@@ -1,35 +1,58 @@
 package com.pigx.engine.web.service.properties;
 
-import com.pigx.engine.core.definition.constant.BaseConstants;
-import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.google.common.base.MoreObjects;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
+import com.pigx.engine.core.definition.constant.SystemConstants;
+import com.pigx.engine.web.core.constant.WebConstants;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = BaseConstants.PROPERTY_PREFIX_SERVICE)
-/* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/properties/ServiceProperties.class */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+
+@ConfigurationProperties(prefix = WebConstants.PROPERTY_PREFIX_SERVICE)
 public class ServiceProperties {
+
+    /**
+     * 服务接口扫描配置
+     */
     private Scan scan = new Scan();
 
     public Scan getScan() {
-        return this.scan;
+        return scan;
     }
 
     public void setScan(Scan scan) {
         this.scan = scan;
     }
 
-    /* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/properties/ServiceProperties$Scan.class */
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("scan", scan)
+                .toString();
+    }
+
     public static class Scan {
-        private List<String> scanGroupIds;
+
+        /**
+         * 是否开启接口扫描
+         */
         private Boolean enabled = true;
+        /**
+         * 指定扫描的命名空间。未指定的命名空间中，即使包含RequestMapping，也不会被添加进来。
+         */
+        private List<String> scanGroupIds;
+        /**
+         * Spring 中会包含 Controller和 RestController，
+         * 如果该配置设置为True，那么就只扫描RestController
+         * 如果该配置设置为False，那么Controller和 RestController斗扫描。
+         */
         private Boolean justScanRestController = false;
 
         public Boolean getEnabled() {
-            return this.enabled;
+            return enabled;
         }
 
         public void setEnabled(Boolean enabled) {
@@ -37,12 +60,14 @@ public class ServiceProperties {
         }
 
         public List<String> getScanGroupIds() {
-            List<String> defaultGroupIds = Stream.of((Object[]) new String[]{SystemConstants.PACKAGE_NAME, "org.dromara"}).toList();
+            List<String> defaultGroupIds = Stream.of(SystemConstants.PACKAGE_NAME, "org.dromara").toList();
+
             if (CollectionUtils.isEmpty(this.scanGroupIds)) {
-                this.scanGroupIds = new ArrayList();
+                this.scanGroupIds = new ArrayList<>();
             }
+
             this.scanGroupIds.addAll(defaultGroupIds);
-            return this.scanGroupIds;
+            return scanGroupIds;
         }
 
         public void setScanGroupIds(List<String> scanGroupIds) {
@@ -50,19 +75,19 @@ public class ServiceProperties {
         }
 
         public Boolean getJustScanRestController() {
-            return this.justScanRestController;
+            return justScanRestController;
         }
 
         public void setJustScanRestController(Boolean justScanRestController) {
             this.justScanRestController = justScanRestController;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add(BaseConstants.PROPERTY_NAME_ENABLED, this.enabled).add("justScanRestController", this.justScanRestController).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("enabled", enabled)
+                    .add("justScanRestController", justScanRestController)
+                    .toString();
         }
-    }
-
-    public String toString() {
-        return MoreObjects.toStringHelper(this).add("scan", this.scan).toString();
     }
 }

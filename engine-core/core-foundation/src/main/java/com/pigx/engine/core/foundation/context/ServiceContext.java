@@ -1,61 +1,185 @@
 package com.pigx.engine.core.foundation.context;
 
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.pigx.engine.core.definition.enums.Protocol;
 import com.pigx.engine.core.foundation.enums.Architecture;
 import com.pigx.engine.core.foundation.enums.DataAccessStrategy;
-import com.google.common.base.MoreObjects;
 import org.springframework.context.ApplicationContext;
 
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/context/ServiceContext.class */
-class ServiceContext {
-    private String port;
-    private String ip;
-    private String address;
-    private String url;
-    private String applicationName;
-    private ApplicationContext applicationContext;
-    private String uaaServiceName;
-    private String upmsServiceName;
-    private String messageServiceName;
-    private String ossServiceName;
-    private String gatewayServiceUri;
-    private String uaaServiceUri;
-    private String upmsServiceUri;
-    private String messageServiceUri;
-    private String ossServiceUri;
-    private String authorizationUri;
-    private String pushedAuthorizationRequestUri;
-    private String accessTokenUri;
-    private String jwkSetUri;
-    private String tokenRevocationUri;
-    private String tokenIntrospectionUri;
-    private String deviceAuthorizationUri;
-    private String deviceVerificationUri;
-    private String oidcClientRegistrationUri;
-    private String oidcLogoutUri;
-    private String oidcUserInfoUri;
-    private String issuerUri;
-    private Architecture architecture = Architecture.DISTRIBUTED;
-    private DataAccessStrategy dataAccessStrategy = DataAccessStrategy.REMOTE;
-    private Protocol protocol = Protocol.HTTP;
-    private String authorizationEndpoint = SystemConstants.OAUTH2_AUTHORIZATION_ENDPOINT;
-    private String pushedAuthorizationRequestEndpoint = SystemConstants.OAUTH2_PUSHED_AUTHORIZATION_REQUEST_ENDPOINT;
-    private String accessTokenEndpoint = SystemConstants.OAUTH2_TOKEN_ENDPOINT;
-    private String jwkSetEndpoint = SystemConstants.OAUTH2_JWK_SET_ENDPOINT;
-    private String tokenRevocationEndpoint = SystemConstants.OAUTH2_TOKEN_REVOCATION_ENDPOINT;
-    private String tokenIntrospectionEndpoint = SystemConstants.OAUTH2_TOKEN_INTROSPECTION_ENDPOINT;
-    private String deviceAuthorizationEndpoint = SystemConstants.OAUTH2_DEVICE_AUTHORIZATION_ENDPOINT;
-    private String deviceVerificationEndpoint = SystemConstants.OAUTH2_DEVICE_VERIFICATION_ENDPOINT;
-    private String oidcClientRegistrationEndpoint = SystemConstants.OIDC_CLIENT_REGISTRATION_ENDPOINT;
-    private String oidcLogoutEndpoint = SystemConstants.OIDC_LOGOUT_ENDPOINT;
-    private String oidcUserInfoEndpoint = SystemConstants.OIDC_USER_INFO_ENDPOINT;
 
-    ServiceContext() {
-    }
+class ServiceContext {
+
+    /**
+     * 平台架构类型，默认：DISTRIBUTED（分布式架构）
+     */
+    private Architecture architecture = Architecture.DISTRIBUTED;
+    /**
+     * 数据访问策略，默认：
+     */
+    private DataAccessStrategy dataAccessStrategy = DataAccessStrategy.REMOTE;
+    /**
+     * 协议头类型
+     */
+    private Protocol protocol = Protocol.HTTP;
+    /**
+     * 服务端口号
+     */
+    private String port;
+    /**
+     * 服务IP地址
+     */
+    private String ip;
+    /**
+     * 服务地址，格式：ip:port
+     */
+    private String address;
+    /**
+     * 服务Url，格式：http://ip:port
+     */
+    private String url;
+    /**
+     * 应用名称，与spring.application.name一致
+     */
+    private String applicationName;
+    /**
+     * 留存一份ApplicationContext
+     */
+    private ApplicationContext applicationContext;
+
+    /**
+     * 认证中心服务名称
+     */
+    private String uaaServiceName;
+    /**
+     * 用户中心服务名称
+     */
+    private String upmsServiceName;
+    /**
+     * 消息服务名称
+     */
+    private String messageServiceName;
+    /**
+     * 对象存储服务名称
+     */
+    private String ossServiceName;
+    /**
+     * 统一网关服务地址。可以是IP+端口，可以是域名
+     */
+    private String gatewayServiceUri;
+
+    /**
+     * 统一认证中心服务地址
+     */
+    private String uaaServiceUri;
+    /**
+     * 统一权限管理服务地址
+     */
+    private String upmsServiceUri;
+    /**
+     * 消息服务地址
+     */
+    private String messageServiceUri;
+    /**
+     * 对象存储服务地址
+     */
+    private String ossServiceUri;
+    /**
+     * OAuth2 Authorization Code 模式认证端点，/oauth2/authorize uri 地址，可修改为自定义地址
+     */
+    private String authorizationUri;
+    /**
+     * OAuth2 Authorization Code 模式认证端点，/oauth2/authorize端点地址，可修改为自定义地址
+     */
+    private String authorizationEndpoint = SystemConstants.OAUTH2_AUTHORIZATION_ENDPOINT;
+    /**
+     * OAuth2 Pushed Authorization Requests 模式认证端点，/oauth2/par uri 地址，可修改为自定义地址
+     */
+    private String pushedAuthorizationRequestUri;
+    /**
+     * OAuth2 Pushed Authorization Requests 模式认证端点，/oauth2/authorize端点地址，可修改为自定义地址
+     */
+    private String pushedAuthorizationRequestEndpoint = SystemConstants.OAUTH2_PUSHED_AUTHORIZATION_REQUEST_ENDPOINT;
+
+    /**
+     * OAuth2 /oauth2/token 申请 Token uri 地址，可修改为自定义地址
+     */
+    private String accessTokenUri;
+    /**
+     * OAuth2 /oauth2/token 申请 Token 端点地址，可修改为自定义地址
+     */
+    private String accessTokenEndpoint = SystemConstants.OAUTH2_TOKEN_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/jwks uri 地址，可修改为自定义地址
+     */
+    private String jwkSetUri;
+    /**
+     * OAuth2 /oauth2/jwks 端点地址，可修改为自定义地址
+     */
+    private String jwkSetEndpoint = SystemConstants.OAUTH2_JWK_SET_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/revoke 撤销 Token uri 地址，可修改为自定义地址
+     */
+    private String tokenRevocationUri;
+    /**
+     * OAuth2 /oauth2/revoke 撤销 Token 端点地址，可修改为自定义地址
+     */
+    private String tokenRevocationEndpoint = SystemConstants.OAUTH2_TOKEN_REVOCATION_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/introspect 查看 Token uri地址，可修改为自定义地址
+     */
+    private String tokenIntrospectionUri;
+    /**
+     * OAuth2 /oauth2/introspect 查看 Token 端点地址，可修改为自定义地址
+     */
+    private String tokenIntrospectionEndpoint = SystemConstants.OAUTH2_TOKEN_INTROSPECTION_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/device_authorization 设备授权认证 uri地址，可修改为自定义地址
+     */
+    private String deviceAuthorizationUri;
+    /**
+     * OAuth2 /oauth2/device_authorization 设备授权认证端点地址，可修改为自定义地址
+     */
+    private String deviceAuthorizationEndpoint = SystemConstants.OAUTH2_DEVICE_AUTHORIZATION_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/device_verification 设备授权校验 uri地址，可修改为自定义地址
+     */
+    private String deviceVerificationUri;
+    /**
+     * OAuth2 /oauth2/device_verification 设备授权校验端点地址，可修改为自定义地址
+     */
+    private String deviceVerificationEndpoint = SystemConstants.OAUTH2_DEVICE_VERIFICATION_ENDPOINT;
+    /**
+     * OAuth2 OIDC /connect/register uri 地址，可修改为自定义地址
+     */
+    private String oidcClientRegistrationUri;
+    /**
+     * OAuth2 OIDC /connect/register 端点地址，可修改为自定义地址
+     */
+    private String oidcClientRegistrationEndpoint = SystemConstants.OIDC_CLIENT_REGISTRATION_ENDPOINT;
+    /**
+     * OAuth2 OIDC /connect/logout uri 地址，可修改为自定义地址
+     */
+    private String oidcLogoutUri;
+    /**
+     * OAuth2 OIDC /connect/logout 端点地址，可修改为自定义地址
+     */
+    private String oidcLogoutEndpoint = SystemConstants.OIDC_LOGOUT_ENDPOINT;
+    /**
+     * OAuth2 OIDC /userinfo uri 地址，可修改为自定义地址
+     */
+    private String oidcUserInfoUri;
+    /**
+     * OAuth2 OIDC /userinfo 端点地址，可修改为自定义地址
+     */
+    private String oidcUserInfoEndpoint = SystemConstants.OIDC_USER_INFO_ENDPOINT;
+    /**
+     * Spring Authorization Server Issuer Url
+     */
+    private String issuerUri;
 
     public Architecture getArchitecture() {
-        return this.architecture;
+        return architecture;
     }
 
     public void setArchitecture(Architecture architecture) {
@@ -63,7 +187,7 @@ class ServiceContext {
     }
 
     public DataAccessStrategy getDataAccessStrategy() {
-        return this.dataAccessStrategy;
+        return dataAccessStrategy;
     }
 
     public void setDataAccessStrategy(DataAccessStrategy dataAccessStrategy) {
@@ -71,7 +195,7 @@ class ServiceContext {
     }
 
     public Protocol getProtocol() {
-        return this.protocol;
+        return protocol;
     }
 
     public void setProtocol(Protocol protocol) {
@@ -79,7 +203,7 @@ class ServiceContext {
     }
 
     public String getPort() {
-        return this.port;
+        return port;
     }
 
     public void setPort(String port) {
@@ -87,7 +211,7 @@ class ServiceContext {
     }
 
     public String getIp() {
-        return this.ip;
+        return ip;
     }
 
     public void setIp(String ip) {
@@ -95,7 +219,7 @@ class ServiceContext {
     }
 
     public String getAddress() {
-        return this.address;
+        return address;
     }
 
     public void setAddress(String address) {
@@ -103,7 +227,7 @@ class ServiceContext {
     }
 
     public String getUrl() {
-        return this.url;
+        return url;
     }
 
     public void setUrl(String url) {
@@ -111,7 +235,7 @@ class ServiceContext {
     }
 
     public String getApplicationName() {
-        return this.applicationName;
+        return applicationName;
     }
 
     public void setApplicationName(String applicationName) {
@@ -119,7 +243,7 @@ class ServiceContext {
     }
 
     public ApplicationContext getApplicationContext() {
-        return this.applicationContext;
+        return applicationContext;
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -127,7 +251,7 @@ class ServiceContext {
     }
 
     public String getUaaServiceName() {
-        return this.uaaServiceName;
+        return uaaServiceName;
     }
 
     public void setUaaServiceName(String uaaServiceName) {
@@ -135,7 +259,7 @@ class ServiceContext {
     }
 
     public String getUpmsServiceName() {
-        return this.upmsServiceName;
+        return upmsServiceName;
     }
 
     public void setUpmsServiceName(String upmsServiceName) {
@@ -143,7 +267,7 @@ class ServiceContext {
     }
 
     public String getMessageServiceName() {
-        return this.messageServiceName;
+        return messageServiceName;
     }
 
     public void setMessageServiceName(String messageServiceName) {
@@ -151,7 +275,7 @@ class ServiceContext {
     }
 
     public String getOssServiceName() {
-        return this.ossServiceName;
+        return ossServiceName;
     }
 
     public void setOssServiceName(String ossServiceName) {
@@ -159,7 +283,7 @@ class ServiceContext {
     }
 
     public String getGatewayServiceUri() {
-        return this.gatewayServiceUri;
+        return gatewayServiceUri;
     }
 
     public void setGatewayServiceUri(String gatewayServiceUri) {
@@ -167,7 +291,7 @@ class ServiceContext {
     }
 
     public String getUaaServiceUri() {
-        return this.uaaServiceUri;
+        return uaaServiceUri;
     }
 
     public void setUaaServiceUri(String uaaServiceUri) {
@@ -175,7 +299,7 @@ class ServiceContext {
     }
 
     public String getUpmsServiceUri() {
-        return this.upmsServiceUri;
+        return upmsServiceUri;
     }
 
     public void setUpmsServiceUri(String upmsServiceUri) {
@@ -183,7 +307,7 @@ class ServiceContext {
     }
 
     public String getMessageServiceUri() {
-        return this.messageServiceUri;
+        return messageServiceUri;
     }
 
     public void setMessageServiceUri(String messageServiceUri) {
@@ -191,7 +315,7 @@ class ServiceContext {
     }
 
     public String getOssServiceUri() {
-        return this.ossServiceUri;
+        return ossServiceUri;
     }
 
     public void setOssServiceUri(String ossServiceUri) {
@@ -199,7 +323,7 @@ class ServiceContext {
     }
 
     public String getAuthorizationUri() {
-        return this.authorizationUri;
+        return authorizationUri;
     }
 
     public void setAuthorizationUri(String authorizationUri) {
@@ -207,7 +331,7 @@ class ServiceContext {
     }
 
     public String getAuthorizationEndpoint() {
-        return this.authorizationEndpoint;
+        return authorizationEndpoint;
     }
 
     public void setAuthorizationEndpoint(String authorizationEndpoint) {
@@ -215,7 +339,7 @@ class ServiceContext {
     }
 
     public String getPushedAuthorizationRequestUri() {
-        return this.pushedAuthorizationRequestUri;
+        return pushedAuthorizationRequestUri;
     }
 
     public void setPushedAuthorizationRequestUri(String pushedAuthorizationRequestUri) {
@@ -223,7 +347,7 @@ class ServiceContext {
     }
 
     public String getPushedAuthorizationRequestEndpoint() {
-        return this.pushedAuthorizationRequestEndpoint;
+        return pushedAuthorizationRequestEndpoint;
     }
 
     public void setPushedAuthorizationRequestEndpoint(String pushedAuthorizationRequestEndpoint) {
@@ -231,7 +355,7 @@ class ServiceContext {
     }
 
     public String getAccessTokenUri() {
-        return this.accessTokenUri;
+        return accessTokenUri;
     }
 
     public void setAccessTokenUri(String accessTokenUri) {
@@ -239,7 +363,7 @@ class ServiceContext {
     }
 
     public String getAccessTokenEndpoint() {
-        return this.accessTokenEndpoint;
+        return accessTokenEndpoint;
     }
 
     public void setAccessTokenEndpoint(String accessTokenEndpoint) {
@@ -247,7 +371,7 @@ class ServiceContext {
     }
 
     public String getJwkSetUri() {
-        return this.jwkSetUri;
+        return jwkSetUri;
     }
 
     public void setJwkSetUri(String jwkSetUri) {
@@ -255,7 +379,7 @@ class ServiceContext {
     }
 
     public String getJwkSetEndpoint() {
-        return this.jwkSetEndpoint;
+        return jwkSetEndpoint;
     }
 
     public void setJwkSetEndpoint(String jwkSetEndpoint) {
@@ -263,7 +387,7 @@ class ServiceContext {
     }
 
     public String getTokenRevocationUri() {
-        return this.tokenRevocationUri;
+        return tokenRevocationUri;
     }
 
     public void setTokenRevocationUri(String tokenRevocationUri) {
@@ -271,7 +395,7 @@ class ServiceContext {
     }
 
     public String getTokenRevocationEndpoint() {
-        return this.tokenRevocationEndpoint;
+        return tokenRevocationEndpoint;
     }
 
     public void setTokenRevocationEndpoint(String tokenRevocationEndpoint) {
@@ -279,7 +403,7 @@ class ServiceContext {
     }
 
     public String getTokenIntrospectionUri() {
-        return this.tokenIntrospectionUri;
+        return tokenIntrospectionUri;
     }
 
     public void setTokenIntrospectionUri(String tokenIntrospectionUri) {
@@ -287,7 +411,7 @@ class ServiceContext {
     }
 
     public String getTokenIntrospectionEndpoint() {
-        return this.tokenIntrospectionEndpoint;
+        return tokenIntrospectionEndpoint;
     }
 
     public void setTokenIntrospectionEndpoint(String tokenIntrospectionEndpoint) {
@@ -295,7 +419,7 @@ class ServiceContext {
     }
 
     public String getDeviceAuthorizationUri() {
-        return this.deviceAuthorizationUri;
+        return deviceAuthorizationUri;
     }
 
     public void setDeviceAuthorizationUri(String deviceAuthorizationUri) {
@@ -303,7 +427,7 @@ class ServiceContext {
     }
 
     public String getDeviceAuthorizationEndpoint() {
-        return this.deviceAuthorizationEndpoint;
+        return deviceAuthorizationEndpoint;
     }
 
     public void setDeviceAuthorizationEndpoint(String deviceAuthorizationEndpoint) {
@@ -311,7 +435,7 @@ class ServiceContext {
     }
 
     public String getDeviceVerificationUri() {
-        return this.deviceVerificationUri;
+        return deviceVerificationUri;
     }
 
     public void setDeviceVerificationUri(String deviceVerificationUri) {
@@ -319,7 +443,7 @@ class ServiceContext {
     }
 
     public String getDeviceVerificationEndpoint() {
-        return this.deviceVerificationEndpoint;
+        return deviceVerificationEndpoint;
     }
 
     public void setDeviceVerificationEndpoint(String deviceVerificationEndpoint) {
@@ -327,7 +451,7 @@ class ServiceContext {
     }
 
     public String getOidcClientRegistrationUri() {
-        return this.oidcClientRegistrationUri;
+        return oidcClientRegistrationUri;
     }
 
     public void setOidcClientRegistrationUri(String oidcClientRegistrationUri) {
@@ -335,7 +459,7 @@ class ServiceContext {
     }
 
     public String getOidcClientRegistrationEndpoint() {
-        return this.oidcClientRegistrationEndpoint;
+        return oidcClientRegistrationEndpoint;
     }
 
     public void setOidcClientRegistrationEndpoint(String oidcClientRegistrationEndpoint) {
@@ -343,7 +467,7 @@ class ServiceContext {
     }
 
     public String getOidcLogoutUri() {
-        return this.oidcLogoutUri;
+        return oidcLogoutUri;
     }
 
     public void setOidcLogoutUri(String oidcLogoutUri) {
@@ -351,7 +475,7 @@ class ServiceContext {
     }
 
     public String getOidcLogoutEndpoint() {
-        return this.oidcLogoutEndpoint;
+        return oidcLogoutEndpoint;
     }
 
     public void setOidcLogoutEndpoint(String oidcLogoutEndpoint) {
@@ -359,7 +483,7 @@ class ServiceContext {
     }
 
     public String getOidcUserInfoUri() {
-        return this.oidcUserInfoUri;
+        return oidcUserInfoUri;
     }
 
     public void setOidcUserInfoUri(String oidcUserInfoUri) {
@@ -367,7 +491,7 @@ class ServiceContext {
     }
 
     public String getOidcUserInfoEndpoint() {
-        return this.oidcUserInfoEndpoint;
+        return oidcUserInfoEndpoint;
     }
 
     public void setOidcUserInfoEndpoint(String oidcUserInfoEndpoint) {
@@ -375,14 +499,57 @@ class ServiceContext {
     }
 
     public String getIssuerUri() {
-        return this.issuerUri;
+        return issuerUri;
     }
 
     public void setIssuerUri(String issuerUri) {
         this.issuerUri = issuerUri;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("architecture", this.architecture).add("dataAccessStrategy", this.dataAccessStrategy).add("protocol", this.protocol).add("port", this.port).add("ip", this.ip).add(SystemConstants.SCOPE_ADDRESS, this.address).add("url", this.url).add("applicationName", this.applicationName).add("applicationContext", this.applicationContext).add("uaaServiceName", this.uaaServiceName).add("upmsServiceName", this.upmsServiceName).add("messageServiceName", this.messageServiceName).add("ossServiceName", this.ossServiceName).add("gatewayServiceUri", this.gatewayServiceUri).add("uaaServiceUri", this.uaaServiceUri).add("upmsServiceUri", this.upmsServiceUri).add("messageServiceUri", this.messageServiceUri).add("ossServiceUri", this.ossServiceUri).add("authorizationUri", this.authorizationUri).add("authorizationEndpoint", this.authorizationEndpoint).add("pushedAuthorizationRequestUri", this.pushedAuthorizationRequestUri).add("pushedAuthorizationRequestEndpoint", this.pushedAuthorizationRequestEndpoint).add("accessTokenUri", this.accessTokenUri).add("accessTokenEndpoint", this.accessTokenEndpoint).add("jwkSetUri", this.jwkSetUri).add("jwkSetEndpoint", this.jwkSetEndpoint).add("tokenRevocationUri", this.tokenRevocationUri).add("tokenRevocationEndpoint", this.tokenRevocationEndpoint).add("tokenIntrospectionUri", this.tokenIntrospectionUri).add("tokenIntrospectionEndpoint", this.tokenIntrospectionEndpoint).add("deviceAuthorizationUri", this.deviceAuthorizationUri).add("deviceAuthorizationEndpoint", this.deviceAuthorizationEndpoint).add("deviceVerificationUri", this.deviceVerificationUri).add("deviceVerificationEndpoint", this.deviceVerificationEndpoint).add("oidcClientRegistrationUri", this.oidcClientRegistrationUri).add("oidcClientRegistrationEndpoint", this.oidcClientRegistrationEndpoint).add("oidcLogoutUri", this.oidcLogoutUri).add("oidcLogoutEndpoint", this.oidcLogoutEndpoint).add("oidcUserInfoUri", this.oidcUserInfoUri).add("oidcUserInfoEndpoint", this.oidcUserInfoEndpoint).add("issuerUri", this.issuerUri).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("architecture", architecture)
+                .add("dataAccessStrategy", dataAccessStrategy)
+                .add("protocol", protocol)
+                .add("port", port)
+                .add("ip", ip)
+                .add("address", address)
+                .add("url", url)
+                .add("applicationName", applicationName)
+                .add("applicationContext", applicationContext)
+                .add("uaaServiceName", uaaServiceName)
+                .add("upmsServiceName", upmsServiceName)
+                .add("messageServiceName", messageServiceName)
+                .add("ossServiceName", ossServiceName)
+                .add("gatewayServiceUri", gatewayServiceUri)
+                .add("uaaServiceUri", uaaServiceUri)
+                .add("upmsServiceUri", upmsServiceUri)
+                .add("messageServiceUri", messageServiceUri)
+                .add("ossServiceUri", ossServiceUri)
+                .add("authorizationUri", authorizationUri)
+                .add("authorizationEndpoint", authorizationEndpoint)
+                .add("pushedAuthorizationRequestUri", pushedAuthorizationRequestUri)
+                .add("pushedAuthorizationRequestEndpoint", pushedAuthorizationRequestEndpoint)
+                .add("accessTokenUri", accessTokenUri)
+                .add("accessTokenEndpoint", accessTokenEndpoint)
+                .add("jwkSetUri", jwkSetUri)
+                .add("jwkSetEndpoint", jwkSetEndpoint)
+                .add("tokenRevocationUri", tokenRevocationUri)
+                .add("tokenRevocationEndpoint", tokenRevocationEndpoint)
+                .add("tokenIntrospectionUri", tokenIntrospectionUri)
+                .add("tokenIntrospectionEndpoint", tokenIntrospectionEndpoint)
+                .add("deviceAuthorizationUri", deviceAuthorizationUri)
+                .add("deviceAuthorizationEndpoint", deviceAuthorizationEndpoint)
+                .add("deviceVerificationUri", deviceVerificationUri)
+                .add("deviceVerificationEndpoint", deviceVerificationEndpoint)
+                .add("oidcClientRegistrationUri", oidcClientRegistrationUri)
+                .add("oidcClientRegistrationEndpoint", oidcClientRegistrationEndpoint)
+                .add("oidcLogoutUri", oidcLogoutUri)
+                .add("oidcLogoutEndpoint", oidcLogoutEndpoint)
+                .add("oidcUserInfoUri", oidcUserInfoUri)
+                .add("oidcUserInfoEndpoint", oidcUserInfoEndpoint)
+                .add("issuerUri", issuerUri)
+                .toString();
     }
 }

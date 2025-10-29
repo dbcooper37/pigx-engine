@@ -1,7 +1,14 @@
 package com.pigx.engine.core.foundation.enums;
 
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/enums/Certificate.class */
+
 public enum Certificate {
+
+    /**
+     * Spring Authorization Server 默认的 JWK 生成方式
+     */
     STANDARD,
-    CUSTOM
+    /**
+     * 自定义证书 JWK 生成方式
+     */
+    CUSTOM;
 }

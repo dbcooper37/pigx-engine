@@ -13,8 +13,9 @@ import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 
-/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/configurer/OAuth2AuthenticationProviderConfigurer.class */
+
 public class OAuth2AuthenticationProviderConfigurer extends AbstractHttpConfigurer<OAuth2AuthenticationProviderConfigurer, HttpSecurity> {
+
     private final SessionRegistry sessionRegistry;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
@@ -27,15 +28,20 @@ public class OAuth2AuthenticationProviderConfigurer extends AbstractHttpConfigur
         this.authenticationProperties = authenticationProperties;
     }
 
+    @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         OAuth2AuthorizationService authorizationService = OAuth2ConfigurerUtils.getAuthorizationService(httpSecurity);
         OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator = OAuth2ConfigurerUtils.getTokenGenerator(httpSecurity);
-        OAuth2ResourceOwnerPasswordAuthenticationProvider resourceOwnerPasswordAuthenticationProvider = new OAuth2ResourceOwnerPasswordAuthenticationProvider(authorizationService, tokenGenerator, this.userDetailsService, this.authenticationProperties);
-        resourceOwnerPasswordAuthenticationProvider.setPasswordEncoder(this.passwordEncoder);
-        resourceOwnerPasswordAuthenticationProvider.setSessionRegistry(this.sessionRegistry);
+
+        OAuth2ResourceOwnerPasswordAuthenticationProvider resourceOwnerPasswordAuthenticationProvider =
+                new OAuth2ResourceOwnerPasswordAuthenticationProvider(authorizationService, tokenGenerator, userDetailsService, authenticationProperties);
+        resourceOwnerPasswordAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        resourceOwnerPasswordAuthenticationProvider.setSessionRegistry(sessionRegistry);
         httpSecurity.authenticationProvider(resourceOwnerPasswordAuthenticationProvider);
-        OAuth2SocialCredentialsAuthenticationProvider socialCredentialsAuthenticationProvider = new OAuth2SocialCredentialsAuthenticationProvider(authorizationService, tokenGenerator, this.userDetailsService, this.authenticationProperties);
-        socialCredentialsAuthenticationProvider.setSessionRegistry(this.sessionRegistry);
+
+        OAuth2SocialCredentialsAuthenticationProvider socialCredentialsAuthenticationProvider =
+                new OAuth2SocialCredentialsAuthenticationProvider(authorizationService, tokenGenerator, userDetailsService, authenticationProperties);
+        socialCredentialsAuthenticationProvider.setSessionRegistry(sessionRegistry);
         httpSecurity.authenticationProvider(socialCredentialsAuthenticationProvider);
     }
 }

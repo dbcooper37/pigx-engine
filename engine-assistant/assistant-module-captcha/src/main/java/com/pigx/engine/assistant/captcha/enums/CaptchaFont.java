@@ -1,7 +1,10 @@
 package com.pigx.engine.assistant.captcha.enums;
 
-/* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/enums/CaptchaFont.class */
+
 public enum CaptchaFont {
+    /**
+     * 内置字体类型
+     */
     ACTION("Action.ttf"),
     BEATAE("Beatae.ttf"),
     EPILOG("Epilog.ttf"),
@@ -20,6 +23,6 @@ public enum CaptchaFont {
     }
 
     public String getFontName() {
-        return this.fontName;
+        return fontName;
     }
 }

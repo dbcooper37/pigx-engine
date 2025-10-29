@@ -1,20 +1,17 @@
 package com.pigx.engine.core.definition.utils;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.pigx.engine.core.definition.constant.SystemConstants;
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.ObjectUtils;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/utils/GsonUtils.class */
+
 public class GsonUtils {
+
     private static final GsonBuilder GSON_BUILDER = new GsonBuilder();
     private static volatile Gson instance;
 
@@ -26,16 +23,20 @@ public class GsonUtils {
     }
 
     private GsonUtils() {
+
     }
 
     public static Gson getInstance() {
+
         if (ObjectUtils.isEmpty(instance)) {
             synchronized (GSON_BUILDER) {
                 if (ObjectUtils.isEmpty(instance)) {
                     instance = GSON_BUILDER.create();
                 }
+
             }
         }
+
         return instance;
     }
 
@@ -55,27 +56,43 @@ public class GsonUtils {
         return getInstance().toJson(domain);
     }
 
-    public static <T> T toObject(String str, Class<T> cls) {
-        return (T) getInstance().fromJson(str, cls);
+    /**
+     * 将 json 转化为 对象
+     *
+     * @param content   json 字符串
+     * @param valueType 目标对象类型
+     * @param <T>       对象类型
+     * @return 转换后的对象
+     */
+    public static <T> T toObject(String content, Class<T> valueType) {
+        return getInstance().fromJson(content, valueType);
     }
 
-    public static <T> T toObject(String str, Type type) {
-        return (T) getInstance().fromJson(str, type);
+    /**
+     * 将 json 转化为 对象
+     *
+     * @param content json 字符串
+     * @param typeOfT 目标对象类型
+     * @param <T>     对象类型
+     * @return 转换后的对象
+     */
+    public static <T> T toObject(String content, Type typeOfT) {
+        return getInstance().fromJson(content, typeOfT);
     }
 
-    public static <T> T toList(String str, Class<T> cls) {
-        return (T) getInstance().fromJson(str, new TypeToken<List<T>>() { // from class: com.pigx.engine.core.definition.utils.GsonUtils.1
+    public static <T> T toList(String content, Class<T> valueType) {
+        return getInstance().fromJson(content, new TypeToken<List<T>>() {
         }.getType());
     }
 
-    /* JADX WARN: Type inference failed for: r2v0, types: [com.pigx.engine.core.definition.utils.GsonUtils$2] */
     public static <T> List<Map<String, T>> toListMap(String content) {
-        return (List) getInstance().fromJson(content, new TypeToken<List<Map<String, String>>>() { // from class: com.pigx.engine.core.definition.utils.GsonUtils.2
+        return getInstance().fromJson(content, new TypeToken<List<Map<String, String>>>() {
         }.getType());
     }
 
-    public static <T> Map<String, T> toMaps(String str) {
-        return (Map) getInstance().fromJson(str, new TypeToken<Map<String, T>>() { // from class: com.pigx.engine.core.definition.utils.GsonUtils.3
+    public static <T> Map<String, T> toMaps(String gsonString) {
+        return getInstance().fromJson(gsonString, new TypeToken<Map<String, T>>() {
         }.getType());
     }
+
 }

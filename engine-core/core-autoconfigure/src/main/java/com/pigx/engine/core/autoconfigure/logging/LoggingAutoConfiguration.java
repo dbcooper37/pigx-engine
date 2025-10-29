@@ -1,4 +1,4 @@
-package com.pigx.engine.autoconfigure.logging;
+package com.pigx.engine.core.autoconfigure.logging;
 
 import com.pigx.engine.core.autoconfigure.logging.logstash.LogstashLoggingConfiguration;
 import jakarta.annotation.PostConstruct;
@@ -8,15 +8,18 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
-@EnableConfigurationProperties({LoggingProperties.class})
+
 @AutoConfiguration
-@Import({LogstashLoggingConfiguration.class})
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/logging/LoggingAutoConfiguration.class */
+@EnableConfigurationProperties(LoggingProperties.class)
+@Import({
+        LogstashLoggingConfiguration.class
+})
 public class LoggingAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(LoggingAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Logging] Configure.");
+        log.info("[PIGXD] |- Auto [Logging] Configure.");
     }
 }

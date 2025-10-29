@@ -1,23 +1,21 @@
 package com.pigx.engine.core.foundation.utils;
 
-import com.pigx.engine.core.definition.constant.SymbolConstants;
-import com.pigx.engine.core.definition.utils.GsonUtils;
 import cn.hutool.v7.core.net.url.UrlDecoder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import com.pigx.engine.core.definition.constant.SymbolConstants;
+import com.pigx.engine.core.definition.utils.GsonUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+
 public class SqlInjectionUtils {
 
     private static final Logger log = LoggerFactory.getLogger(SqlInjectionUtils.class);
@@ -28,7 +26,7 @@ public class SqlInjectionUtils {
 
     private static boolean matching(String lowerValue, String param) {
         if (SQL_PATTERN.matcher(param).find()) {
-            log.error("[Herodotus] |- The parameter contains keywords {} that do not allow SQL!", lowerValue);
+            log.error("[PIGXD] |- The parameter contains keywords {} that do not allow SQL!", lowerValue);
             return true;
         }
         return false;

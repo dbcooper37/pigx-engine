@@ -1,4 +1,4 @@
-package com.pigx.engine.autoconfigure.oauth2.servlet;
+package com.pigx.engine.core.autoconfigure.oauth2.servlet;
 
 import com.pigx.engine.core.autoconfigure.oauth2.OAuth2AuthorizationAutoConfiguration;
 import com.pigx.engine.core.autoconfigure.oauth2.OAuth2AuthorizationProperties;
@@ -22,75 +22,71 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
-@AutoConfiguration(after = {OAuth2AuthorizationAutoConfiguration.class})
+@AutoConfiguration(after = OAuth2AuthorizationAutoConfiguration.class)
 @ConditionalOnServletApplication
-@ConditionalOnClass({BearerTokenAuthenticationToken.class})
-@Import({ServletRestControllerAdvice.class})
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/oauth2/servlet/ServletOAuth2AuthorizationAutoConfiguration.class */
+@ConditionalOnClass(BearerTokenAuthenticationToken.class)
+@Import({
+        ServletRestControllerAdvice.class
+})
 public class ServletOAuth2AuthorizationAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(ServletOAuth2AuthorizationAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Servlet OAuth2 Authorization] Configure.");
+        log.info("[PIGXD] |- Auto [Servlet OAuth2 Authorization] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public ServletOAuth2ResourceMatcherConfigurer servletSecurityMatcherConfigurer(OAuth2AuthorizationProperties authorizationProperties, ResourceUrlProvider resourceUrlProvider) {
         ServletOAuth2ResourceMatcherConfigurer configurer = new ServletOAuth2ResourceMatcherConfigurer(authorizationProperties, resourceUrlProvider);
-        log.trace("[Herodotus] |- Bean [Servlet Security Matcher Configurer] Configure.");
+        log.trace("[PIGXD] |- Bean [Servlet Security Matcher Configurer] Configure.");
         return configurer;
     }
 
-    @Configuration(proxyBeanMethods = false)
-    @ConditionalOnClass({OpaqueTokenIntrospector.class})
-    @ConditionalOnTokenFormat(TokenFormat.OPAQUE)
-    /* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/oauth2/servlet/ServletOAuth2AuthorizationAutoConfiguration$OAuth2OpaqueTokenConfiguration.class */
-    static class OAuth2OpaqueTokenConfiguration {
-        OAuth2OpaqueTokenConfiguration() {
-        }
+    @Bean
+    @ConditionalOnClass(AuditorAware.class)
+    @ConditionalOnMissingBean
+    public AuditorAware<String> auditorAware() {
+        ServletSecurityAuditorAware aware = new ServletSecurityAuditorAware();
+        log.trace("[PIGXD] |- Bean [Servlet Security Auditor Aware] Configure.");
+        return aware;
+    }
 
-        @ConditionalOnMissingBean
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(OpaqueTokenIntrospector.class)
+    @ConditionalOnTokenFormat(TokenFormat.OPAQUE)
+    static class OAuth2OpaqueTokenConfiguration {
+
         @Bean
+        @ConditionalOnMissingBean
         public OpaqueTokenIntrospector herodotusServletOpaqueTokenIntrospector(OAuth2ResourceServerProperties resourceServerProperties) {
             HerodotusServletOpaqueTokenIntrospector introspector = new HerodotusServletOpaqueTokenIntrospector(resourceServerProperties);
-            ServletOAuth2AuthorizationAutoConfiguration.log.trace("[Herodotus] |- Bean [Herodotus Servlet Opaque Token Introspector] Configure.");
+            log.trace("[PIGXD] |- Bean [Herodotus Servlet Opaque Token Introspector] Configure.");
             return introspector;
         }
 
-        @ConditionalOnMissingBean
         @Bean
+        @ConditionalOnMissingBean
         public BearerTokenResolver opaqueBearerTokenResolver(OpaqueTokenIntrospector OpaqueTokenIntrospector) {
             HerodotusServletOpaqueTokenResolver resolver = new HerodotusServletOpaqueTokenResolver(OpaqueTokenIntrospector);
-            ServletOAuth2AuthorizationAutoConfiguration.log.trace("[Herodotus] |- Bean [Herodotus Servlet Opaque Token Resolver] Configure.");
+            log.trace("[PIGXD] |- Bean [Herodotus Servlet Opaque Token Resolver] Configure.");
             return resolver;
         }
     }
 
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnClass({JwtDecoder.class})
+    @ConditionalOnClass(JwtDecoder.class)
     @ConditionalOnTokenFormat(TokenFormat.JWT)
-    /* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/oauth2/servlet/ServletOAuth2AuthorizationAutoConfiguration$OAuth2JwtTokenConfiguration.class */
     static class OAuth2JwtTokenConfiguration {
-        OAuth2JwtTokenConfiguration() {
-        }
 
-        @ConditionalOnMissingBean
         @Bean
+        @ConditionalOnMissingBean
         public BearerTokenResolver jwtBearerTokenResolver(JwtDecoder jwtDecoder) {
             HerodotusServletJwtTokenResolver resolver = new HerodotusServletJwtTokenResolver(jwtDecoder);
-            ServletOAuth2AuthorizationAutoConfiguration.log.trace("[Herodotus] |- Bean [Herodotus Servlet JWT Token Resolver] Configure.");
+            log.trace("[PIGXD] |- Bean [Herodotus Servlet JWT Token Resolver] Configure.");
             return resolver;
         }
-    }
-
-    @ConditionalOnMissingBean
-    @ConditionalOnClass({AuditorAware.class})
-    @Bean
-    public AuditorAware<String> auditorAware() {
-        ServletSecurityAuditorAware aware = new ServletSecurityAuditorAware();
-        log.trace("[Herodotus] |- Bean [Servlet Security Auditor Aware] Configure.");
-        return aware;
     }
 }

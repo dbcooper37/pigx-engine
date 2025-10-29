@@ -5,7 +5,6 @@ import com.pigx.engine.core.definition.function.ErrorCodeMapperBuilderCustomizer
 import com.pigx.engine.message.core.constants.MessageErrorCodes;
 import org.springframework.core.Ordered;
 
-/* loaded from: message-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/message/autoconfigure/message/MessageErrorCodeMapperBuilderCustomizer.class */
 public class MessageErrorCodeMapperBuilderCustomizer implements ErrorCodeMapperBuilderCustomizer, Ordered {
     @Override // com.pigx.engine.core.definition.function.ErrorCodeMapperBuilderCustomizer
     public void customize(ErrorCodeMapperBuilder builder) {

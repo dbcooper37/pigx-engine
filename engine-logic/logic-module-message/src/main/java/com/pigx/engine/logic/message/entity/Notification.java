@@ -1,55 +1,50 @@
 package com.pigx.engine.logic.message.entity;
 
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.logic.message.constant.LogicMessageConstants;
 import com.pigx.engine.logic.message.domain.AbstractSenderEntity;
 import com.pigx.engine.logic.message.enums.NotificationCategory;
-import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.Cache;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UuidGenerator;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicMessageConstants.REGION_MESSAGE_NOTIFICATION)
+
 @Schema(name = "通知队列")
-@Cacheable
 @Entity
-@Table(name = "msg_notification", indexes = {@Index(name = "msg_notification_id_idx", columnList = "queue_id"), @Index(name = "msg_notification_sid_idx", columnList = "user_id")})
-/* loaded from: logic-module-message-3.5.7.0.jar:cn/herodotus/engine/logic/message/entity/Notification.class */
+@Table(name = "msg_notification", indexes = {
+        @Index(name = "msg_notification_id_idx", columnList = "queue_id"),
+        @Index(name = "msg_notification_sid_idx", columnList = "user_id")
+})
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicMessageConstants.REGION_MESSAGE_NOTIFICATION)
 public class Notification extends AbstractSenderEntity {
 
-    @Id
     @Schema(name = "队列ID")
+    @Id
     @UuidGenerator
     @Column(name = "queue_id", length = 64)
     private String queueId;
 
-    @Column(name = "user_id", length = 64)
-    @Schema(name = "用户ID")
-    private String userId;
-
-    @Column(name = "content", columnDefinition = "TEXT")
-    @Schema(name = "公告内容")
-    private String content;
-
-    @Column(name = "is_read")
     @Schema(name = "是否已经读取", title = "false 未读，true 已读")
+    @Column(name = "is_read")
     private Boolean read = false;
 
+    @Schema(name = "用户ID")
+    @Column(name = "user_id", length = 64)
+    private String userId;
+
+    @Schema(name = "公告内容")
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
+
+    @Schema(name = "通知类别", title = "1. 公告，2.私信")
     @Column(name = "category")
     @Enumerated(EnumType.ORDINAL)
-    @Schema(name = "通知类别", title = "1. 公告，2.私信")
     private NotificationCategory category = NotificationCategory.ANNOUNCEMENT;
 
     public String getQueueId() {
-        return this.queueId;
+        return queueId;
     }
 
     public void setQueueId(String queueId) {
@@ -57,7 +52,7 @@ public class Notification extends AbstractSenderEntity {
     }
 
     public Boolean getRead() {
-        return this.read;
+        return read;
     }
 
     public void setRead(Boolean read) {
@@ -65,7 +60,7 @@ public class Notification extends AbstractSenderEntity {
     }
 
     public String getUserId() {
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {
@@ -73,7 +68,7 @@ public class Notification extends AbstractSenderEntity {
     }
 
     public String getContent() {
-        return this.content;
+        return content;
     }
 
     public void setContent(String content) {
@@ -81,15 +76,21 @@ public class Notification extends AbstractSenderEntity {
     }
 
     public NotificationCategory getCategory() {
-        return this.category;
+        return category;
     }
 
     public void setCategory(NotificationCategory category) {
         this.category = category;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("queueId", this.queueId).add("read", this.read).add("userId", this.userId).add("content", this.content).add("category", this.category).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("queueId", queueId)
+                .add("read", read)
+                .add("userId", userId)
+                .add("content", content)
+                .add("category", category)
+                .toString();
     }
 }

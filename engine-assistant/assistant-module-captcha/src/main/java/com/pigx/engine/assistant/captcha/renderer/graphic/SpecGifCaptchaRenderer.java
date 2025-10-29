@@ -3,19 +3,20 @@ package com.pigx.engine.assistant.captcha.renderer.graphic;
 import com.pigx.engine.assistant.captcha.provider.ResourceProvider;
 import com.pigx.engine.core.foundation.enums.CaptchaCategory;
 
-/* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/renderer/graphic/SpecGifCaptchaRenderer.class */
+
 public class SpecGifCaptchaRenderer extends AbstractGifGraphicRenderer {
+
     public SpecGifCaptchaRenderer(ResourceProvider resourceProvider) {
         super(resourceProvider);
     }
 
-    @Override // com.pigx.engine.core.definition.support.CaptchaRenderer
+    @Override
     public String getCategory() {
         return CaptchaCategory.SPEC_GIF.getConstant();
     }
 
-    @Override // com.pigx.engine.assistant.captcha.renderer.graphic.AbstractBaseGraphicRenderer
+    @Override
     protected String[] getDrawCharacters() {
-        return getCharCharacters();
+        return this.getCharCharacters();
     }
 }

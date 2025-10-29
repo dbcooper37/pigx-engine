@@ -1,4 +1,4 @@
-package com.pigx.engine.autoconfigure.oauth2.definition;
+package com.pigx.engine.core.autoconfigure.oauth2.definition;
 
 import com.pigx.engine.core.definition.constant.ErrorCodes;
 import com.pigx.engine.core.definition.domain.Feedback;
@@ -6,10 +6,6 @@ import com.pigx.engine.core.definition.domain.Result;
 import com.pigx.engine.core.definition.exception.GlobalExceptionHandler;
 import com.pigx.engine.core.definition.exception.PlatformRuntimeException;
 import com.pigx.engine.core.identity.constant.OAuth2ErrorKeys;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,10 +16,17 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/oauth2/definition/SecurityGlobalExceptionHandler.class */
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+
+
 public class SecurityGlobalExceptionHandler {
+
     private static final Logger log = LoggerFactory.getLogger(SecurityGlobalExceptionHandler.class);
-    private static final Map<String, Feedback> EXCEPTION_DICTIONARY = new HashMap();
+
+    private static final Map<String, Feedback> EXCEPTION_DICTIONARY = new HashMap<>();
 
     static {
         EXCEPTION_DICTIONARY.put(OAuth2ErrorKeys.ACCESS_DENIED, ErrorCodes.ACCESS_DENIED);
@@ -56,27 +59,35 @@ public class SecurityGlobalExceptionHandler {
 
     private static Result<String> handle(Exception exception, String path, String key, BiFunction<Feedback, String, Result<String>> toResult) {
         Optional<Feedback> optional = Optional.ofNullable(EXCEPTION_DICTIONARY.get(key));
-        return (Result) optional.map(feedback -> {
-            return (Result) toResult.apply(feedback, key);
-        }).orElseGet(() -> {
-            return resolveException(exception, path);
-        });
+        return optional
+                .map(feedback -> toResult.apply(feedback, key))
+                .orElseGet(() -> resolveException(exception, path));
     }
 
     private static Result<String> handleAuthenticationException(AuthenticationException authenticationException, String path) {
         Throwable throwable = authenticationException.getCause();
-        if (ObjectUtils.isNotEmpty(throwable) && PlatformRuntimeException.class.isAssignableFrom(throwable.getClass())) {
-            PlatformRuntimeException platformRuntimeException = (PlatformRuntimeException) throwable;
-            Result<String> result = platformRuntimeException.getResult();
-            return result.path(path);
+        if (ObjectUtils.isNotEmpty(throwable)) {
+            // 此处是判断 throwable.getClass() 的父类是不是 PlatformRuntimeException
+            // 注意：父类 PlatformRuntimeException.class 放左侧，子类放右侧。
+            if (PlatformRuntimeException.class.isAssignableFrom(throwable.getClass())) {
+                PlatformRuntimeException platformRuntimeException = (PlatformRuntimeException) throwable;
+                Result<String> result = platformRuntimeException.getResult();
+                return result.path(path);
+            }
         }
         return resolveException(authenticationException, path);
     }
 
+    /**
+     * 静态解析认证异常
+     *
+     * @param exception 错误信息
+     * @return Result 对象
+     */
     public static Result<String> resolveSecurityException(Exception exception, String path) {
+
         Exception reason = new Exception();
-        if (exception instanceof OAuth2AuthenticationException) {
-            OAuth2AuthenticationException oAuth2AuthenticationException = (OAuth2AuthenticationException) exception;
+        if (exception instanceof OAuth2AuthenticationException oAuth2AuthenticationException) {
             OAuth2Error oAuth2Error = oAuth2AuthenticationException.getError();
             if (EXCEPTION_DICTIONARY.containsKey(oAuth2Error.getErrorCode())) {
                 Feedback feedback = EXCEPTION_DICTIONARY.get(oAuth2Error.getErrorCode());
@@ -86,22 +97,20 @@ public class SecurityGlobalExceptionHandler {
                 result.detail(exception.getMessage());
                 return result;
             }
+        } else if (exception instanceof InternalAuthenticationServiceException internalAuthenticationServiceException) {
+            return handleAuthenticationException(internalAuthenticationServiceException, path);
+        } else if (exception instanceof InsufficientAuthenticationException insufficientAuthenticationException) {
+            return handleAuthenticationException(insufficientAuthenticationException, path);
         } else {
-            if (exception instanceof InternalAuthenticationServiceException) {
-                InternalAuthenticationServiceException internalAuthenticationServiceException = (InternalAuthenticationServiceException) exception;
-                return handleAuthenticationException(internalAuthenticationServiceException, path);
-            }
-            if (exception instanceof InsufficientAuthenticationException) {
-                InsufficientAuthenticationException insufficientAuthenticationException = (InsufficientAuthenticationException) exception;
-                return handleAuthenticationException(insufficientAuthenticationException, path);
-            }
             String exceptionName = exception.getClass().getSimpleName();
             if (StringUtils.isNotEmpty(exceptionName) && EXCEPTION_DICTIONARY.containsKey(exceptionName)) {
-                Feedback feedback2 = EXCEPTION_DICTIONARY.get(exceptionName);
-                return Result.failure(feedback2);
+                Feedback feedback = EXCEPTION_DICTIONARY.get(exceptionName);
+                return Result.failure(feedback);
+            } else {
+                reason = exception;
             }
-            reason = exception;
         }
+
         return resolveException(reason, path);
     }
 }

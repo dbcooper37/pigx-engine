@@ -2,11 +2,20 @@ package com.pigx.engine.oauth2.persistence.sas.jpa.generator;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
-/* loaded from: oauth2-module-persistence-jpa-3.5.7.0.jar:cn/herodotus/engine/oauth2/persistence/sas/jpa/generator/HerodotusAuthorizationConsentId.class */
+
 public class HerodotusAuthorizationConsentId implements Serializable {
+
+    /**
+     * 这里一定要注意：
+     * <p>
+     * 属性名：这里的属性名，一定要与中间表中，ManyToOne的属性名称一致
+     * 类型：虽然名称一致，但是类型可以不一致，此处的String类型，说明属性对应数据库字段的类型为String
+     */
     private String registeredClientId;
+
     private String principalName;
 
     public HerodotusAuthorizationConsentId() {
@@ -18,7 +27,7 @@ public class HerodotusAuthorizationConsentId implements Serializable {
     }
 
     public String getRegisteredClientId() {
-        return this.registeredClientId;
+        return registeredClientId;
     }
 
     public void setRegisteredClientId(String registeredClientId) {
@@ -26,13 +35,14 @@ public class HerodotusAuthorizationConsentId implements Serializable {
     }
 
     public String getPrincipalName() {
-        return this.principalName;
+        return principalName;
     }
 
     public void setPrincipalName(String principalName) {
         this.principalName = principalName;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -41,14 +51,19 @@ public class HerodotusAuthorizationConsentId implements Serializable {
             return false;
         }
         HerodotusAuthorizationConsentId that = (HerodotusAuthorizationConsentId) o;
-        return Objects.equal(this.registeredClientId, that.registeredClientId) && Objects.equal(this.principalName, that.principalName);
+        return Objects.equal(registeredClientId, that.registeredClientId) && Objects.equal(principalName, that.principalName);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.registeredClientId, this.principalName});
+        return Objects.hashCode(registeredClientId, principalName);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("registeredClientId", this.registeredClientId).add("principalName", this.principalName).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("registeredClientId", registeredClientId)
+                .add("principalName", principalName)
+                .toString();
     }
 }

@@ -1,24 +1,27 @@
-package com.pigx.engine.jetcache.enhance;
+package com.pigx.engine.cache.jetcache.enhance;
 
 import com.pigx.engine.cache.core.properties.CacheProperties;
 import com.pigx.engine.cache.core.properties.CacheSetting;
 import com.pigx.engine.core.definition.constant.SymbolConstants;
-import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 
-/* loaded from: cache-module-jetcache-3.5.7.0.jar:cn/herodotus/engine/cache/jetcache/enhance/HerodotusCacheManager.class */
+import java.util.Map;
+
+
 public class HerodotusCacheManager extends JetCacheSpringCacheManager {
+
     private static final Logger log = LoggerFactory.getLogger(HerodotusCacheManager.class);
+
     private final CacheProperties cacheProperties;
 
     public HerodotusCacheManager(JetCacheCreateCacheFactory jetCacheCreateCacheFactory, CacheProperties cacheProperties) {
         super(jetCacheCreateCacheFactory);
         this.cacheProperties = cacheProperties;
-        setAllowNullValues(cacheProperties.getAllowNullValues().booleanValue());
+        this.setAllowNullValues(cacheProperties.getAllowNullValues());
     }
 
     public HerodotusCacheManager(JetCacheCreateCacheFactory jetCacheCreateCacheFactory, CacheProperties cacheProperties, String... cacheNames) {
@@ -26,14 +29,14 @@ public class HerodotusCacheManager extends JetCacheSpringCacheManager {
         this.cacheProperties = cacheProperties;
     }
 
-    @Override // com.pigx.engine.cache.jetcache.enhance.JetCacheSpringCacheManager
+    @Override
     protected Cache createJetCache(String name) {
-        Map<String, CacheSetting> instances = this.cacheProperties.getInstances();
+        Map<String, CacheSetting> instances = cacheProperties.getInstances();
         if (MapUtils.isNotEmpty(instances)) {
-            String key = Strings.CS.replace(name, SymbolConstants.COLON, this.cacheProperties.getSeparator());
+            String key = Strings.CS.replace(name, SymbolConstants.COLON, cacheProperties.getSeparator());
             if (instances.containsKey(key)) {
                 CacheSetting cacheSetting = instances.get(key);
-                log.debug("[Herodotus] |- CACHE - Cache [{}] is set to use INSTANCE cache.", name);
+                log.debug("[PIGXD] |- CACHE - Cache [{}] is set to use INSTANCE cache.", name);
                 return super.createJetCache(name, cacheSetting);
             }
         }

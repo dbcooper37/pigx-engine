@@ -1,15 +1,10 @@
 package com.pigx.engine.oauth2.authentication.provider;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
-import com.pigx.engine.core.identity.constant.OAuth2ErrorKeys;
 import com.pigx.engine.core.identity.service.EnhanceUserDetailsService;
 import com.pigx.engine.oauth2.authentication.customizer.HerodotusGrantType;
 import com.pigx.engine.oauth2.authentication.utils.DPoPProofVerifier;
 import com.pigx.engine.oauth2.authentication.utils.OAuth2AuthenticationProviderUtils;
 import com.pigx.engine.oauth2.core.properties.OAuth2AuthenticationProperties;
-import java.security.Principal;
-import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,10 +15,8 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
-import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.core.*;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -38,14 +31,27 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.util.Assert;
 
-/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/provider/OAuth2ResourceOwnerPasswordAuthenticationProvider.class */
+import java.security.Principal;
+import java.util.Map;
+import java.util.Set;
+
+
 public class OAuth2ResourceOwnerPasswordAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+
     private static final Logger log = LoggerFactory.getLogger(OAuth2ResourceOwnerPasswordAuthenticationProvider.class);
+
     private static final String ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
+
     private final OAuth2AuthorizationService authorizationService;
     private final OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator;
     private SessionRegistry sessionRegistry;
 
+    /**
+     * Constructs an {@code OAuth2ClientCredentialsAuthenticationProvider} using the provided parameters.
+     *
+     * @param authorizationService the authorization service
+     * @param tokenGenerator       – the token generator
+     */
     public OAuth2ResourceOwnerPasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService, OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator, UserDetailsService userDetailsService, OAuth2AuthenticationProperties complianceProperties) {
         super(authorizationService, userDetailsService, complianceProperties);
         Assert.notNull(tokenGenerator, "tokenGenerator cannot be null");
@@ -53,76 +59,122 @@ public class OAuth2ResourceOwnerPasswordAuthenticationProvider extends AbstractU
         this.tokenGenerator = tokenGenerator;
     }
 
-    /* JADX INFO: Thrown type has an unknown type hierarchy: org.springframework.security.authentication.BadCredentialsException */
-    @Override // com.pigx.engine.oauth2.authentication.provider.AbstractUserDetailsAuthenticationProvider
-    protected void additionalAuthenticationChecks(UserDetails userDetails, Map<String, Object> additionalParameters) throws BadCredentialsException, AuthenticationException {
-        String presentedPassword = (String) additionalParameters.get(SystemConstants.PASSWORD);
-        if (!getPasswordEncoder().matches(presentedPassword, userDetails.getPassword())) {
-            log.debug("[Herodotus] |- Failed to authenticate since password does not match stored value");
+    @Override
+    protected void additionalAuthenticationChecks(UserDetails userDetails, Map<String, Object> additionalParameters) throws AuthenticationException {
+        String presentedPassword = (String) additionalParameters.get(OAuth2ParameterNames.PASSWORD);
+        if (!this.getPasswordEncoder().matches(presentedPassword, userDetails.getPassword())) {
+            log.debug("[PIGXD] |- Failed to authenticate since password does not match stored value");
             throw new BadCredentialsException("Bad credentials");
         }
     }
 
-    /* JADX INFO: Thrown type has an unknown type hierarchy: org.springframework.security.authentication.InternalAuthenticationServiceException */
-    /* JADX INFO: Thrown type has an unknown type hierarchy: org.springframework.security.core.userdetails.UsernameNotFoundException */
-    @Override // com.pigx.engine.oauth2.authentication.provider.AbstractUserDetailsAuthenticationProvider
-    protected UserDetails retrieveUser(Map<String, Object> additionalParameters) throws UsernameNotFoundException, InternalAuthenticationServiceException, AuthenticationException {
-        String username = (String) additionalParameters.get(SystemConstants.USERNAME);
+    @Override
+    protected UserDetails retrieveUser(Map<String, Object> additionalParameters) throws AuthenticationException {
+        String username = (String) additionalParameters.get(OAuth2ParameterNames.USERNAME);
+
         try {
             EnhanceUserDetailsService enhanceUserDetailsService = getUserDetailsService();
             UserDetails userDetails = enhanceUserDetailsService.loadUserByUsername(username);
             if (userDetails == null) {
-                throw new InternalAuthenticationServiceException("UserDetailsService returned null, which is an interface contract violation");
+                throw new InternalAuthenticationServiceException(
+                        "UserDetailsService returned null, which is an interface contract violation");
             }
             return userDetails;
+        } catch (UsernameNotFoundException ex) {
+            log.error("[PIGXD] |- User name can not found ：[{}]", username);
+            throw ex;
         } catch (InternalAuthenticationServiceException ex) {
             throw ex;
-        } catch (Exception ex2) {
-            throw new InternalAuthenticationServiceException(ex2.getMessage(), ex2);
-        } catch (UsernameNotFoundException ex3) {
-            log.error("[Herodotus] |- User name can not found ：[{}]", username);
-            throw ex3;
+        } catch (Exception ex) {
+            throw new InternalAuthenticationServiceException(ex.getMessage(), ex);
         }
     }
 
-    /* JADX INFO: Thrown type has an unknown type hierarchy: org.springframework.security.oauth2.core.OAuth2AuthenticationException */
-    public Authentication authenticate(Authentication authentication) throws OAuth2AuthenticationException, AuthenticationException {
-        OAuth2ResourceOwnerPasswordAuthenticationToken resourceOwnerPasswordAuthentication = (OAuth2ResourceOwnerPasswordAuthenticationToken) authentication;
-        OAuth2ClientAuthenticationToken clientPrincipal = OAuth2AuthenticationProviderUtils.getAuthenticatedClientElseThrowInvalidClient(resourceOwnerPasswordAuthentication);
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        OAuth2ResourceOwnerPasswordAuthenticationToken resourceOwnerPasswordAuthentication =
+                (OAuth2ResourceOwnerPasswordAuthenticationToken) authentication;
+
+        OAuth2ClientAuthenticationToken clientPrincipal =
+                OAuth2AuthenticationProviderUtils.getAuthenticatedClientElseThrowInvalidClient(resourceOwnerPasswordAuthentication);
         RegisteredClient registeredClient = clientPrincipal.getRegisteredClient();
+
         if (!registeredClient.getAuthorizationGrantTypes().contains(HerodotusGrantType.PASSWORD)) {
-            throw new OAuth2AuthenticationException(OAuth2ErrorKeys.UNAUTHORIZED_CLIENT);
+            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT);
         }
+
+        // Verify the DPoP Proof (if available)
         Jwt dPoPProof = DPoPProofVerifier.verifyIfAvailable(resourceOwnerPasswordAuthentication);
+
         if (log.isTraceEnabled()) {
             log.trace("Validated token request parameters");
         }
+
         Authentication principal = getUsernamePasswordAuthentication(resourceOwnerPasswordAuthentication.getAdditionalParameters(), registeredClient.getId());
+
+        // Default to configured scopes
         Set<String> authorizedScopes = validateScopes(resourceOwnerPasswordAuthentication.getScopes(), registeredClient);
-        OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization.withRegisteredClient(registeredClient).principalName(principal.getName()).authorizationGrantType(HerodotusGrantType.PASSWORD).authorizedScopes(authorizedScopes).attribute(Principal.class.getName(), principal);
-        DefaultOAuth2TokenContext.Builder tokenContextBuilder = (DefaultOAuth2TokenContext.Builder) DefaultOAuth2TokenContext.builder().registeredClient(registeredClient).principal(principal).authorizationServerContext(AuthorizationServerContextHolder.getContext()).authorizedScopes(authorizedScopes).tokenType(OAuth2TokenType.ACCESS_TOKEN).authorizationGrantType(HerodotusGrantType.PASSWORD).authorizationGrant(resourceOwnerPasswordAuthentication);
+
+        OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization.withRegisteredClient(registeredClient)
+                .principalName(principal.getName())
+                .authorizationGrantType(HerodotusGrantType.PASSWORD)
+                .authorizedScopes(authorizedScopes)
+                .attribute(Principal.class.getName(), principal);
+
+        // @formatter:off
+        DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
+                .registeredClient(registeredClient)
+                .principal(principal)
+                .authorizationServerContext(AuthorizationServerContextHolder.getContext())
+                .authorizedScopes(authorizedScopes)
+                .tokenType(OAuth2TokenType.ACCESS_TOKEN)
+                .authorizationGrantType(HerodotusGrantType.PASSWORD)
+                .authorizationGrant(resourceOwnerPasswordAuthentication);
+        // @formatter:on
+
         if (dPoPProof != null) {
             tokenContextBuilder.put(OAuth2TokenContext.DPOP_PROOF_KEY, dPoPProof);
         }
-        OAuth2AccessToken accessToken = createOAuth2AccessToken(tokenContextBuilder, authorizationBuilder, this.tokenGenerator, "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2");
-        OAuth2RefreshToken refreshToken = creatOAuth2RefreshToken(tokenContextBuilder, authorizationBuilder, this.tokenGenerator, "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2", clientPrincipal, registeredClient);
-        OidcIdToken idToken = createOidcIdToken(principal, this.sessionRegistry, tokenContextBuilder, authorizationBuilder, this.tokenGenerator, "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2", resourceOwnerPasswordAuthentication.getScopes());
+
+        // ----- Access token -----
+        OAuth2AccessToken accessToken = createOAuth2AccessToken(tokenContextBuilder, authorizationBuilder, this.tokenGenerator, ERROR_URI);
+
+        // ----- Refresh token -----
+        OAuth2RefreshToken refreshToken = creatOAuth2RefreshToken(tokenContextBuilder, authorizationBuilder, this.tokenGenerator, ERROR_URI, clientPrincipal, registeredClient);
+
+        // ----- ID token -----
+        OidcIdToken idToken = createOidcIdToken(principal, sessionRegistry, tokenContextBuilder, authorizationBuilder, this.tokenGenerator, ERROR_URI, resourceOwnerPasswordAuthentication.getScopes());
+
         OAuth2Authorization authorization = authorizationBuilder.build();
+
         this.authorizationService.save(authorization);
-        log.debug("[Herodotus] |- Resource Owner Password returning OAuth2AccessTokenAuthenticationToken.");
+
+        log.debug("[PIGXD] |- Resource Owner Password returning OAuth2AccessTokenAuthenticationToken.");
+
         Map<String, Object> additionalParameters = idTokenAdditionalParameters(idToken);
-        OAuth2AccessTokenAuthenticationToken accessTokenAuthenticationToken = new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);
+
+        OAuth2AccessTokenAuthenticationToken accessTokenAuthenticationToken = new OAuth2AccessTokenAuthenticationToken(
+                registeredClient, clientPrincipal, accessToken, refreshToken, additionalParameters);
         return createOAuth2AccessTokenAuthenticationToken(principal, accessTokenAuthenticationToken);
     }
 
+    /**
+     * Sets the {@link SessionRegistry} used to track OpenID Connect sessions.
+     *
+     * @param sessionRegistry the {@link SessionRegistry} used to track OpenID Connect sessions
+     * @since 1.1.1
+     */
     public void setSessionRegistry(SessionRegistry sessionRegistry) {
         Assert.notNull(sessionRegistry, "sessionRegistry cannot be null");
         this.sessionRegistry = sessionRegistry;
     }
 
+    @Override
     public boolean supports(Class<?> authentication) {
         boolean supports = OAuth2ResourceOwnerPasswordAuthenticationToken.class.isAssignableFrom(authentication);
-        log.trace("[Herodotus] |- Resource Owner Password Authentication is supports! [{}]", Boolean.valueOf(supports));
+        log.trace("[PIGXD] |- Resource Owner Password Authentication is supports! [{}]", supports);
         return supports;
     }
+
+
 }

@@ -3,29 +3,31 @@ package com.pigx.engine.core.foundation.enums;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.ImmutableMap;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Schema(
-        name = "验证码类别"
-)
-@JsonFormat(
-        shape = JsonFormat.Shape.OBJECT
-)
+
+@Schema(name = "验证码类别")
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum CaptchaCategory {
-    JIGSAW("JIGSAW", "滑块拼图验证码"),
-    WORD_CLICK("WORD_CLICK", "文字点选验证码"),
-    ARITHMETIC("ARITHMETIC", "算数类型验证码"),
-    CHINESE("CHINESE", "中文类型验证码"),
-    CHINESE_GIF("CHINESE_GIF", "中文GIF类型验证码"),
-    SPEC_GIF("SPEC_GIF", "GIF类型验证码"),
-    SPEC("SPEC", "PNG类型验证码"),
-    HUTOOL_LINE("HUTOOL_LINE", "Hutool线段干扰验证码"),
-    HUTOOL_CIRCLE("HUTOOL_CIRCLE", "Hutool圆圈干扰验证码"),
-    HUTOOL_SHEAR("HUTOOL_SHEAR", "Hutool扭曲干扰验证码"),
-    HUTOOL_GIF("HUTOOL_GIF", "Hutool GIF验证码");
+
+    /**
+     * 验证码类别
+     */
+    JIGSAW(CaptchaCategory.JIGSAW_CAPTCHA, "滑块拼图验证码"),
+    WORD_CLICK(CaptchaCategory.WORD_CLICK_CAPTCHA, "文字点选验证码"),
+    ARITHMETIC(CaptchaCategory.ARITHMETIC_CAPTCHA, "算数类型验证码"),
+    CHINESE(CaptchaCategory.CHINESE_CAPTCHA, "中文类型验证码"),
+    CHINESE_GIF(CaptchaCategory.CHINESE_GIF_CAPTCHA, "中文GIF类型验证码"),
+    SPEC_GIF(CaptchaCategory.SPEC_GIF_CAPTCHA, "GIF类型验证码"),
+    SPEC(CaptchaCategory.SPEC_CAPTCHA, "PNG类型验证码"),
+    HUTOOL_LINE(CaptchaCategory.HUTOOL_LINE_CAPTCHA, "Hutool线段干扰验证码"),
+    HUTOOL_CIRCLE(CaptchaCategory.HUTOOL_CIRCLE_CAPTCHA, "Hutool圆圈干扰验证码"),
+    HUTOOL_SHEAR(CaptchaCategory.HUTOOL_SHEAR_CAPTCHA, "Hutool扭曲干扰验证码"),
+    HUTOOL_GIF(CaptchaCategory.HUTOOL_GIF_CAPTCHA, "Hutool GIF验证码");
 
     public static final String JIGSAW_CAPTCHA = "JIGSAW";
     public static final String WORD_CLICK_CAPTCHA = "WORD_CLICK";
@@ -38,43 +40,45 @@ public enum CaptchaCategory {
     public static final String HUTOOL_CIRCLE_CAPTCHA = "HUTOOL_CIRCLE";
     public static final String HUTOOL_SHEAR_CAPTCHA = "HUTOOL_SHEAR";
     public static final String HUTOOL_GIF_CAPTCHA = "HUTOOL_GIF";
-    private static final Map<String, CaptchaCategory> INDEX_MAP = new HashMap();
-    private static final List<ImmutableMap<Object, Object>> JSON_STRUCT = new ArrayList();
-    @Schema(
-            name = "常量值"
-    )
+
+    private static final Map<String, CaptchaCategory> INDEX_MAP = new HashMap<>();
+    private static final List<Map<String, Object>> JSON_STRUCT = new ArrayList<>();
+
+    static {
+        for (CaptchaCategory captchaCategory : CaptchaCategory.values()) {
+            INDEX_MAP.put(captchaCategory.getConstant(), captchaCategory);
+            JSON_STRUCT.add(captchaCategory.ordinal(),
+                    ImmutableMap.<String, Object>builder()
+                            .put("value", captchaCategory.ordinal())
+                            .put("key", captchaCategory.name())
+                            .put("text", captchaCategory.getDescription())
+                            .build());
+        }
+    }
+
+    @Schema(name = "常量值")
     private final String constant;
-    @Schema(
-            name = "文字"
-    )
+    @Schema(name = "文字")
     private final String description;
 
-    private CaptchaCategory(String constant, String description) {
+    CaptchaCategory(String constant, String description) {
         this.constant = constant;
         this.description = description;
     }
 
     public static CaptchaCategory getCaptchaCategory(String name) {
-        return (CaptchaCategory)INDEX_MAP.get(name);
+        return INDEX_MAP.get(name);
     }
 
-    public static List<ImmutableMap<Object, Object>> getJsonStruct() {
+    public static List<Map<String, Object>> getJsonStruct() {
         return JSON_STRUCT;
     }
 
     public String getConstant() {
-        return this.constant;
+        return constant;
     }
 
     public String getDescription() {
-        return this.description;
-    }
-
-    static {
-        for(CaptchaCategory captchaCategory : values()) {
-            INDEX_MAP.put(captchaCategory.getConstant(), captchaCategory);
-            JSON_STRUCT.add(captchaCategory.ordinal(), ImmutableMap.builder().put("value", captchaCategory.ordinal()).put("key", captchaCategory.name()).put("text", captchaCategory.getDescription()).build());
-        }
-
+        return description;
     }
 }

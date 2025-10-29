@@ -8,11 +8,7 @@ import com.pigx.engine.logic.message.entity.DialogueDetail;
 import com.pigx.engine.logic.message.entity.Notification;
 import com.pigx.engine.logic.message.enums.NotificationCategory;
 import com.pigx.engine.logic.message.repository.DialogueDetailRepository;
-import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
-import java.lang.invoke.SerializedLambda;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -22,32 +18,17 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 @Service
-/* loaded from: logic-module-message-3.5.7.0.jar:cn/herodotus/engine/logic/message/service/DialogueDetailService.class */
 public class DialogueDetailService extends AbstractJpaService<DialogueDetail, String> {
+
     private final DialogueDetailRepository dialogueDetailRepository;
     private final DialogueContactService dialogueContactService;
     private final DialogueService dialogueService;
     private final NotificationService notificationService;
-
-    private static /* synthetic */ Object $deserializeLambda$(SerializedLambda lambda) {
-        switch (lambda.getImplMethodName()) {
-            case "lambda$findByCondition$3e1ef908$1":
-                if (lambda.getImplMethodKind() == 6 && lambda.getFunctionalInterfaceClass().equals("org/springframework/data/jpa/domain/Specification") && lambda.getFunctionalInterfaceMethodName().equals("toPredicate") && lambda.getFunctionalInterfaceMethodSignature().equals("(Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;") && lambda.getImplClass().equals("cn/herodotus/engine/logic/message/service/DialogueDetailService") && lambda.getImplMethodSignature().equals("(Ljava/lang/String;Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;")) {
-                    String str = (String) lambda.getCapturedArg(0);
-                    return (root, criteriaQuery, criteriaBuilder) -> {
-                        List<Predicate> predicates = new ArrayList<>();
-                        predicates.add(criteriaBuilder.equal(root.get("dialogueId"), str));
-                        Predicate[] predicateArray = new Predicate[predicates.size()];
-                        criteriaQuery.where(criteriaBuilder.and((Predicate[]) predicates.toArray(predicateArray)));
-                        criteriaQuery.orderBy(new Order[]{criteriaBuilder.desc(root.get("createTime"))});
-                        return criteriaQuery.getRestriction();
-                    };
-                }
-                break;
-        }
-        throw new IllegalArgumentException("Invalid lambda deserialization");
-    }
 
     public DialogueDetailService(DialogueDetailRepository dialogueDetailRepository, DialogueContactService dialogueContactService, DialogueService dialogueService, NotificationService notificationService) {
         this.dialogueDetailRepository = dialogueDetailRepository;
@@ -56,9 +37,9 @@ public class DialogueDetailService extends AbstractJpaService<DialogueDetail, St
         this.notificationService = notificationService;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaReadableService
+    @Override
     public BaseJpaRepository<DialogueDetail, String> getRepository() {
-        return this.dialogueDetailRepository;
+        return dialogueDetailRepository;
     }
 
     private Notification convertDialogueDetailToNotification(DialogueDetail dialogueDetail) {
@@ -72,44 +53,69 @@ public class DialogueDetailService extends AbstractJpaService<DialogueDetail, St
         return notification;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaWriteableService, com.pigx.engine.data.core.service.BaseService
+    /**
+     * 借鉴 Gitee 的私信设计
+     * 1. 每个人都可以查看与自己有过私信往来的用户列表。自己可以查看与自己有过联系的人，对方也可以查看与自己有过联系的人
+     * 2. 私信往来用户列表中，显示最新一条对话的内容
+     * 3. 点开某一个用户，可以查看具体的对话详情。自己和私信对话用户看到的内容一致。
+     * <p>
+     * PersonalContact 存储私信双方的关系，存储两条。以及和对话的关联
+     * PersonalDialogue 是一个桥梁连接 PersonalContact 和 PersonalDialogueDetail，同时存储一份最新对话副本
+     * <p>
+     * 本处的逻辑：
+     * 发送私信时，首先要判断是否已经创建了 Dialogue
+     * 1. 如果没有创建 Dialogue，就是私信双方第一对话，那么要先创建 Dialogue，同时要建立私信双方的联系 Contact。保存的私信与将生成好的 DialogueId进行关联。
+     * 2. 如果已经有Dialogue，那么就直接保存私信对话，同时更新 Dialogue 中的最新信息。
+     *
+     * @param domain 数据对应实体
+     * @return {@link DialogueDetail}
+     */
     @Transactional
+    @Override
     public DialogueDetail save(DialogueDetail domain) {
+
         if (StringUtils.isBlank(domain.getDialogueId())) {
-            DialogueContact dialogueContact = this.dialogueContactService.findBySenderIdAndReceiverId(domain.getSenderId(), domain.getReceiverId());
+            DialogueContact dialogueContact = dialogueContactService.findBySenderIdAndReceiverId(domain.getSenderId(), domain.getReceiverId());
             if (ObjectUtils.isNotEmpty(dialogueContact) && ObjectUtils.isNotEmpty(dialogueContact.getDialogue())) {
                 String dialogueId = dialogueContact.getDialogue().getDialogueId();
                 domain.setDialogueId(dialogueId);
-                this.dialogueService.updateDialogue(dialogueId, domain.getContent());
+                dialogueService.updateDialogue(dialogueId, domain.getContent());
             } else {
-                Dialogue dialogue = this.dialogueService.createDialogue(domain.getContent());
+                Dialogue dialogue = dialogueService.createDialogue(domain.getContent());
                 domain.setDialogueId(dialogue.getDialogueId());
-                this.dialogueContactService.createContact(dialogue, domain);
+                dialogueContactService.createContact(dialogue, domain);
             }
         } else {
-            this.dialogueService.updateDialogue(domain.getDialogueId(), domain.getContent());
+            dialogueService.updateDialogue(domain.getDialogueId(), domain.getContent());
         }
-        this.notificationService.save(convertDialogueDetailToNotification(domain));
-        return (DialogueDetail) super.save((DialogueDetailService) domain);
+
+        notificationService.save(convertDialogueDetailToNotification(domain));
+
+        return super.save(domain);
     }
 
     @Transactional
     public void deleteDialogueById(String dialogueId) {
-        this.dialogueContactService.deleteByDialogueId(dialogueId);
-        this.dialogueService.deleteById(dialogueId);
-        this.dialogueDetailRepository.deleteAllByDialogueId(dialogueId);
+        dialogueContactService.deleteByDialogueId(dialogueId);
+        dialogueService.deleteById(dialogueId);
+        dialogueDetailRepository.deleteAllByDialogueId(dialogueId);
     }
 
     public Page<DialogueDetail> findByCondition(int pageNumber, int pageSize, String dialogueId) {
-        PageRequest pageRequestOf = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
         Specification<DialogueDetail> specification = (root, criteriaQuery, criteriaBuilder) -> {
+
             List<Predicate> predicates = new ArrayList<>();
+
             predicates.add(criteriaBuilder.equal(root.get("dialogueId"), dialogueId));
+
             Predicate[] predicateArray = new Predicate[predicates.size()];
-            criteriaQuery.where(criteriaBuilder.and((Predicate[]) predicates.toArray(predicateArray)));
-            criteriaQuery.orderBy(new Order[]{criteriaBuilder.desc(root.get("createTime"))});
+            criteriaQuery.where(criteriaBuilder.and(predicates.toArray(predicateArray)));
+            criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createTime")));
             return criteriaQuery.getRestriction();
         };
-        return findByPage((Specification) specification, (Pageable) pageRequestOf);
+
+        return this.findByPage(specification, pageable);
     }
 }

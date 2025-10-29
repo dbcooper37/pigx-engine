@@ -27,5 +27,9 @@
             <groupId>com.pigx.engine</groupId>
             <artifactId>cache-module-jetcache</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>web-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

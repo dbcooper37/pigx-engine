@@ -1,19 +1,27 @@
 package com.pigx.engine.web.core.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import org.springframework.web.bind.annotation.Mapping;
 
+import java.lang.annotation.*;
+
+
 @Target({ElementType.TYPE, ElementType.METHOD})
-@Mapping
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/annotation/Crypto.class */
+@Mapping
 public @interface Crypto {
+
+    /**
+     * 请求参数记否解密，默认值 true
+     *
+     * @return true 请求参数解密；false 请求参数不解密
+     */
     boolean requestDecrypt() default true;
 
+    /**
+     * 响应体是否加密，默认值 true
+     *
+     * @return true 响应体加密；false 响应体不加密
+     */
     boolean responseEncrypt() default true;
 }

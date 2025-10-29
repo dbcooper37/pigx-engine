@@ -1,5 +1,6 @@
 package com.pigx.engine.oauth2.authorization.autoconfigure.processor;
 
+import com.google.common.collect.ImmutableList;
 import com.pigx.engine.core.foundation.context.ServiceContextHolder;
 import com.pigx.engine.core.foundation.founction.ListConverter;
 import com.pigx.engine.core.identity.domain.AttributeTransmitter;
@@ -14,23 +15,23 @@ import com.pigx.engine.message.core.domain.RestMapping;
 import com.pigx.engine.message.core.event.ApplicationReadinessEvent;
 import com.pigx.engine.oauth2.authorization.autoconfigure.bus.RemoteAttributeTransmitterSyncEvent;
 import com.pigx.engine.oauth2.authorization.processor.SecurityAttributeAnalyzer;
-import com.google.common.collect.ImmutableList;
-import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/* JADX WARN: Classes with same name are omitted:
-  
- */
+import java.util.List;
+
+
 @Component
-/* loaded from: oauth2-authorization-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authorization/autoconfigure/processor/AttributeTransmitterDistributeProcessor.class */
 public class AttributeTransmitterDistributeProcessor implements StrategyEventManager<List<AttributeTransmitter>> {
+
     private static final Logger log = LoggerFactory.getLogger(AttributeTransmitterDistributeProcessor.class);
-    private final ListConverter<SysInterface, SysAttribute> toSysAttributes = new SysInterfacesToSysAttributesConverter();
-    private final ListConverter<SysAttribute, AttributeTransmitter> toTransmitters = new SysAttributeToAttributeTransmitterConverter();
+
+    private final ListConverter<SysInterface, SysAttribute> toSysAttributes;
+    private final ListConverter<SysAttribute, AttributeTransmitter> toTransmitters;
+
     private final SysAttributeService sysAttributeService;
     private final SysInterfaceService sysInterfaceService;
     private final SecurityAttributeAnalyzer securityAttributeAnalyzer;
@@ -39,58 +40,82 @@ public class AttributeTransmitterDistributeProcessor implements StrategyEventMan
         this.sysAttributeService = sysAttributeService;
         this.sysInterfaceService = sysInterfaceService;
         this.securityAttributeAnalyzer = securityAttributeAnalyzer;
+        this.toSysAttributes = new SysInterfacesToSysAttributesConverter();
+        this.toTransmitters = new SysAttributeToAttributeTransmitterConverter();
     }
 
-    @Override // com.pigx.engine.message.core.definition.strategy.StrategyEventManager
+    /**
+     * UPMS 服务既要处理各个服务权限数据的分发，也要处理自身服务权限数据
+     *
+     * @param data 事件携带数据
+     */
+    @Override
     public void postLocalProcess(List<AttributeTransmitter> data) {
-        this.securityAttributeAnalyzer.processAttributeTransmitters(data);
+        securityAttributeAnalyzer.processAttributeTransmitters(data);
     }
 
-    @Override // com.pigx.engine.message.core.definition.strategy.StrategyEventManager
+    @Override
     public void postRemoteProcess(String data, String originService, String destinationService) {
         publishEvent(new RemoteAttributeTransmitterSyncEvent(data, originService, destinationService));
     }
 
-    @Transactional(rollbackFor = {Exception.class})
+    /**
+     * 将SysAuthority表中存在，但是SysSecurityAttribute中不存在的数据同步至SysSecurityAttribute，保证两侧数据一致
+     */
+    @Transactional(rollbackFor = Exception.class)
     public void postRestMappings(List<RestMapping> restMappings) {
-        List<SysInterface> storedInterfaces = this.sysInterfaceService.storeRequestMappings(restMappings);
+
+        // 将各个服务发送回来的 requestMappings 存储到 SysInterface 中
+        List<SysInterface> storedInterfaces = sysInterfaceService.storeRequestMappings(restMappings);
+
         if (CollectionUtils.isNotEmpty(storedInterfaces)) {
-            log.debug("[Herodotus] |- [R5] Request mapping store success, start to merge security metadata!");
-            List<SysInterface> sysInterfaces = this.sysInterfaceService.findAllocatable();
+            log.debug("[PIGXD] |- [R5] Request mapping store success, start to merge security metadata!");
+
+            // 查询将新增的 SysInterface，将其转存到 SysAttribute 中
+            List<SysInterface> sysInterfaces = sysInterfaceService.findAllocatable();
             if (CollectionUtils.isNotEmpty(sysInterfaces)) {
-                List<SysAttribute> elements = this.toSysAttributes.convert(sysInterfaces);
-                if (CollectionUtils.isNotEmpty(this.sysAttributeService.saveAllAndFlush(elements))) {
-                    log.debug("[Herodotus] |- Merge security attribute SUCCESS and FINISHED!");
+                List<SysAttribute> elements = toSysAttributes.convert(sysInterfaces);
+                List<SysAttribute> result = sysAttributeService.saveAllAndFlush(elements);
+                if (CollectionUtils.isNotEmpty(result)) {
+                    log.debug("[PIGXD] |- Merge security attribute SUCCESS and FINISHED!");
                 } else {
-                    log.error("[Herodotus] |- Merge Security attribute failed!, Please Check!");
+                    log.error("[PIGXD] |- Merge Security attribute failed!, Please Check!");
                 }
             } else {
-                log.debug("[Herodotus] |- No security attribute requires merge, SKIP!");
+                log.debug("[PIGXD] |- No security attribute requires merge, SKIP!");
             }
+
+            // 执行权限数据分发
             distributeServiceSecurityAttributes(storedInterfaces);
+
             if (!ServiceContextHolder.isDistributedArchitecture()) {
                 publishEvent(new ApplicationReadinessEvent("Attribute Transmitter Distribute Success"));
             }
+//
+//            List<SysAttribute> sysAttributes = sysAttributeService.findAll();
+//            this.postGroupProcess(sysAttributes);
         }
     }
 
     private void distributeServiceSecurityAttributes(List<SysInterface> storedInterfaces) {
-        storedInterfaces.stream().findAny().map((v0) -> {
-            return v0.getServiceId();
-        }).ifPresent(this::distributionToService);
+        // 每次处理都是只针对一个服务，所以该组数据 serviceId 肯定都相同
+        storedInterfaces.stream()
+                .findAny()
+                .map(SysInterface::getServiceId)
+                .ifPresent(this::distributionToService);
     }
 
     public void distributionToService(String serviceId) {
-        List<SysAttribute> sysAttributes = this.sysAttributeService.findAllByServiceId(serviceId);
+        List<SysAttribute> sysAttributes = sysAttributeService.findAllByServiceId(serviceId);
         if (CollectionUtils.isNotEmpty(sysAttributes)) {
-            List<AttributeTransmitter> attributeTransmitters = this.toTransmitters.convert(sysAttributes);
-            log.debug("[Herodotus] |- [R6] Synchronization permissions to service [{}]", serviceId);
-            postProcess(serviceId, attributeTransmitters);
+            List<AttributeTransmitter> attributeTransmitters = toTransmitters.convert(sysAttributes);
+            log.debug("[PIGXD] |- [R6] Synchronization permissions to service [{}]", serviceId);
+            this.postProcess(serviceId, attributeTransmitters);
         }
     }
 
     public void distributeChangedSecurityAttribute(SysAttribute sysAttribute) {
-        AttributeTransmitter attributeTransmitter = this.toTransmitters.from(sysAttribute);
+        AttributeTransmitter attributeTransmitter = toTransmitters.from(sysAttribute);
         postProcess(attributeTransmitter.getServiceId(), ImmutableList.of(attributeTransmitter));
     }
 }

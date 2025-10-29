@@ -12,8 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
 
-/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/configurer/OAuth2FormLoginSecureConfigurer.class */
+
 public class OAuth2FormLoginSecureConfigurer<H extends HttpSecurityBuilder<H>> extends AbstractHttpConfigurer<OAuth2FormLoginSecureConfigurer<H>, H> {
+
     private final UserDetailsService userDetailsService;
     private final OAuth2AuthenticationProperties authenticationProperties;
     private final CaptchaRendererFactory captchaRendererFactory;
@@ -26,26 +27,33 @@ public class OAuth2FormLoginSecureConfigurer<H extends HttpSecurityBuilder<H>> e
         this.httpCryptoProcessor = httpCryptoProcessor;
     }
 
+    @Override
     public void configure(H httpSecurity) throws Exception {
-        AuthenticationManager authenticationManager = (AuthenticationManager) httpSecurity.getSharedObject(AuthenticationManager.class);
-        SecurityContextRepository securityContextRepository = (SecurityContextRepository) httpSecurity.getSharedObject(SecurityContextRepository.class);
+
+        AuthenticationManager authenticationManager = httpSecurity.getSharedObject(AuthenticationManager.class);
+        SecurityContextRepository securityContextRepository = httpSecurity.getSharedObject(SecurityContextRepository.class);
+
         OAuth2FormLoginAuthenticationFilter filter = getOAuth2FormLoginAuthenticationFilter(authenticationManager, this.httpCryptoProcessor, securityContextRepository);
-        OAuth2FormLoginAuthenticationProvider provider = new OAuth2FormLoginAuthenticationProvider(this.captchaRendererFactory, this.userDetailsService);
+
+        OAuth2FormLoginAuthenticationProvider provider = new OAuth2FormLoginAuthenticationProvider(captchaRendererFactory, userDetailsService);
         provider.setHideUserNotFoundExceptions(false);
-        httpSecurity.authenticationProvider(provider).addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+
+        httpSecurity
+                .authenticationProvider(provider)
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
     }
 
     private OAuth2FormLoginAuthenticationFilter getOAuth2FormLoginAuthenticationFilter(AuthenticationManager authenticationManager, HttpCryptoProcessor httpCryptoProcessor, SecurityContextRepository securityContextRepository) {
         OAuth2FormLoginAuthenticationFilter filter = new OAuth2FormLoginAuthenticationFilter(authenticationManager, httpCryptoProcessor);
         filter.setUsernameParameter(getFormLogin().getUsernameParameter());
         filter.setPasswordParameter(getFormLogin().getPasswordParameter());
-        filter.setAuthenticationDetailsSource(new OAuth2FormLoginWebAuthenticationDetailSource(this.authenticationProperties, httpCryptoProcessor));
+        filter.setAuthenticationDetailsSource(new OAuth2FormLoginWebAuthenticationDetailSource(authenticationProperties, httpCryptoProcessor));
         filter.setAuthenticationFailureHandler(new OAuth2FormLoginAuthenticationFailureHandler(getFormLogin().getFailureUrl()));
         filter.setSecurityContextRepository(securityContextRepository);
         return filter;
     }
 
     private OAuth2AuthenticationProperties.FormLogin getFormLogin() {
-        return this.authenticationProperties.getFormLogin();
+        return authenticationProperties.getFormLogin();
     }
 }

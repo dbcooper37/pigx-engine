@@ -1,8 +1,20 @@
 package com.pigx.engine.assistant.access.definition.enums;
 
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/definition/enums/MiniProgramState.class */
+
 public enum MiniProgramState {
+
+    /**
+     * 开发版
+     */
     developer,
+
+    /**
+     * 体验版
+     */
     trial,
-    formal
+
+    /**
+     * 正式版
+     */
+    formal;
 }

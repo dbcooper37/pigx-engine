@@ -3,14 +3,17 @@ package com.pigx.engine.logic.upms.repository.security;
 import com.pigx.engine.data.core.jpa.repository.BaseJpaRepository;
 import com.pigx.engine.logic.upms.entity.security.SysAttribute;
 import jakarta.persistence.QueryHint;
-import java.util.List;
+import org.hibernate.jpa.AvailableHints;
 import org.springframework.data.jpa.repository.QueryHints;
 
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/repository/security/SysAttributeRepository.class */
+import java.util.List;
+
+
 public interface SysAttributeRepository extends BaseJpaRepository<SysAttribute, String> {
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     List<SysAttribute> findByAttributeIdIn(List<String> ids);
 
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     List<SysAttribute> findAllByServiceId(String serviceId);
 }

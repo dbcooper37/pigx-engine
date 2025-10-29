@@ -12,7 +12,7 @@
 
     <packaging>pom</packaging>
 
-    <description>Dante Cloud 微服务基座组件库自动配置 Starters 分组</description>
+    <description>PigX Cloud 微服务基座组件库自动配置 Starters 分组</description>
 
     <modules>
         <module>cache-spring-boot-starter</module>
@@ -28,5 +28,8 @@
         <module>servlet-message-spring-boot-starter</module>
         <module>webmvc-spring-boot-starter</module>
         <module>facility-kafka-spring-boot-starter</module>
+        <module>oss-minio-spring-boot-starter</module>
+        <module>oss-s3-spring-boot-starter</module>
+        <module>oss-spring-boot-starter</module>
     </modules>
 </project>

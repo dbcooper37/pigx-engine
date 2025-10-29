@@ -1,13 +1,12 @@
 package com.pigx.engine.rest.servlet.upms.dto;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
-import com.pigx.engine.core.definition.domain.AbstractDto;
 import com.google.common.base.MoreObjects;
+import com.pigx.engine.core.definition.domain.AbstractDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
+
 @Schema(description = "删除人员归属参数BO对象")
-/* loaded from: rest-module-servlet-upms-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/upms/dto/AllocatableRemove.class */
 public class AllocatableRemove extends AbstractDto {
 
     @NotNull(message = "单位ID不能为空")
@@ -23,7 +22,7 @@ public class AllocatableRemove extends AbstractDto {
     private String employeeId;
 
     public String getOrganizationId() {
-        return this.organizationId;
+        return organizationId;
     }
 
     public void setOrganizationId(String organizationId) {
@@ -31,7 +30,7 @@ public class AllocatableRemove extends AbstractDto {
     }
 
     public String getDepartmentId() {
-        return this.departmentId;
+        return departmentId;
     }
 
     public void setDepartmentId(String departmentId) {
@@ -39,14 +38,19 @@ public class AllocatableRemove extends AbstractDto {
     }
 
     public String getEmployeeId() {
-        return this.employeeId;
+        return employeeId;
     }
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("organizationId", this.organizationId).add("departmentId", this.departmentId).add(SystemConstants.EMPLOYEE_ID, this.employeeId).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("organizationId", organizationId)
+                .add("departmentId", departmentId)
+                .add("employeeId", employeeId)
+                .toString();
     }
 }

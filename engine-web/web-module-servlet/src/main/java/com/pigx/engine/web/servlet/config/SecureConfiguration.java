@@ -13,39 +13,40 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration(proxyBeanMethods = false)
-/* loaded from: web-module-servlet-3.5.7.0.jar:cn/herodotus/engine/web/servlet/config/SecureConfiguration.class */
 public class SecureConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(SecureConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Servlet Secure] Configure.");
+        log.debug("[PIGXD] |- Module [Servlet Secure] Configure.");
     }
 
-    @ConditionalOnMissingBean
-    @ConditionalOnBean({IdempotentStampManager.class})
     @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(IdempotentStampManager.class)
     public IdempotentInterceptor idempotentInterceptor(IdempotentStampManager idempotentStampManager) {
         IdempotentInterceptor interceptor = new IdempotentInterceptor(idempotentStampManager);
-        log.trace("[Herodotus] |- Bean [Idempotent Interceptor] Configure.");
+        log.trace("[PIGXD] |- Bean [Idempotent Interceptor] Configure.");
         return interceptor;
     }
 
-    @ConditionalOnMissingBean
-    @ConditionalOnBean({AccessLimitedStampManager.class})
     @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(AccessLimitedStampManager.class)
     public AccessLimitedInterceptor accessLimitedInterceptor(AccessLimitedStampManager accessLimitedStampManager) {
         AccessLimitedInterceptor interceptor = new AccessLimitedInterceptor(accessLimitedStampManager);
-        log.trace("[Herodotus] |- Bean [Access Limited Interceptor] Configure.");
+        log.trace("[PIGXD] |- Bean [Access Limited Interceptor] Configure.");
         return interceptor;
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public XssHttpServletFilter xssHttpServletFilter() {
         XssHttpServletFilter filter = new XssHttpServletFilter();
-        log.trace("[Herodotus] |- Bean [Xss Http Servlet Filter] Configure.");
+        log.trace("[PIGXD] |- Bean [Xss Http Servlet Filter] Configure.");
         return filter;
     }
 }

@@ -15,16 +15,17 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/provider/OAuth2FormLoginAuthenticationProvider.class */
+
 public class OAuth2FormLoginAuthenticationProvider extends DaoAuthenticationProvider {
+
     private static final Logger log = LoggerFactory.getLogger(OAuth2FormLoginAuthenticationProvider.class);
+
     private final CaptchaRendererFactory captchaRendererFactory;
 
     public OAuth2FormLoginAuthenticationProvider(CaptchaRendererFactory captchaRendererFactory, UserDetailsService userDetailsService) {
@@ -32,41 +33,48 @@ public class OAuth2FormLoginAuthenticationProvider extends DaoAuthenticationProv
         this.captchaRendererFactory = captchaRendererFactory;
     }
 
-    /* JADX INFO: Thrown type has an unknown type hierarchy: org.springframework.security.authentication.AccountStatusException */
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException, AccountStatusException {
+    @Override
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
         Object details = authentication.getDetails();
-        if (ObjectUtils.isNotEmpty(details) && (details instanceof FormLoginWebAuthenticationDetails)) {
-            FormLoginWebAuthenticationDetails formLoginWebAuthenticationDetails = (FormLoginWebAuthenticationDetails) details;
-            if (formLoginWebAuthenticationDetails.getEnabled().booleanValue()) {
+
+        if (ObjectUtils.isNotEmpty(details) && details instanceof FormLoginWebAuthenticationDetails formLoginWebAuthenticationDetails) {
+
+            if (formLoginWebAuthenticationDetails.getEnabled()) {
+
                 String code = formLoginWebAuthenticationDetails.getCode();
                 String category = formLoginWebAuthenticationDetails.getCategory();
                 String identity = formLoginWebAuthenticationDetails.getSessionId();
+
                 if (StringUtils.isBlank(code)) {
                     throw new OAuth2CaptchaIsEmptyException("Captcha is empty.");
                 }
+
                 try {
                     Verification verification = new Verification();
                     verification.setCharacters(code);
                     verification.setCategory(category);
                     verification.setIdentity(identity);
-                    this.captchaRendererFactory.verify(verification);
+                    captchaRendererFactory.verify(verification);
+                } catch (CaptchaParameterIllegalException e) {
+                    throw new OAuth2CaptchaArgumentIllegalException("Captcha argument is illegal!");
                 } catch (CaptchaHasExpiredException e) {
                     throw new OAuth2CaptchaHasExpiredException("Captcha is expired!");
-                } catch (CaptchaIsEmptyException e2) {
-                    throw new OAuth2CaptchaIsEmptyException("Captcha is empty!");
-                } catch (CaptchaMismatchException e3) {
+                } catch (CaptchaMismatchException e) {
                     throw new OAuth2CaptchaMismatchException("Captcha is mismatch!");
-                } catch (CaptchaParameterIllegalException e4) {
-                    throw new OAuth2CaptchaArgumentIllegalException("Captcha argument is illegal!");
+                } catch (CaptchaIsEmptyException e) {
+                    throw new OAuth2CaptchaIsEmptyException("Captcha is empty!");
                 }
             }
         }
+
         super.additionalAuthenticationChecks(userDetails, authentication);
     }
 
+    @Override
     public boolean supports(Class<?> authentication) {
-        boolean supports = OAuth2FormLoginAuthenticationToken.class.isAssignableFrom(authentication);
-        log.trace("[Herodotus] |- Form Login Authentication is supports! [{}]", Boolean.valueOf(supports));
+        //返回true后才会执行上面的authenticate方法,这步能确保authentication能正确转换类型
+        boolean supports = (OAuth2FormLoginAuthenticationToken.class.isAssignableFrom(authentication));
+        log.trace("[PIGXD] |- Form Login Authentication is supports! [{}]", supports);
         return supports;
     }
 }

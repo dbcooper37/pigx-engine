@@ -11,12 +11,15 @@ import org.apache.commons.lang3.Strings;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/context/ServiceContextHolder.class */
+
 public class ServiceContextHolder {
+
     private static volatile ServiceContextHolder instance;
-    private final ServiceContext serviceContext = new ServiceContext();
+
+    private final ServiceContext serviceContext;
 
     private ServiceContextHolder() {
+        this.serviceContext = new ServiceContext();
     }
 
     public static ServiceContextHolder getInstance() {
@@ -27,11 +30,19 @@ public class ServiceContextHolder {
                 }
             }
         }
+
         return instance;
     }
 
-    private ServiceContext serviceContext() {
-        return this.serviceContext;
+    public static String getAddress() {
+        if (isDistributedArchitecture()) {
+            return getGatewayServiceUri() + SymbolConstants.FORWARD_SLASH + getApplicationName();
+        } else {
+            if (StringUtils.isNotBlank(getIp()) && StringUtils.isNotBlank(getPort())) {
+                return getIp() + SymbolConstants.COLON + getPort();
+            }
+        }
+        return getServiceContext().getAddress();
     }
 
     private static ServiceContext getServiceContext() {
@@ -78,14 +89,19 @@ public class ServiceContextHolder {
         getServiceContext().setIp(ip);
     }
 
-    public static String getAddress() {
-        if (isDistributedArchitecture()) {
-            return getGatewayServiceUri() + "/" + getApplicationName();
-        }
-        if (StringUtils.isNotBlank(getIp()) && StringUtils.isNotBlank(getPort())) {
-            return getIp() + ":" + getPort();
-        }
-        return getServiceContext().getAddress();
+    /**
+     * 用于 Spring Cloud BUS 发送信息使用。
+     * <p>
+     * Spring Cloud BUS 会使用 OriginService 作为 AntPathMatcher 的 pattern 来校验服务，所以这里使用了 “**”
+     * <p>
+     * 参见：
+     * <code>org.springframework.cloud.bus.RemoteApplicationEventListener</code>
+     * <code>org.springframework.cloud.bus.PathServiceMatcher#isFromSelf</code>
+     *
+     * @return 原始服务信息
+     */
+    public static String getOriginService() {
+        return getApplicationName() + SymbolConstants.COLON + SymbolConstants.DOUBLE_STAR;
     }
 
     public static void setAddress(String address) {
@@ -382,22 +398,31 @@ public class ServiceContextHolder {
         return getServiceContext().getArchitecture() == Architecture.DISTRIBUTED;
     }
 
-    public static String getOriginService() {
-        return getApplicationName() + ":**";
+    public static String getId() {
+        return getApplicationName() + SymbolConstants.COLON + getPort();
     }
 
     public static void publishEvent(ApplicationEvent applicationEvent) {
         getApplicationContext().publishEvent(applicationEvent);
     }
 
-    public static String getId() {
-        return getApplicationName() + ":" + getPort();
-    }
-
+    /**
+     * 通过给定的 ServiceId 判断是否来自于自身。
+     * <p>
+     * 主要用于解决在消息队列场景，服务自身既是某个主题的生产者又是该主题消费者。那么在该服务多实例的情况下，很难判断“主从”关系。那么通过这个方法来判断。
+     *
+     * @param serviceId 格式为 spring.application.name : service.port
+     * @return true 来自于服务自己，false 来自于其它服务
+     */
     public static boolean isFromSelf(String serviceId) {
         if (Strings.CS.contains(serviceId, SymbolConstants.COLON)) {
             return Strings.CS.equals(serviceId, getId());
         }
+
         return false;
+    }
+
+    private ServiceContext serviceContext() {
+        return serviceContext;
     }
 }

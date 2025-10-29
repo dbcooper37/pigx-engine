@@ -12,31 +12,43 @@ import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthRequest;
 import org.apache.commons.lang3.ObjectUtils;
 
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/processor/JustAuthAccessHandler.class */
+
 public class JustAuthAccessHandler implements AccessHandler {
+
     private final JustAuthProcessor justAuthProcessor;
 
     public JustAuthAccessHandler(JustAuthProcessor justAuthProcessor) {
         this.justAuthProcessor = justAuthProcessor;
     }
 
-    @Override // com.pigx.engine.assistant.access.definition.AccessHandler
+    @Override
     public AccessResponse preProcess(String core, String... params) {
-        String url = this.justAuthProcessor.getAuthorizeUrl(core);
+        String url = justAuthProcessor.getAuthorizeUrl(core);
+
         AccessResponse accessResponse = new AccessResponse();
         accessResponse.setAuthorizeUrl(url);
         return accessResponse;
     }
 
-    @Override // com.pigx.engine.assistant.access.definition.AccessHandler
+    @Override
     public AccessUserDetails loadUserDetails(String source, AccessPrincipal accessPrincipal) {
-        AuthRequest authRequest = this.justAuthProcessor.getAuthRequest(source);
-        AuthCallback authCallback = AuthCallback.builder().code(accessPrincipal.getCode()).auth_code(accessPrincipal.getAuth_code()).state(accessPrincipal.getState()).authorization_code(accessPrincipal.getAuthorization_code()).oauth_token(accessPrincipal.getOauth_token()).oauth_verifier(accessPrincipal.getOauth_verifier()).build();
+        AuthRequest authRequest = justAuthProcessor.getAuthRequest(source);
+
+        AuthCallback authCallback = AuthCallback.builder()
+                .code(accessPrincipal.getCode())
+                .auth_code(accessPrincipal.getAuth_code())
+                .state(accessPrincipal.getState())
+                .authorization_code(accessPrincipal.getAuthorization_code())
+                .oauth_token(accessPrincipal.getOauth_token())
+                .oauth_verifier(accessPrincipal.getOauth_verifier())
+                .build();
+
         AuthResponse<AuthUser> response = authRequest.login(authCallback);
         if (response.ok()) {
-            AuthUser authUser = (AuthUser) response.getData();
+            AuthUser authUser = response.getData();
             return convertAuthUserToAccessUserDetails(authUser);
         }
+
         throw new AccessIdentityVerificationFailedException(response.getMsg());
     }
 
@@ -55,8 +67,9 @@ public class JustAuthAccessHandler implements AccessHandler {
         sysSocialUser.setSource(authUser.getSource());
         AuthToken authToken = authUser.getToken();
         if (ObjectUtils.isNotEmpty(authToken)) {
-            setAccessUserInfo(sysSocialUser, authToken.getAccessToken(), Integer.valueOf(authToken.getExpireIn()), authToken.getRefreshToken(), Integer.valueOf(authToken.getRefreshTokenExpireIn()), authToken.getScope(), authToken.getTokenType(), authToken.getUid(), authToken.getOpenId(), authToken.getAccessCode(), authToken.getUnionId());
+            setAccessUserInfo(sysSocialUser, authToken.getAccessToken(), authToken.getExpireIn(), authToken.getRefreshToken(), authToken.getRefreshTokenExpireIn(), authToken.getScope(), authToken.getTokenType(), authToken.getUid(), authToken.getOpenId(), authToken.getAccessCode(), authToken.getUnionId());
         }
+
         return sysSocialUser;
     }
 

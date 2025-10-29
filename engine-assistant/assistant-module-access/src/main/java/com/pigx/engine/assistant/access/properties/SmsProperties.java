@@ -1,23 +1,47 @@
 package com.pigx.engine.assistant.access.properties;
 
-import com.pigx.engine.assistant.access.constant.AccessConstants;
-import com.pigx.engine.core.definition.constant.BaseConstants;
 import com.google.common.base.MoreObjects;
-import java.time.Duration;
+import com.pigx.engine.assistant.access.constant.AccessConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.time.Duration;
+
+
 @ConfigurationProperties(prefix = AccessConstants.PROPERTY_ACCESS_SMS)
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/properties/SmsProperties.class */
 public class SmsProperties {
+
+    /**
+     * 是否开启
+     */
     private Boolean enabled;
+
+    /**
+     * 启用短信沙盒测试模式
+     */
     private Boolean sandbox = false;
+
+    /**
+     * 短信沙盒测试模式中，创建的默认验证码。
+     */
     private String testCode = "123456";
+
+    /**
+     * 验证码短信模版名称
+     */
     private String verificationCodeTemplateId = "VERIFICATION_CODE";
+
+    /**
+     * 超时时长，默认5分钟
+     */
     private Duration expire = Duration.ofMinutes(5);
+
+    /**
+     * 手机验证码长度，默认为6位数
+     */
     private int length = 6;
 
     public Duration getExpire() {
-        return this.expire;
+        return expire;
     }
 
     public void setExpire(Duration expire) {
@@ -25,7 +49,7 @@ public class SmsProperties {
     }
 
     public int getLength() {
-        return this.length;
+        return length;
     }
 
     public void setLength(int length) {
@@ -33,7 +57,7 @@ public class SmsProperties {
     }
 
     public Boolean getEnabled() {
-        return this.enabled;
+        return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
@@ -41,7 +65,7 @@ public class SmsProperties {
     }
 
     public Boolean getSandbox() {
-        return this.sandbox;
+        return sandbox;
     }
 
     public void setSandbox(Boolean sandbox) {
@@ -49,7 +73,7 @@ public class SmsProperties {
     }
 
     public String getTestCode() {
-        return this.testCode;
+        return testCode;
     }
 
     public void setTestCode(String testCode) {
@@ -57,14 +81,22 @@ public class SmsProperties {
     }
 
     public String getVerificationCodeTemplateId() {
-        return this.verificationCodeTemplateId;
+        return verificationCodeTemplateId;
     }
 
     public void setVerificationCodeTemplateId(String verificationCodeTemplateId) {
         this.verificationCodeTemplateId = verificationCodeTemplateId;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add(BaseConstants.PROPERTY_NAME_ENABLED, this.enabled).add("sandbox", this.sandbox).add("testCode", this.testCode).add("verificationCodeTemplateId", this.verificationCodeTemplateId).add("expire", this.expire).add("length", this.length).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("enabled", enabled)
+                .add("sandbox", sandbox)
+                .add("testCode", testCode)
+                .add("verificationCodeTemplateId", verificationCodeTemplateId)
+                .add("expire", expire)
+                .add("length", length)
+                .toString();
     }
 }

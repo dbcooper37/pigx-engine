@@ -2,9 +2,11 @@ package com.pigx.engine.core.definition.exception;
 
 import com.pigx.engine.core.definition.domain.Result;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/exception/AbstractRuntimeException.class */
+
 public abstract class AbstractRuntimeException extends RuntimeException implements HerodotusException {
+
     public AbstractRuntimeException() {
+        super();
     }
 
     public AbstractRuntimeException(String message) {
@@ -23,6 +25,7 @@ public abstract class AbstractRuntimeException extends RuntimeException implemen
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
+    @Override
     public Result<String> getResult() {
         Result<String> result = Result.failure(getFeedback());
         result.stackTrace(super.getStackTrace());

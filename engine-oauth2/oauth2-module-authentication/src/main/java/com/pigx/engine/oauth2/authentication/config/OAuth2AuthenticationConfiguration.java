@@ -20,43 +20,52 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
+
 @Configuration(proxyBeanMethods = false)
-/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/config/OAuth2AuthenticationConfiguration.class */
 public class OAuth2AuthenticationConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(OAuth2AuthenticationConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [OAuth2 Authentication] Configure.");
+        log.debug("[PIGXD] |- Module [OAuth2 Authentication] Configure.");
     }
 
     @Bean
     public AuthenticationEventPublisher authenticationEventPublisher(ApplicationContext applicationContext) {
         DefaultOAuth2AuthenticationEventPublisher publisher = new DefaultOAuth2AuthenticationEventPublisher(applicationContext);
+        // 设置默认的错误 Event 类型。在遇到默认字典中没有的错误时，默认抛出。
         publisher.setDefaultAuthenticationFailureEvent(AuthenticationFailureBadCredentialsEvent.class);
-        log.trace("[Herodotus] |- Bean [Authentication Event Publisher] Configure.");
+        log.trace("[PIGXD] |- Bean [Authentication Event Publisher] Configure.");
         return publisher;
     }
 
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer() {
         HerodotusJwtTokenCustomizer customizer = new HerodotusJwtTokenCustomizer();
-        log.trace("[Herodotus] |- Bean [OAuth2 Jwt Token Customizer] Configure.");
+        log.trace("[PIGXD] |- Bean [OAuth2 Jwt Token Customizer] Configure.");
         return customizer;
     }
 
     @Bean
     public OAuth2TokenCustomizer<OAuth2TokenClaimsContext> opaqueTokenCustomizer() {
         HerodotusOpaqueTokenCustomizer customizer = new HerodotusOpaqueTokenCustomizer();
-        log.trace("[Herodotus] |- Bean [OAuth2 Opaque Token Customizer] Configure.");
+        log.trace("[PIGXD] |- Bean [OAuth2 Opaque Token Customizer] Configure.");
         return customizer;
     }
 
-    @ConditionalOnMissingBean
     @Bean
-    public OAuth2AuthenticationConfigurerManager oauth2AuthenticationConfigurerManager(ThymeleafTemplateHandler thymeleafTemplateHandler, HttpCryptoProcessor httpCryptoProcessor, OAuth2AuthenticationProperties authenticationProperties) {
-        OAuth2AuthenticationConfigurerManager configurer = new OAuth2AuthenticationConfigurerManager(thymeleafTemplateHandler, httpCryptoProcessor, authenticationProperties);
-        log.trace("[Herodotus] |- Bean [Servlet OAuth2 Authorization Server Configurer] Configure.");
+    @ConditionalOnMissingBean
+    public OAuth2AuthenticationConfigurerManager oauth2AuthenticationConfigurerManager(
+            ThymeleafTemplateHandler thymeleafTemplateHandler,
+            HttpCryptoProcessor httpCryptoProcessor,
+            OAuth2AuthenticationProperties authenticationProperties) {
+
+        OAuth2AuthenticationConfigurerManager configurer = new OAuth2AuthenticationConfigurerManager(
+                thymeleafTemplateHandler,
+                httpCryptoProcessor,
+                authenticationProperties);
+        log.trace("[PIGXD] |- Bean [Servlet OAuth2 Authorization Server Configurer] Configure.");
         return configurer;
     }
 }

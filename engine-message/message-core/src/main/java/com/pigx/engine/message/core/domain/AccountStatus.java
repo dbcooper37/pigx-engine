@@ -1,12 +1,15 @@
 package com.pigx.engine.message.core.domain;
 
-import com.pigx.engine.core.definition.domain.BaseModel;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.pigx.engine.core.definition.domain.BaseModel;
 
-/* loaded from: message-core-3.5.7.0.jar:cn/herodotus/engine/message/core/domain/AccountStatus.class */
+
 public class AccountStatus implements BaseModel {
+
+
     private String userId;
+
     private String status;
 
     public AccountStatus() {
@@ -18,7 +21,7 @@ public class AccountStatus implements BaseModel {
     }
 
     public String getUserId() {
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {
@@ -26,13 +29,14 @@ public class AccountStatus implements BaseModel {
     }
 
     public String getStatus() {
-        return this.status;
+        return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -41,14 +45,19 @@ public class AccountStatus implements BaseModel {
             return false;
         }
         AccountStatus that = (AccountStatus) o;
-        return Objects.equal(this.userId, that.userId) && Objects.equal(this.status, that.status);
+        return Objects.equal(userId, that.userId) && Objects.equal(status, that.status);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.userId, this.status});
+        return Objects.hashCode(userId, status);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("userId", this.userId).add("status", this.status).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("userId", userId)
+                .add("status", status)
+                .toString();
     }
 }

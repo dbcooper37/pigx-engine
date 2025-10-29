@@ -1,60 +1,54 @@
 package com.pigx.engine.data.tenant.entity;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
 import com.pigx.engine.data.tenant.constant.TenantConstants;
-import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import org.hibernate.annotations.Cache;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UuidGenerator;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = TenantConstants.REGION_SYS_TENANT_DATASOURCE)
+
 @Schema(name = "多租户数据源管理")
-@Cacheable
 @Entity
-@Table(name = "sys_tenant_datasource", uniqueConstraints = {@UniqueConstraint(columnNames = {"tenant_id"})}, indexes = {@Index(name = "sys_tenant_datasource_id_idx", columnList = "datasource_id")})
-/* loaded from: data-module-tenant-3.5.7.0.jar:cn/herodotus/engine/data/tenant/entity/SysTenantDataSource.class */
+@Table(name = "sys_tenant_datasource",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"tenant_id"})},
+        indexes = {@Index(name = "sys_tenant_datasource_id_idx", columnList = "datasource_id")})
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = TenantConstants.REGION_SYS_TENANT_DATASOURCE)
 public class SysTenantDataSource extends AbstractSysEntity {
 
-    @Id
     @Schema(name = "租户数据源主键")
+    @Id
     @UuidGenerator
     @Column(name = "datasource_id", length = 64)
     private String datasourceId;
 
-    @Column(name = "tenant_id", length = 64, unique = true)
     @Schema(name = "租户ID", description = "租户的唯一标识")
+    @Column(name = "tenant_id", length = 64, unique = true)
     private String tenantId;
 
-    @Column(name = "user_name", length = 100)
     @Schema(name = "数据库用户名")
+    @Column(name = "user_name", length = 100)
     private String username;
 
-    @Column(name = SystemConstants.PASSWORD, length = 100)
     @Schema(name = "数据库密码")
+    @Column(name = "password", length = 100)
     private String password;
 
-    @Column(name = "driver_class_name", length = 64)
     @Schema(name = "数据库驱动")
+    @Column(name = "driver_class_name", length = 64)
     private String driverClassName;
 
-    @Column(name = "url", length = 1000)
     @Schema(name = "数据库连接")
+    @Column(name = "url", length = 1000)
     private String url;
 
     @Schema(name = "是否已经初始化", description = "默认值 false")
     private Boolean initialize = false;
 
     public String getDatasourceId() {
-        return this.datasourceId;
+        return datasourceId;
     }
 
     public void setDatasourceId(String datasourceId) {
@@ -62,7 +56,7 @@ public class SysTenantDataSource extends AbstractSysEntity {
     }
 
     public String getTenantId() {
-        return this.tenantId;
+        return tenantId;
     }
 
     public void setTenantId(String tenantId) {
@@ -70,7 +64,7 @@ public class SysTenantDataSource extends AbstractSysEntity {
     }
 
     public String getUsername() {
-        return this.username;
+        return username;
     }
 
     public void setUsername(String username) {
@@ -78,7 +72,7 @@ public class SysTenantDataSource extends AbstractSysEntity {
     }
 
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
     public void setPassword(String password) {
@@ -86,7 +80,7 @@ public class SysTenantDataSource extends AbstractSysEntity {
     }
 
     public String getDriverClassName() {
-        return this.driverClassName;
+        return driverClassName;
     }
 
     public void setDriverClassName(String driverClassName) {
@@ -94,7 +88,7 @@ public class SysTenantDataSource extends AbstractSysEntity {
     }
 
     public String getUrl() {
-        return this.url;
+        return url;
     }
 
     public void setUrl(String url) {
@@ -102,15 +96,23 @@ public class SysTenantDataSource extends AbstractSysEntity {
     }
 
     public Boolean getInitialize() {
-        return this.initialize;
+        return initialize;
     }
 
     public void setInitialize(Boolean initialize) {
         this.initialize = initialize;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("datasourceId", this.datasourceId).add("tenantId", this.tenantId).add(SystemConstants.USERNAME, this.username).add(SystemConstants.PASSWORD, this.password).add("driverClassName", this.driverClassName).add("url", this.url).add("initialize", this.initialize).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("datasourceId", datasourceId)
+                .add("tenantId", tenantId)
+                .add("username", username)
+                .add("password", password)
+                .add("driverClassName", driverClassName)
+                .add("url", url)
+                .add("initialize", initialize)
+                .toString();
     }
 }

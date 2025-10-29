@@ -2,14 +2,24 @@ package com.pigx.engine.assistant.access.definition.domain;
 
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/definition/domain/AccessResponse.class */
+
 public class AccessResponse {
+
+    /**
+     * JustAuth 认证URL
+     */
     private String authorizeUrl;
+    /**
+     * 手机短信验证码是否发送成功
+     */
     private Boolean success;
+    /**
+     * 微信小程序返回Session信息
+     */
     private WxMaJscode2SessionResult session;
 
     public String getAuthorizeUrl() {
-        return this.authorizeUrl;
+        return authorizeUrl;
     }
 
     public void setAuthorizeUrl(String authorizeUrl) {
@@ -17,7 +27,7 @@ public class AccessResponse {
     }
 
     public Boolean getSuccess() {
-        return this.success;
+        return success;
     }
 
     public void setSuccess(Boolean success) {
@@ -25,7 +35,7 @@ public class AccessResponse {
     }
 
     public WxMaJscode2SessionResult getSession() {
-        return this.session;
+        return session;
     }
 
     public void setSession(WxMaJscode2SessionResult session) {

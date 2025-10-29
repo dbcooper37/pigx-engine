@@ -1,7 +1,14 @@
 package com.pigx.engine.core.definition.utils;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/utils/NumberUtils.class */
+
 public class NumberUtils {
+
+    /**
+     * long 转 int
+     *
+     * @param value long 型数值
+     * @return int 型数值
+     */
     public static int longToInt(long value) {
         return Long.valueOf(value).intValue();
     }

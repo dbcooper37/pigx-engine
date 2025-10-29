@@ -5,18 +5,19 @@ import com.pigx.engine.core.foundation.context.ServiceContextHolder;
 import com.pigx.engine.core.foundation.enums.Architecture;
 import com.pigx.engine.web.service.properties.EndpointProperties;
 import com.pigx.engine.web.service.properties.PlatformProperties;
-import java.net.UnknownHostException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 
-/* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/initializer/ServiceContextHolderBuilder.class */
+
 public class ServiceContextHolderBuilder {
+
     private PlatformProperties platformProperties;
     private EndpointProperties endpointProperties;
     private ServerProperties serverProperties;
 
     private ServiceContextHolderBuilder() {
+
     }
 
     public static ServiceContextHolderBuilder builder() {
@@ -39,35 +40,40 @@ public class ServiceContextHolderBuilder {
     }
 
     public void build() {
-        ServiceContextHolder.setPort(String.valueOf(getPort()));
+        ServiceContextHolder.setPort(String.valueOf(this.getPort()));
         ServiceContextHolder.setIp(getHostAddress());
-        setProperties(this.platformProperties, this.endpointProperties);
+        setProperties(platformProperties, endpointProperties);
     }
 
-    private String getHostAddress() throws UnknownHostException {
+    private String getHostAddress() {
         String address = WellFormedUtils.getHostAddress();
-        if (ObjectUtils.isNotEmpty(this.serverProperties.getAddress())) {
-            address = this.serverProperties.getAddress().getHostAddress();
+        if (ObjectUtils.isNotEmpty(serverProperties.getAddress())) {
+            address = serverProperties.getAddress().getHostAddress();
         }
+
         if (StringUtils.isNotBlank(address)) {
             return address;
+        } else {
+            return "localhost";
         }
-        return "localhost";
     }
 
     private Integer getPort() {
-        Integer port = this.serverProperties.getPort();
+        Integer port = serverProperties.getPort();
         if (ObjectUtils.isNotEmpty(port)) {
             return port;
+        } else {
+            return 8080;
         }
-        return 8080;
     }
 
     private void setProperties(PlatformProperties platformProperties, EndpointProperties endpointProperties) {
         ServiceContextHolder.setArchitecture(platformProperties.getArchitecture());
         ServiceContextHolder.setDataAccessStrategy(platformProperties.getDataAccessStrategy());
         ServiceContextHolder.setProtocol(platformProperties.getProtocol());
+
         String issuerUri = endpointProperties.getIssuerUri();
+
         if (StringUtils.isNotBlank(issuerUri)) {
             if (platformProperties.getArchitecture() == Architecture.MONOCOQUE) {
                 ServiceContextHolder.setGatewayServiceUri(issuerUri);
@@ -86,6 +92,7 @@ public class ServiceContextHolderBuilder {
                 ServiceContextHolder.setMessageServiceUri(endpointProperties.getMessageServiceUri());
                 ServiceContextHolder.setOssServiceUri(endpointProperties.getOssServiceUri());
             }
+
             ServiceContextHolder.setAuthorizationUri(endpointProperties.getAuthorizationUri());
             ServiceContextHolder.setAuthorizationEndpoint(endpointProperties.getAuthorizationEndpoint());
             ServiceContextHolder.setPushedAuthorizationRequestUri(endpointProperties.getPushedAuthorizationRequestUri());

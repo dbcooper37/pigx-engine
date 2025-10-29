@@ -1,51 +1,48 @@
 package com.pigx.engine.logic.message.entity;
 
-import com.pigx.engine.core.definition.constant.ErrorCodeMapperBuilderOrdered;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.pigx.engine.core.definition.domain.BaseEntity;
 import com.pigx.engine.logic.message.constant.LogicMessageConstants;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import java.util.Date;
-import org.hibernate.annotations.Cache;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UuidGenerator;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicMessageConstants.REGION_MESSAGE_PULL_STAMP)
+import java.util.Date;
+
+
 @Schema(name = "拉取标记")
-@Cacheable
 @Entity
-@Table(name = "msg_pull_stamp", indexes = {@Index(name = "msg_pull_stamp_id_idx", columnList = "stamp_id"), @Index(name = "msg_pull_stamp_sid_idx", columnList = "user_id")})
-/* loaded from: logic-module-message-3.5.7.0.jar:cn/herodotus/engine/logic/message/entity/PullStamp.class */
+@Table(name = "msg_pull_stamp", indexes = {
+        @Index(name = "msg_pull_stamp_id_idx", columnList = "stamp_id"),
+        @Index(name = "msg_pull_stamp_sid_idx", columnList = "user_id")
+})
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicMessageConstants.REGION_MESSAGE_PULL_STAMP)
 public class PullStamp implements BaseEntity {
 
     @Id
-    @Column(name = "stamp_id", length = 64)
     @UuidGenerator
+    @Column(name = "stamp_id", length = 64)
     private String stampId;
 
-    @Column(name = "user_id", length = 64)
     @Schema(name = "用户ID")
+    @Column(name = "user_id", length = 64)
     private String userId;
 
-    @Column(name = SystemConstants.SOURCE, length = ErrorCodeMapperBuilderOrdered.MESSAGE)
     @Schema(name = "来源", title = "预留字段，以备支持不同端的情况")
+    @Column(name = "source", length = 50)
     private String source;
 
-    @Column(name = "latest_pull_time", updatable = false)
     @Schema(name = "上次拉取时间")
+    @Column(name = "latest_pull_time", updatable = false)
     @JsonFormat(pattern = SystemConstants.DATE_TIME_FORMAT)
     private Date latestPullTime = new Date();
 
     public String getStampId() {
-        return this.stampId;
+        return stampId;
     }
 
     public void setStampId(String stampId) {
@@ -53,7 +50,7 @@ public class PullStamp implements BaseEntity {
     }
 
     public String getUserId() {
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {
@@ -61,7 +58,7 @@ public class PullStamp implements BaseEntity {
     }
 
     public String getSource() {
-        return this.source;
+        return source;
     }
 
     public void setSource(String source) {
@@ -69,14 +66,20 @@ public class PullStamp implements BaseEntity {
     }
 
     public Date getLatestPullTime() {
-        return this.latestPullTime;
+        return latestPullTime;
     }
 
     public void setLatestPullTime(Date latestPullTime) {
         this.latestPullTime = latestPullTime;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("stampId", this.stampId).add("userId", this.userId).add(SystemConstants.SOURCE, this.source).add("latestPullTime", this.latestPullTime).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("stampId", stampId)
+                .add("userId", userId)
+                .add("source", source)
+                .add("latestPullTime", latestPullTime)
+                .toString();
     }
 }

@@ -1,39 +1,35 @@
 package com.pigx.engine.data.core.jpa.entity;
 
-import com.pigx.engine.data.core.enums.DataItemStatus;
 import com.google.common.base.MoreObjects;
+import com.pigx.engine.data.core.enums.DataItemStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+
 @MappedSuperclass
-@EntityListeners({AuditingEntityListener.class})
-/* loaded from: data-core-jpa-3.5.7.0.jar:cn/herodotus/engine/data/core/jpa/entity/AbstractSysEntity.class */
+@EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractSysEntity extends AbstractAuditEntity {
 
-    @Column(name = "description", length = 512)
-    @Schema(name = "备注")
-    private String description;
-
+    @Schema(name = "数据状态", title = "可用于控制数据的状态")
     @Column(name = "status")
     @Enumerated(EnumType.ORDINAL)
-    @Schema(name = "数据状态", title = "可用于控制数据的状态")
     private DataItemStatus status = DataItemStatus.ENABLE;
 
-    @Column(name = "is_reserved")
     @Schema(name = "是否为保留数据", title = "早期设计用于实现逻辑删除，现在主要用于控制前端删除按钮的显示。逻辑删除可以直接使用 Hibernate 提供的逻辑删除注解 @SoftDelete", description = "True 为不能删，False为可以删除")
+    @Column(name = "is_reserved")
     private Boolean reserved = Boolean.FALSE;
 
-    @Column(name = "ranking")
+    @Schema(name = "备注")
+    @Column(name = "description", length = 512)
+    private String description;
+
     @Schema(name = "排序值")
+    @Column(name = "ranking")
     private Integer ranking = 0;
 
     public DataItemStatus getStatus() {
-        return this.status;
+        return status;
     }
 
     public void setStatus(DataItemStatus status) {
@@ -41,7 +37,7 @@ public abstract class AbstractSysEntity extends AbstractAuditEntity {
     }
 
     public Boolean getReserved() {
-        return this.reserved;
+        return reserved;
     }
 
     public void setReserved(Boolean reserved) {
@@ -49,7 +45,7 @@ public abstract class AbstractSysEntity extends AbstractAuditEntity {
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -57,15 +53,22 @@ public abstract class AbstractSysEntity extends AbstractAuditEntity {
     }
 
     public Integer getRanking() {
-        return this.ranking;
+        return ranking;
     }
 
     public void setRanking(Integer ranking) {
         this.ranking = ranking;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).addValue(super.toString()).add("status", this.status).add("reserved", this.reserved).add("description", this.description).add("ranking", this.ranking).addValue(super.toString()).toString();
+        return MoreObjects.toStringHelper(this)
+                .addValue(super.toString())
+                .add("status", status)
+                .add("reserved", reserved)
+                .add("description", description)
+                .add("ranking", ranking)
+                .addValue(super.toString())
+                .toString();
     }
 }

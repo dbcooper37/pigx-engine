@@ -4,9 +4,10 @@ import com.pigx.engine.core.foundation.founction.ListConverter;
 import com.pigx.engine.logic.upms.entity.security.SysAttribute;
 import com.pigx.engine.logic.upms.entity.security.SysInterface;
 
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/converter/SysInterfacesToSysAttributesConverter.class */
+
 public class SysInterfacesToSysAttributesConverter implements ListConverter<SysInterface, SysAttribute> {
-    @Override // com.pigx.engine.core.foundation.founction.ListConverter
+
+    @Override
     public SysAttribute from(SysInterface source) {
         SysAttribute target = new SysAttribute();
         target.setAttributeId(source.getInterfaceId());

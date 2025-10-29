@@ -1,22 +1,35 @@
 package com.pigx.engine.web.service.properties;
 
-import com.pigx.engine.core.definition.constant.BaseConstants;
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.core.definition.enums.Protocol;
 import com.pigx.engine.core.foundation.enums.Architecture;
 import com.pigx.engine.core.foundation.enums.DataAccessStrategy;
-import com.google.common.base.MoreObjects;
+import com.pigx.engine.web.core.constant.WebConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = BaseConstants.PROPERTY_PREFIX_PLATFORM)
-/* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/properties/PlatformProperties.class */
+
+@ConfigurationProperties(prefix = WebConstants.PROPERTY_PREFIX_PLATFORM)
 public class PlatformProperties {
+
+    /**
+     * 平台架构类型，默认：MONOCOQUE（单体架构）
+     */
     private Architecture architecture = Architecture.MONOCOQUE;
+    /**
+     * 数据访问策略，默认：远程
+     */
     private DataAccessStrategy dataAccessStrategy = DataAccessStrategy.REMOTE;
+    /**
+     * 接口地址默认采用的Http协议类型
+     */
     private Protocol protocol = Protocol.HTTP;
+    /**
+     * Swagger API 文档配置
+     */
     private Swagger swagger = new Swagger();
 
     public Architecture getArchitecture() {
-        return this.architecture;
+        return architecture;
     }
 
     public void setArchitecture(Architecture architecture) {
@@ -24,7 +37,7 @@ public class PlatformProperties {
     }
 
     public DataAccessStrategy getDataAccessStrategy() {
-        return this.dataAccessStrategy;
+        return dataAccessStrategy;
     }
 
     public void setDataAccessStrategy(DataAccessStrategy dataAccessStrategy) {
@@ -32,7 +45,7 @@ public class PlatformProperties {
     }
 
     public Protocol getProtocol() {
-        return this.protocol;
+        return protocol;
     }
 
     public void setProtocol(Protocol protocol) {
@@ -40,27 +53,33 @@ public class PlatformProperties {
     }
 
     public Swagger getSwagger() {
-        return this.swagger;
+        return swagger;
     }
 
     public void setSwagger(Swagger swagger) {
         this.swagger = swagger;
     }
 
-    /* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/properties/PlatformProperties$Swagger.class */
     public static class Swagger {
+
+        /**
+         * 是否开启Swagger
+         */
         private Boolean enabled;
 
         public Boolean getEnabled() {
-            return this.enabled;
+            return enabled;
         }
 
         public void setEnabled(Boolean enabled) {
             this.enabled = enabled;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add(BaseConstants.PROPERTY_NAME_ENABLED, this.enabled).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("enabled", enabled)
+                    .toString();
         }
     }
 }

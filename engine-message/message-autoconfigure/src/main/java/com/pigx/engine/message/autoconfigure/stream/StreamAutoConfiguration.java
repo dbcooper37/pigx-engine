@@ -11,19 +11,18 @@ import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration(after = {FunctionConfiguration.class})
 @ConditionalOnBean({StreamBridge.class})
-/* loaded from: message-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/message/autoconfigure/stream/StreamAutoConfiguration.class */
 public class StreamAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(StreamAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Stream] Configure.");
+        log.info("[PIGXD-ENGINE] |- Auto [Stream] Configure.");
     }
 
     @Bean
     public StreamMessageSendingAdapter streamMessageSendingAdapter(StreamBridge streamBridge) {
         StreamMessageSendingAdapter adapter = new StreamMessageSendingAdapter(streamBridge);
-        log.trace("[Herodotus] |- Bean [Stream Message Sending Adapter] Configure.");
+        log.trace("[PIGXD-ENGINE] |- Bean [Stream Message Sending Adapter] Configure.");
         return adapter;
     }
 }

@@ -1,10 +1,9 @@
-package com.pigx.engine.redisson.properties;
+package com.pigx.engine.cache.redisson.properties;
 
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.cache.core.constants.CacheConstants;
-import com.pigx.engine.core.definition.constant.BaseConstants;
 import com.pigx.engine.core.definition.constant.SymbolConstants;
 import com.pigx.engine.core.definition.enums.Protocol;
-import com.google.common.base.MoreObjects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.redisson.config.ClusterServersConfig;
@@ -12,26 +11,41 @@ import org.redisson.config.SentinelServersConfig;
 import org.redisson.config.SingleServerConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+
 @ConfigurationProperties(prefix = CacheConstants.PROPERTY_REDIS_REDISSON)
-/* loaded from: cache-module-redisson-3.5.7.0.jar:cn/herodotus/engine/cache/redisson/properties/RedissonProperties.class */
 public class RedissonProperties {
+
+    /**
+     * 是否开启 Redisson
+     */
     private Boolean enabled = false;
+    /**
+     * Redis 模式
+     */
     private Mode mode = Mode.SINGLE;
+    /**
+     * 是否使用 SSL 连接。false，协议头为 redis://, true 协议头为 rediss://
+     */
     private Boolean useSslConnection = false;
+    /**
+     * 配置文件路径
+     */
     private String config;
+    /**
+     * 单体配置
+     */
     private SingleServerConfig singleServerConfig;
+    /**
+     * 集群配置
+     */
     private ClusterServersConfig clusterServersConfig;
+    /**
+     * 哨兵配置
+     */
     private SentinelServersConfig sentinelServersConfig;
 
-    /* loaded from: cache-module-redisson-3.5.7.0.jar:cn/herodotus/engine/cache/redisson/properties/RedissonProperties$Mode.class */
-    public enum Mode {
-        SINGLE,
-        SENTINEL,
-        CLUSTER
-    }
-
     public Boolean getEnabled() {
-        return this.enabled;
+        return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
@@ -39,7 +53,7 @@ public class RedissonProperties {
     }
 
     public Mode getMode() {
-        return this.mode;
+        return mode;
     }
 
     public void setMode(Mode mode) {
@@ -47,7 +61,7 @@ public class RedissonProperties {
     }
 
     public Boolean getUseSslConnection() {
-        return this.useSslConnection;
+        return useSslConnection;
     }
 
     public void setUseSslConnection(Boolean useSslConnection) {
@@ -55,11 +69,11 @@ public class RedissonProperties {
     }
 
     public String getProtocol() {
-        return getUseSslConnection().booleanValue() ? Protocol.REDISS.getFormat() : Protocol.REDIS.getFormat();
+        return getUseSslConnection() ? Protocol.REDISS.getFormat() : Protocol.REDIS.getFormat();
     }
 
     public String getConfig() {
-        return this.config;
+        return config;
     }
 
     public void setConfig(String config) {
@@ -67,7 +81,7 @@ public class RedissonProperties {
     }
 
     public SingleServerConfig getSingleServerConfig() {
-        return this.singleServerConfig;
+        return singleServerConfig;
     }
 
     public void setSingleServerConfig(SingleServerConfig singleServerConfig) {
@@ -75,7 +89,7 @@ public class RedissonProperties {
     }
 
     public ClusterServersConfig getClusterServersConfig() {
-        return this.clusterServersConfig;
+        return clusterServersConfig;
     }
 
     public void setClusterServersConfig(ClusterServersConfig clusterServersConfig) {
@@ -83,7 +97,7 @@ public class RedissonProperties {
     }
 
     public SentinelServersConfig getSentinelServersConfig() {
-        return this.sentinelServersConfig;
+        return sentinelServersConfig;
     }
 
     public void setSentinelServersConfig(SentinelServersConfig sentinelServersConfig) {
@@ -91,24 +105,49 @@ public class RedissonProperties {
     }
 
     public boolean isExternalConfig() {
-        return StringUtils.isNotBlank(getConfig());
+        return StringUtils.isNotBlank(this.getConfig());
     }
 
     public boolean isYamlConfig() {
-        if (isExternalConfig()) {
-            return Strings.CI.endsWith(getConfig(), SymbolConstants.SUFFIX_YAML);
+        if (this.isExternalConfig()) {
+            return Strings.CI.endsWith(this.getConfig(), SymbolConstants.SUFFIX_YAML);
+        } else {
+            return false;
         }
-        return false;
     }
 
     public boolean isJsonConfig() {
-        if (isExternalConfig()) {
-            return Strings.CI.endsWith(getConfig(), SymbolConstants.SUFFIX_JSON);
+        if (this.isExternalConfig()) {
+            return Strings.CI.endsWith(this.getConfig(), SymbolConstants.SUFFIX_JSON);
+        } else {
+            return false;
         }
-        return false;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add(BaseConstants.PROPERTY_NAME_ENABLED, this.enabled).add("mode", this.mode).add("config", this.config).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("enabled", enabled)
+                .add("mode", mode)
+                .add("config", config)
+                .toString();
+    }
+
+    /**
+     * Redisson 使用模式
+     */
+    public enum Mode {
+        /**
+         * 单机
+         */
+        SINGLE,
+        /**
+         * 哨兵
+         */
+        SENTINEL,
+        /**
+         * 集群
+         */
+        CLUSTER
     }
 }

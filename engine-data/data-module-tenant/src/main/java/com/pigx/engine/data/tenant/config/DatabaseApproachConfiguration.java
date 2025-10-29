@@ -7,10 +7,6 @@ import com.pigx.engine.data.tenant.hibernate.HerodotusHibernatePropertiesProvide
 import com.pigx.engine.data.tenant.properties.MultiTenantProperties;
 import com.pigx.engine.data.tenant.service.MultiTenantDataSourceFactory;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityManagerFactory;
-import java.util.Map;
-import java.util.Objects;
-import javax.sql.DataSource;
 import org.hibernate.boot.model.naming.ImplicitNamingStrategy;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
 import org.slf4j.Logger;
@@ -33,55 +29,72 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@Configuration(proxyBeanMethods = false)
-@EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"com.pigx.engine.data.tenant.repository"})
-@EntityScan(basePackages = {"com.pigx.engine.data.tenant.entity"})
-@ConditionalOnMultiTenant(MultiTenant.DATABASE)
-/* loaded from: data-module-tenant-3.5.7.0.jar:cn/herodotus/engine/data/tenant/config/DatabaseApproachConfiguration.class */
-class DatabaseApproachConfiguration {
-    private static final Logger log = LoggerFactory.getLogger(DatabaseApproachConfiguration.class);
+import javax.sql.DataSource;
+import java.util.Map;
+import java.util.Objects;
 
-    DatabaseApproachConfiguration() {
-    }
+
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnMultiTenant(MultiTenant.DATABASE)
+@EnableTransactionManagement
+@EntityScan(basePackages = {
+        "com.pigx.engine.data.tenant.entity",
+})
+@EnableJpaRepositories(basePackages = {
+        "com.pigx.engine.data.tenant.repository",
+})
+class DatabaseApproachConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(DatabaseApproachConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Database Approach] Configure.");
+        log.debug("[PIGXD] |- Module [Database Approach] Configure.");
     }
 
     @Bean
     public HibernatePropertiesCustomizer databaseMultiTenantConnectionProvider(DataSource dataSource) {
         DatabaseMultiTenantConnectionProvider provider = new DatabaseMultiTenantConnectionProvider(dataSource);
-        log.trace("[Herodotus] |- Bean [Multi Tenant Connection Provider] Configure.");
+        log.trace("[PIGXD] |- Bean [Multi Tenant Connection Provider] Configure.");
         return provider;
     }
 
     @Primary
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, HibernateProperties hibernateProperties, JpaProperties jpaProperties, JpaVendorAdapter jpaVendorAdapter, ConfigurableListableBeanFactory beanFactory, ObjectProvider<SchemaManagementProvider> providers, ObjectProvider<PhysicalNamingStrategy> physicalNamingStrategy, ObjectProvider<ImplicitNamingStrategy> implicitNamingStrategy, ObjectProvider<HibernatePropertiesCustomizer> hibernatePropertiesCustomizers, MultiTenantProperties multiTenantProperties) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, HibernateProperties hibernateProperties,
+                                                                       JpaProperties jpaProperties, JpaVendorAdapter jpaVendorAdapter,
+                                                                       ConfigurableListableBeanFactory beanFactory,
+                                                                       ObjectProvider<SchemaManagementProvider> providers,
+                                                                       ObjectProvider<PhysicalNamingStrategy> physicalNamingStrategy,
+                                                                       ObjectProvider<ImplicitNamingStrategy> implicitNamingStrategy,
+                                                                       ObjectProvider<HibernatePropertiesCustomizer> hibernatePropertiesCustomizers,
+                                                                       MultiTenantProperties multiTenantProperties
+    ) {
+
         HerodotusHibernatePropertiesProvider provider = new HerodotusHibernatePropertiesProvider(dataSource, hibernateProperties, jpaProperties, beanFactory, providers, physicalNamingStrategy, implicitNamingStrategy, hibernatePropertiesCustomizers);
         Map<String, Object> properties = provider.getVendorProperties();
+
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactory.setDataSource(dataSource);
+        //此处不能省略，哪怕你使用了 @EntityScan，实际上 @EntityScan 会失效
         entityManagerFactory.setPackagesToScan(multiTenantProperties.getPackageToScan());
         entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
         entityManagerFactory.setJpaPropertyMap(properties);
         return entityManagerFactory;
     }
 
-    @ConditionalOnClass({LocalContainerEntityManagerFactoryBean.class})
     @Primary
     @Bean
+    @ConditionalOnClass({LocalContainerEntityManagerFactoryBean.class})
     public PlatformTransactionManager transactionManager(LocalContainerEntityManagerFactoryBean entityManagerFactory) {
-        return new JpaTransactionManager((EntityManagerFactory) Objects.requireNonNull(entityManagerFactory.getObject()));
+        return new JpaTransactionManager(Objects.requireNonNull(entityManagerFactory.getObject()));
     }
 
-    @ConditionalOnClass({LocalContainerEntityManagerFactoryBean.class})
     @Bean
+    @ConditionalOnClass({LocalContainerEntityManagerFactoryBean.class})
     public MultiTenantDataSourceFactory multiTenantDataSourceFactory() {
         MultiTenantDataSourceFactory multiTenantDataSourceFactory = new MultiTenantDataSourceFactory();
-        log.trace("[Herodotus] |- Bean [Multi Tenant DataSource Factory] Configure.");
+        log.trace("[PIGXD] |- Bean [Multi Tenant DataSource Factory] Configure.");
         return multiTenantDataSourceFactory;
     }
 }

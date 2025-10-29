@@ -53,7 +53,9 @@
     <file url="file://$PROJECT_DIR$/engine-logic/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-message/message-autoconfigure/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-message/message-autoconfigure/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-message/message-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-message/message-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-message/message-module-websocket-servlet/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-message/message-module-websocket-servlet/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-message/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-message/src/main/resources" charset="UTF-8" />
@@ -73,6 +75,28 @@
     <file url="file://$PROJECT_DIR$/engine-oauth2/oauth2-module-persistence-jpa/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-oauth2/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-oauth2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/dialect-autoconfigure/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/dialect-autoconfigure/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/dialect-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/dialect-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/dialect-sdk-minio/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/dialect-sdk-minio/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/dialect-sdk-s3/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/dialect-sdk-s3/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-dialect/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-rest/rest-sdk-minio/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-rest/rest-sdk-minio/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-rest/rest-sdk-specification/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-rest/rest-sdk-specification/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-rest/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-rest/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-solution/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-solution/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-specification/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/oss-specification/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-oss/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-identity/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-identity/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-message/src/main/java" charset="UTF-8" />
@@ -81,6 +105,7 @@
     <file url="file://$PROJECT_DIR$/engine-rest/rest-module-servlet-upms/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-rest/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-rest/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/cache-spring-boot-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-starter/cache-spring-boot-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-starter/captcha-spring-boot-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-starter/captcha-spring-boot-starter/src/main/resources" charset="UTF-8" />
@@ -98,6 +123,12 @@
     <file url="file://$PROJECT_DIR$/engine-starter/facility-tencent-spring-boot-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-starter/logging-spring-boot-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-starter/logging-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/oss-minio-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/oss-minio-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/oss-s3-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/oss-s3-spring-boot-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/oss-spring-boot-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/engine-starter/oss-spring-boot-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-starter/reactive-container-spring-boot-starter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-starter/reactive-container-spring-boot-starter/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/engine-starter/servlet-container-spring-boot-starter/src/main/java" charset="UTF-8" />

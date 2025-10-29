@@ -1,12 +1,14 @@
-package com.pigx.engine.caffeine.enhance;
+package com.pigx.engine.cache.caffeine.enhance;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: cache-module-caffeine-3.5.7.0.jar:cn/herodotus/engine/cache/caffeine/enhance/SimpleCaffeineCache.class */
+
 public class SimpleCaffeineCache {
+
     private final Cache<String, String> cache;
 
     public SimpleCaffeineCache(Duration duration) {
@@ -18,10 +20,10 @@ public class SimpleCaffeineCache {
     }
 
     public void put(String key, String value) {
-        this.cache.put(key, value);
+        cache.put(key, value);
     }
 
     public String get(String key) {
-        return (String) this.cache.getIfPresent(key);
+        return cache.getIfPresent(key);
     }
 }

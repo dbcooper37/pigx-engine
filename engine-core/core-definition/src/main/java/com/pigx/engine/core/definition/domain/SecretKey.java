@@ -2,20 +2,49 @@ package com.pigx.engine.core.definition.domain;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/SecretKey.class */
+
 public class SecretKey implements Serializable {
+
+    /**
+     * 数据存储身份标识
+     */
     private String identity;
+    /**
+     * 对称加密算法秘钥
+     */
     private String symmetricKey;
+
+    /**
+     * 服务器端非对称加密算法公钥
+     * 1. RSA 为 Base64 格式
+     * 2. SM2 为 Hex 格式
+     */
     private String publicKey;
+
+    /**
+     * 服务器端非对称加密算法私钥
+     */
     private String privateKey;
+
+    /**
+     * 本系统授权码模式中后台返回的 State
+     */
     private String state;
+
+    /**
+     * 创建时间戳
+     */
     private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
+    public SecretKey() {
+    }
+
     public String getIdentity() {
-        return this.identity;
+        return identity;
     }
 
     public void setIdentity(String identity) {
@@ -23,7 +52,7 @@ public class SecretKey implements Serializable {
     }
 
     public String getSymmetricKey() {
-        return this.symmetricKey;
+        return symmetricKey;
     }
 
     public void setSymmetricKey(String symmetricKey) {
@@ -31,7 +60,7 @@ public class SecretKey implements Serializable {
     }
 
     public String getPublicKey() {
-        return this.publicKey;
+        return publicKey;
     }
 
     public void setPublicKey(String publicKey) {
@@ -39,7 +68,7 @@ public class SecretKey implements Serializable {
     }
 
     public String getPrivateKey() {
-        return this.privateKey;
+        return privateKey;
     }
 
     public void setPrivateKey(String privateKey) {
@@ -47,7 +76,7 @@ public class SecretKey implements Serializable {
     }
 
     public Timestamp getTimestamp() {
-        return this.timestamp;
+        return timestamp;
     }
 
     public void setTimestamp(Timestamp timestamp) {
@@ -55,13 +84,14 @@ public class SecretKey implements Serializable {
     }
 
     public String getState() {
-        return this.state;
+        return state;
     }
 
     public void setState(String state) {
         this.state = state;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -70,14 +100,23 @@ public class SecretKey implements Serializable {
             return false;
         }
         SecretKey secretKey = (SecretKey) o;
-        return Objects.equal(this.identity, secretKey.identity) && Objects.equal(this.timestamp, secretKey.timestamp);
+        return Objects.equal(identity, secretKey.identity) && Objects.equal(timestamp, secretKey.timestamp);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.identity, this.timestamp});
+        return Objects.hashCode(identity, timestamp);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("identity", this.identity).add("symmetricKey", this.symmetricKey).add("publicKey", this.publicKey).add("privateKey", this.privateKey).add("state", this.state).add("timestamp", this.timestamp).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("identity", identity)
+                .add("symmetricKey", symmetricKey)
+                .add("publicKey", publicKey)
+                .add("privateKey", privateKey)
+                .add("state", state)
+                .add("timestamp", timestamp)
+                .toString();
     }
 }

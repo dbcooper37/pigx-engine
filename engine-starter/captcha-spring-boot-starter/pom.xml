@@ -10,11 +10,11 @@
     <artifactId>captcha-spring-boot-starter</artifactId>
     <name>captcha-spring-boot-starter</name>
 
-    <description>基于 Spring Authorization Server 的 Dante Cloud 基础核心组件模块</description>
+    <description>基于 Spring Authorization Server 的 PigX Cloud 基础核心组件模块</description>
 
     <dependencies>
         <dependency>
-            <groupId>cn.herodotus.engine</groupId>
+            <groupId>com.pigx.engine</groupId>
             <artifactId>assistant-module-captcha</artifactId>
             <version>${project.version}</version>
         </dependency>

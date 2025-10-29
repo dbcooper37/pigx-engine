@@ -8,14 +8,16 @@ import com.pigx.engine.oauth2.core.enums.AllJwsAlgorithm;
 import com.pigx.engine.oauth2.core.enums.Database;
 import com.pigx.engine.oauth2.core.enums.ServerDevice;
 import com.pigx.engine.oauth2.core.enums.SignatureJwsAlgorithm;
+import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.stereotype.Service;
+
 
 @Service
-/* loaded from: logic-module-identity-3.5.7.0.jar:cn/herodotus/engine/logic/identity/service/OAuth2ConstantService.class */
 public class OAuth2ConstantService {
+
     private static final List<Map<String, Object>> APPLICATION_TYPE_ENUM = ApplicationType.getPreprocessedJsonStructure();
     private static final List<Map<String, Object>> GRANT_TYPE_ENUM = GrantType.getPreprocessedJsonStructure();
     private static final List<Map<String, Object>> SIGNATURE_JWS_ALGORITHM_ENUM = SignatureJwsAlgorithm.getPreprocessedJsonStructure();

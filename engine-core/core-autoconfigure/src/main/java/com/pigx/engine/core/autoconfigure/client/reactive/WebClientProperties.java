@@ -1,19 +1,30 @@
-package com.pigx.engine.autoconfigure.client.reactive;
+package com.pigx.engine.core.autoconfigure.client.reactive;
 
-import com.pigx.engine.core.definition.constant.BaseConstants;
 import com.google.common.base.MoreObjects;
-import java.time.Duration;
+import com.pigx.engine.core.definition.constant.BaseConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.time.Duration;
+
+
 @ConfigurationProperties(prefix = BaseConstants.PROPERTY_REACTIVE_WEBCLIENT)
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/client/reactive/WebClientProperties.class */
 public class WebClientProperties {
-    private Duration connectTimeout = Duration.ofMillis(10000);
-    private Duration readTimeout = Duration.ofSeconds(5000);
-    private Duration writeTimeout = Duration.ofSeconds(5000);
+
+    /**
+     * 连接超时时间，默认值：10000 毫秒
+     */
+    private Duration connectTimeout = Duration.ofMillis(10000L);
+    /**
+     * 读取超时时间，，默认值：10秒
+     */
+    private Duration readTimeout = Duration.ofSeconds(5000L);
+    /**
+     * 写入超时时间，，默认值：10秒
+     */
+    private Duration writeTimeout = Duration.ofSeconds(5000L);
 
     public Duration getConnectTimeout() {
-        return this.connectTimeout;
+        return connectTimeout;
     }
 
     public void setConnectTimeout(Duration connectTimeout) {
@@ -21,7 +32,7 @@ public class WebClientProperties {
     }
 
     public Duration getReadTimeout() {
-        return this.readTimeout;
+        return readTimeout;
     }
 
     public void setReadTimeout(Duration readTimeout) {
@@ -29,14 +40,19 @@ public class WebClientProperties {
     }
 
     public Duration getWriteTimeout() {
-        return this.writeTimeout;
+        return writeTimeout;
     }
 
     public void setWriteTimeout(Duration writeTimeout) {
         this.writeTimeout = writeTimeout;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("connectTimeout", this.connectTimeout).add("readTimeout", this.readTimeout).add("writeTimeout", this.writeTimeout).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("connectTimeout", connectTimeout)
+                .add("readTimeout", readTimeout)
+                .add("writeTimeout", writeTimeout)
+                .toString();
     }
 }

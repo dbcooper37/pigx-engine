@@ -14,36 +14,45 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/* JADX WARN: Classes with same name are omitted:
-  
- */
-@RequestMapping({"/security/tenant/datasource"})
-@Tags({@Tag(name = "系统安全管理接口"), @Tag(name = "多租户数据源接口")})
+
 @RestController
-/* loaded from: oauth2-authentication-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/autoconfigure/tenant/SysTenantDataSourceController.class */
+@RequestMapping("/security/tenant/datasource")
+@Tags({
+        @Tag(name = "系统安全管理接口"),
+        @Tag(name = "多租户数据源接口")
+})
 public class SysTenantDataSourceController extends AbstractJpaWriteableController<SysTenantDataSource, String> {
+
     private final SysTenantDataSourceService sysTenantDataSourceService;
 
     public SysTenantDataSourceController(SysTenantDataSourceService sysTenantDataSourceService) {
         this.sysTenantDataSourceService = sysTenantDataSourceService;
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
+    @Override
     public BaseJpaWriteableService<SysTenantDataSource, String> getService() {
-        return this.sysTenantDataSourceService;
+        return sysTenantDataSourceService;
     }
 
-    @Operation(summary = "根据租户代码查询数据源", description = "根据输入的租户代码，查询对应的数据源", responses = {@ApiResponse(description = "查询到的数据源", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = SysTenantDataSource.class))}), @ApiResponse(responseCode = "500", description = "查询失败")})
-    @Parameters({@Parameter(name = "tenantId", in = ParameterIn.PATH, required = true, description = "租户代码")})
     @AccessLimited
-    @GetMapping({"/{tenantId}"})
+    @Operation(summary = "根据租户代码查询数据源", description = "根据输入的租户代码，查询对应的数据源",
+            responses = {
+                    @ApiResponse(description = "查询到的数据源", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SysTenantDataSource.class))),
+                    @ApiResponse(responseCode = "500", description = "查询失败")
+            }
+    )
+    @Parameters({
+            @Parameter(name = "tenantId", in = ParameterIn.PATH, required = true, description = "租户代码"),
+    })
+    @GetMapping("/{tenantId}")
     public Result<SysTenantDataSource> findByRoleCode(@PathVariable("tenantId") String tenantId) {
-        SysTenantDataSource sysTenantDataSource = this.sysTenantDataSourceService.findByTenantId(tenantId);
-        return result((SysTenantDataSourceController) sysTenantDataSource);
+        SysTenantDataSource sysTenantDataSource = sysTenantDataSourceService.findByTenantId(tenantId);
+        return result(sysTenantDataSource);
     }
 }

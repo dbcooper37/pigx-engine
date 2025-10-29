@@ -1,19 +1,21 @@
 package com.pigx.engine.core.definition.utils;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/utils/DateTimeUtils.class */
+
 public class DateTimeUtils {
+
     private static final String DEFAULT_DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String DEFAULT_TIME_ZONE_NAME = "Asia/Shanghai";
 
     public static String zonedDateTimeToString(ZonedDateTime zonedDateTime) {
-        return zonedDateTimeToString(zonedDateTime, "yyyy-MM-dd HH:mm:ss");
+        return zonedDateTimeToString(zonedDateTime, DEFAULT_DATA_TIME_FORMAT);
     }
 
     public static String zonedDateTimeToString(ZonedDateTime zonedDateTime, String format) {
@@ -25,7 +27,7 @@ public class DateTimeUtils {
     }
 
     public static ZonedDateTime stringToZonedDateTime(String dateString) {
-        return stringToZonedDateTime(dateString, "yyyy-MM-dd HH:mm:ss");
+        return stringToZonedDateTime(dateString, DEFAULT_DATA_TIME_FORMAT);
     }
 
     public static ZonedDateTime stringToZonedDateTime(String dateString, String format) {
@@ -36,6 +38,12 @@ public class DateTimeUtils {
         return null;
     }
 
+    /**
+     * ZonedDateTime 转换成 Date
+     *
+     * @param zonedDateTime {@link ZonedDateTime}
+     * @return 如果 ZonedDateTime 有值则返回对应的 Date，如果为空则返回 当前日期
+     */
     public static Date zonedDateTimeToDate(ZonedDateTime zonedDateTime) {
         if (ObjectUtils.isNotEmpty(zonedDateTime)) {
             return Date.from(zonedDateTime.toInstant());
@@ -43,6 +51,12 @@ public class DateTimeUtils {
         return new Date();
     }
 
+    /**
+     * Date 转换成  ZonedDateTime
+     *
+     * @param date {@link Date}
+     * @return 如果 Date 有值则返回对应的 ZonedDateTime，如果为空则返回 当前日期
+     */
     public static ZonedDateTime dateToZonedDateTime(Date date) {
         if (ObjectUtils.isNotEmpty(date)) {
             return ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());

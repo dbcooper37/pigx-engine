@@ -4,9 +4,26 @@ import com.pigx.engine.assistant.access.definition.domain.AccessResponse;
 import com.pigx.engine.assistant.access.definition.domain.AccessUserDetails;
 import com.pigx.engine.core.identity.domain.AccessPrincipal;
 
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/definition/AccessHandler.class */
+
 public interface AccessHandler {
+
+    /**
+     * 外部应用接入预处理
+     * 比如 微信小程序需要传入Code 和 AppId
+     * 比如 手机登录需要传入手机号码等
+     *
+     * @param core   对于只需要一个参数就可以进行预处理操作的核心值。
+     * @param params 核心值以外的其它参数
+     * @return {@link  AccessResponse}
+     */
     AccessResponse preProcess(String core, String... params);
 
+    /**
+     * 获取接入系统中的用户信息，并转换为系统可以识别的 {@link AccessUserDetails} 类型
+     *
+     * @param source          类别
+     * @param accessPrincipal 外部系统接入所需信息
+     * @return 外部系统用户信息 {@link AccessUserDetails}
+     */
     AccessUserDetails loadUserDetails(String source, AccessPrincipal accessPrincipal);
 }

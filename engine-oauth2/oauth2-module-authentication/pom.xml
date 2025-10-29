@@ -28,6 +28,30 @@
             <groupId>com.pigx.engine</groupId>
             <artifactId>web-module-servlet</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>oauth2-module-extension</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>data-module-tenant</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>oauth2-authorization-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>web-module-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>logic-module-identity</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>rest-module-servlet-identity</artifactId>
+        </dependency>
 
     </dependencies>
 </project>

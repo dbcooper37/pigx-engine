@@ -11,30 +11,31 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableConfigurationProperties({SecureProperties.class})
+
 @Configuration(proxyBeanMethods = false)
-/* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/config/SecureStampConfiguration.class */
+@EnableConfigurationProperties({SecureProperties.class})
 public class SecureStampConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(SecureStampConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Protect Secure] Configure.");
+        log.debug("[PIGXD] |- Module [Protect Secure] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public IdempotentStampManager idempotentStampManager(SecureProperties secureProperties) {
         IdempotentStampManager idempotentStampManager = new IdempotentStampManager(secureProperties);
-        log.trace("[Herodotus] |- Bean [Idempotent Stamp Manager] Configure.");
+        log.trace("[PIGXD] |- Bean [Idempotent Stamp Manager] Configure.");
         return idempotentStampManager;
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public AccessLimitedStampManager accessLimitedStampManager(SecureProperties secureProperties) {
         AccessLimitedStampManager accessLimitedStampManager = new AccessLimitedStampManager(secureProperties);
-        log.trace("[Herodotus] |- Bean [Access Limited Stamp Manager] Configure.");
+        log.trace("[PIGXD] |- Bean [Access Limited Stamp Manager] Configure.");
         return accessLimitedStampManager;
     }
 }

@@ -11,11 +11,11 @@
     <artifactId>data-rdbms-spring-boot-starter</artifactId>
     <name>data-rdbms-spring-boot-starter</name>
 
-    <description>Dante Cloud 微服务基座组件库关系型数据库数据访问层自动配置 Starter</description>
+    <description>PigX Cloud 微服务基座组件库关系型数据库数据访问层自动配置 Starter</description>
 
     <dependencies>
         <dependency>
-            <groupId>cn.herodotus.engine</groupId>
+            <groupId>com.pigx.engine</groupId>
             <artifactId>data-module-tenant</artifactId>
         </dependency>
 

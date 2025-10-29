@@ -15,27 +15,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping({"/authorize/application"})
-@Tags({@Tag(name = "OAuth2 认证服务接口"), @Tag(name = "OAuth2 应用管理接口")})
+
 @RestController
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/controller/OAuth2ApplicationController.class */
+@RequestMapping("/authorize/application")
+@Tags({
+        @Tag(name = "OAuth2 认证服务接口"),
+        @Tag(name = "OAuth2 应用管理接口")
+})
 public class OAuth2ApplicationController extends AbstractJpaWriteableController<OAuth2Application, String> {
+
     private final OAuth2ApplicationService applicationService;
 
     public OAuth2ApplicationController(OAuth2ApplicationService applicationService) {
         this.applicationService = applicationService;
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
+    @Override
     public BaseJpaWriteableService<OAuth2Application, String> getService() {
         return this.applicationService;
     }
 
-    @PutMapping
     @Operation(summary = "给应用分配Scope", description = "给应用分配Scope")
-    @Parameters({@Parameter(name = "appKey", required = true, description = "appKey"), @Parameter(name = "scopes[]", required = true, description = "Scope对象组成的数组")})
+    @Parameters({
+            @Parameter(name = "appKey", required = true, description = "appKey"),
+            @Parameter(name = "scopes[]", required = true, description = "Scope对象组成的数组")
+    })
+    @PutMapping
     public Result<OAuth2Application> authorize(@RequestParam(name = "applicationId") String scopeId, @RequestParam(name = "scopes[]") String[] scopes) {
-        OAuth2Application application = this.applicationService.authorize(scopeId, scopes);
-        return result((OAuth2ApplicationController) application);
+        OAuth2Application application = applicationService.authorize(scopeId, scopes);
+        return result(application);
     }
 }

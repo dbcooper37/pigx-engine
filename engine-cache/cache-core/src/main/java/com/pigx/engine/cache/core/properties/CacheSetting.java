@@ -1,22 +1,59 @@
-package com.pigx.engine.core.properties;
+package com.pigx.engine.cache.core.properties;
 
-import com.pigx.engine.cache.core.enums.CacheMethod;
 import com.google.common.base.MoreObjects;
+import com.pigx.engine.cache.core.enums.CacheMethod;
+
 import java.time.Duration;
 
-/* loaded from: cache-core-3.5.7.0.jar:cn/herodotus/engine/cache/core/properties/CacheSetting.class */
+
 public class CacheSetting {
+
+    /**
+     * 指定缓存区域，与 JetCache Area 配置对应。
+     */
     private String area;
+    /**
+     * 缓存方式。默认：多级缓存
+     */
     private CacheMethod method = CacheMethod.BOTH;
+    /**
+     * 缓存过期时间，默认两小时
+     * <p>
+     * 使用Duration类型，配置参数形式如下：
+     * "?ns" //纳秒
+     * "?us" //微秒
+     * "?ms" //毫秒
+     * "?s" //秒
+     * "?m" //分
+     * "?h" //小时
+     * "?d" //天
+     */
     private Duration expire = Duration.ofHours(2);
+    /**
+     * 是否开启多实例本地缓存同步，默认：不开启
+     * 仅在多级缓存模式下生效。
+     */
     private Boolean sync = false;
+
+    /**
+     * 本地缓存过期时间
+     */
     private Duration localExpire;
+    /**
+     * 本地缓存数量限制。
+     */
     private Integer localLimit;
+    /**
+     * 是否开启缓存穿透保护, 默认：true
+     */
     private Boolean penetrationProtect;
+    /**
+     * 缓存穿透保护有效期，默认：2 小时。
+     */
     private Duration penetrationProtectTimeout;
 
     public String getArea() {
-        return this.area;
+        return area;
     }
 
     public void setArea(String area) {
@@ -24,7 +61,7 @@ public class CacheSetting {
     }
 
     public CacheMethod getMethod() {
-        return this.method;
+        return method;
     }
 
     public void setMethod(CacheMethod method) {
@@ -32,7 +69,7 @@ public class CacheSetting {
     }
 
     public Duration getExpire() {
-        return this.expire;
+        return expire;
     }
 
     public void setExpire(Duration expire) {
@@ -40,7 +77,7 @@ public class CacheSetting {
     }
 
     public Boolean getSync() {
-        return this.sync;
+        return sync;
     }
 
     public void setSync(Boolean sync) {
@@ -48,7 +85,7 @@ public class CacheSetting {
     }
 
     public Duration getLocalExpire() {
-        return this.localExpire;
+        return localExpire;
     }
 
     public void setLocalExpire(Duration localExpire) {
@@ -56,7 +93,7 @@ public class CacheSetting {
     }
 
     public Integer getLocalLimit() {
-        return this.localLimit;
+        return localLimit;
     }
 
     public void setLocalLimit(Integer localLimit) {
@@ -64,7 +101,7 @@ public class CacheSetting {
     }
 
     public Boolean getPenetrationProtect() {
-        return this.penetrationProtect;
+        return penetrationProtect;
     }
 
     public void setPenetrationProtect(Boolean penetrationProtect) {
@@ -72,14 +109,24 @@ public class CacheSetting {
     }
 
     public Duration getPenetrationProtectTimeout() {
-        return this.penetrationProtectTimeout;
+        return penetrationProtectTimeout;
     }
 
     public void setPenetrationProtectTimeout(Duration penetrationProtectTimeout) {
         this.penetrationProtectTimeout = penetrationProtectTimeout;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("area", this.area).add("method", this.method).add("expire", this.expire).add("sync", this.sync).add("localExpire", this.localExpire).add("localLimit", this.localLimit).add("penetrationProtect", this.penetrationProtect).add("penetrationProtectTimeout", this.penetrationProtectTimeout).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("area", area)
+                .add("method", method)
+                .add("expire", expire)
+                .add("sync", sync)
+                .add("localExpire", localExpire)
+                .add("localLimit", localLimit)
+                .add("penetrationProtect", penetrationProtect)
+                .add("penetrationProtectTimeout", penetrationProtectTimeout)
+                .toString();
     }
 }

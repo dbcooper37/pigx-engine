@@ -1,21 +1,33 @@
 package com.pigx.engine.core.foundation.enums;
 
-import com.pigx.engine.core.definition.constant.SymbolConstants;
 import org.apache.commons.lang3.Strings;
 
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/enums/UrlCategory.class */
+
 public enum UrlCategory {
+
+    /**
+     * 含有通配符，含有 "*" 或 "?"
+     */
     WILDCARD,
+    /**
+     * 含有占位符，含有 "{" 和 " } "
+     */
     PLACEHOLDER,
+    /**
+     * 不含有任何特殊字符的完整路径
+     */
     FULL_PATH;
 
     public static UrlCategory getCategory(String url) {
-        if (Strings.CS.containsAny(url, new String[]{SymbolConstants.STAR, SymbolConstants.QUESTION})) {
-            return WILDCARD;
+
+        if (Strings.CS.containsAny(url, new String[]{"*", "?"})) {
+            return UrlCategory.WILDCARD;
         }
-        if (Strings.CS.contains(url, SymbolConstants.OPEN_CURLY_BRACE)) {
-            return PLACEHOLDER;
+
+        if (Strings.CS.contains(url, "{")) {
+            return UrlCategory.PLACEHOLDER;
         }
-        return FULL_PATH;
+
+        return UrlCategory.FULL_PATH;
     }
 }

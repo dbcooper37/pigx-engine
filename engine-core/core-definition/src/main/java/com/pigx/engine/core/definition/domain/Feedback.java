@@ -2,53 +2,62 @@ package com.pigx.engine.core.definition.domain;
 
 import cn.hutool.v7.core.lang.Assert;
 import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/Feedback.class */
-public class Feedback implements Serializable, BaseDomain {
+
+public non-sealed class Feedback implements Serializable, BaseDomain {
+
     private static final int IS_NOT_CUSTOMIZED = 0;
+
     private final String message;
     private final int status;
+    /**
+     * 实际错误码如果与 HttpStatus 错误码对应，即开头数字为 1~5；自定义错误码，开头数字为 6~9。
+     * 为了方便区分错误码是与 HttpStatus 错误码对应的还是自定义的，增加了 custom 属性。如果 custom 为 0，即为与 HttpStatus 错误码对应；如果为 6~9 那么就代表是自定义错误码
+     */
     private final int custom;
 
     public Feedback(String message, int status) {
-        this(message, status, 0);
+        this(message, status, IS_NOT_CUSTOMIZED);
     }
 
     public Feedback(String message, int status, int custom) {
-        Assert.checkBetween(custom, 0, 9);
+        Assert.checkBetween(custom, IS_NOT_CUSTOMIZED, 9);
         this.message = message;
         this.status = status;
         this.custom = custom;
     }
 
     public String getMessage() {
-        return this.message;
+        return message;
     }
 
     public int getStatus() {
-        return this.status;
+        return status;
     }
 
     public boolean isCustom() {
-        return this.custom != 0;
+        return custom != IS_NOT_CUSTOMIZED;
     }
 
     public int getCustom() {
-        return this.custom;
+        return custom;
     }
 
     public int getSequence() {
         if (isCustom()) {
-            return this.custom * 10000;
+            return custom * 10000;
+        } else {
+            return status * 100;
         }
-        return this.status * 100;
     }
 
     public int getSequence(int index) {
         return getSequence() + index;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -57,10 +66,11 @@ public class Feedback implements Serializable, BaseDomain {
             return false;
         }
         Feedback feedback = (Feedback) o;
-        return Objects.equal(this.message, feedback.message);
+        return Objects.equal(message, feedback.message);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.message});
+        return Objects.hashCode(message);
     }
 }

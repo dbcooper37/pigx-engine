@@ -1,84 +1,75 @@
 package com.pigx.engine.logic.upms.entity.hr;
 
-import com.pigx.engine.core.definition.constant.ErrorCodeMapperBuilderOrdered;
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
 import com.pigx.engine.logic.upms.constants.LogicUpmsConstants;
 import com.pigx.engine.logic.upms.enums.OrganizationCategory;
-import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.Cache;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UuidGenerator;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_ORGANIZATION)
+
 @Schema(name = "单位")
-@Cacheable
 @Entity
 @Table(name = "sys_organization", indexes = {@Index(name = "sys_organization_id_idx", columnList = "organization_id")})
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/entity/hr/SysOrganization.class */
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_ORGANIZATION)
 public class SysOrganization extends AbstractSysEntity {
 
-    @Id
     @Schema(name = "单位ID")
+    @Id
     @UuidGenerator
     @Column(name = "organization_id", length = 64)
     private String organizationId;
 
-    @Column(name = "organization_name", length = 1000)
     @Schema(name = "单位名称")
+    @Column(name = "organization_name", length = 1000)
     private String organizationName;
 
-    @Column(name = "a4_biz_org_id", length = 64)
     @Schema(name = "4A标准单位ID")
+    @Column(name = "a4_biz_org_id", length = 64)
     private String a4BizOrgId;
 
-    @Column(name = "biz_org_code", length = ErrorCodeMapperBuilderOrdered.ACCESS)
     @Schema(name = "标准单位代码")
+    @Column(name = "biz_org_code", length = 60)
     private String bizOrgCode;
 
-    @Column(name = "biz_org_desc", length = 256)
     @Schema(name = "标准单位说明")
+    @Column(name = "biz_org_desc", length = 256)
     private String bizOrgDesc;
 
-    @Column(name = "biz_org_id", length = 64)
     @Schema(name = "标准单位ID")
+    @Column(name = "biz_org_id", length = 64)
     private String bizOrgId;
 
-    @Column(name = "biz_org_name", length = 200)
     @Schema(name = "标准单位名称")
+    @Column(name = "biz_org_name", length = 200)
     private String bizOrgName;
 
-    @Column(name = "biz_org_type", length = ErrorCodeMapperBuilderOrdered.OAUTH2)
     @Schema(name = "标准单位类型")
+    @Column(name = "biz_org_type", length = 30)
     private String bizOrgType;
 
-    @Column(name = "partition_code", length = 256)
     @Schema(name = "分区代码")
+    @Column(name = "partition_code", length = 256)
     private String partitionCode;
 
-    @Column(name = "short_name", length = 200)
     @Schema(name = "单位简称")
+    @Column(name = "short_name", length = 200)
     private String shortName;
 
-    @Column(name = "parent_id", length = 64)
     @Schema(name = "上级单位ID")
+    @Column(name = "parent_id", length = 64)
     private String parentId;
 
+    @Schema(name = "机构类别")
     @Column(name = "category")
     @Enumerated(EnumType.ORDINAL)
-    @Schema(name = "机构类别")
     private OrganizationCategory category = OrganizationCategory.ENTERPRISE;
 
     public String getOrganizationId() {
-        return this.organizationId;
+        return organizationId;
     }
 
     public void setOrganizationId(String organizationId) {
@@ -86,7 +77,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getOrganizationName() {
-        return this.organizationName;
+        return organizationName;
     }
 
     public void setOrganizationName(String organizationName) {
@@ -94,7 +85,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getA4BizOrgId() {
-        return this.a4BizOrgId;
+        return a4BizOrgId;
     }
 
     public void setA4BizOrgId(String a4BizOrgId) {
@@ -102,7 +93,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getBizOrgCode() {
-        return this.bizOrgCode;
+        return bizOrgCode;
     }
 
     public void setBizOrgCode(String bizOrgCode) {
@@ -110,7 +101,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getBizOrgDesc() {
-        return this.bizOrgDesc;
+        return bizOrgDesc;
     }
 
     public void setBizOrgDesc(String bizOrgDesc) {
@@ -118,7 +109,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getBizOrgId() {
-        return this.bizOrgId;
+        return bizOrgId;
     }
 
     public void setBizOrgId(String bizOrgId) {
@@ -126,7 +117,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getBizOrgName() {
-        return this.bizOrgName;
+        return bizOrgName;
     }
 
     public void setBizOrgName(String bizOrgName) {
@@ -134,7 +125,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getBizOrgType() {
-        return this.bizOrgType;
+        return bizOrgType;
     }
 
     public void setBizOrgType(String bizOrgType) {
@@ -142,7 +133,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getPartitionCode() {
-        return this.partitionCode;
+        return partitionCode;
     }
 
     public void setPartitionCode(String partitionCode) {
@@ -150,7 +141,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getShortName() {
-        return this.shortName;
+        return shortName;
     }
 
     public void setShortName(String shortName) {
@@ -158,7 +149,7 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public String getParentId() {
-        return this.parentId;
+        return parentId;
     }
 
     public void setParentId(String parentId) {
@@ -166,15 +157,28 @@ public class SysOrganization extends AbstractSysEntity {
     }
 
     public OrganizationCategory getCategory() {
-        return this.category;
+        return category;
     }
 
     public void setCategory(OrganizationCategory category) {
         this.category = category;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("organizationId", this.organizationId).add("organizationName", this.organizationName).add("a4BizOrgId", this.a4BizOrgId).add("bizOrgCode", this.bizOrgCode).add("bizOrgDesc", this.bizOrgDesc).add("bizOrgId", this.bizOrgId).add("bizOrgName", this.bizOrgName).add("bizOrgType", this.bizOrgType).add("partitionCode", this.partitionCode).add("shortName", this.shortName).add("parentId", this.parentId).add("category", this.category).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("organizationId", organizationId)
+                .add("organizationName", organizationName)
+                .add("a4BizOrgId", a4BizOrgId)
+                .add("bizOrgCode", bizOrgCode)
+                .add("bizOrgDesc", bizOrgDesc)
+                .add("bizOrgId", bizOrgId)
+                .add("bizOrgName", bizOrgName)
+                .add("bizOrgType", bizOrgType)
+                .add("partitionCode", partitionCode)
+                .add("shortName", shortName)
+                .add("parentId", parentId)
+                .add("category", category)
+                .toString();
     }
 }

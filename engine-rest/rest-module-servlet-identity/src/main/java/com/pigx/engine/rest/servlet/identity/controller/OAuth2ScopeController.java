@@ -17,24 +17,30 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping({"/authorize/scope"})
-@Tags({@Tag(name = "OAuth2 认证服务接口"), @Tag(name = "OAuth2 权限范围管理接口")})
+/**
+ * <p> Description : OauthScopesController </p>
+ *
+ * @author : gengwei.zheng
+ * @date : 2020/3/25 17:10
+ */
 @RestController
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/controller/OAuth2ScopeController.class */
+@RequestMapping("/authorize/scope")
+@Tags({
+        @Tag(name = "OAuth2 认证服务接口"),
+        @Tag(name = "OAuth2 权限范围管理接口")
+})
 public class OAuth2ScopeController extends AbstractJpaWriteableController<OAuth2Scope, String> {
+
     private final OAuth2ScopeService scopeService;
 
     @Autowired
@@ -42,37 +48,54 @@ public class OAuth2ScopeController extends AbstractJpaWriteableController<OAuth2
         this.scopeService = scopeService;
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
+    @Override
     public BaseJpaWriteableService<OAuth2Scope, String> getService() {
         return this.scopeService;
     }
 
-    @PostMapping({"/assigned"})
-    @Operation(summary = "给Scope分配权限", description = "给Scope分配权限", responses = {@ApiResponse(description = "查询到的角色", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OAuth2ScopeDto.class))})})
-    @Parameters({@Parameter(name = "scope", required = true, description = "范围请求参数")})
+    @Operation(summary = "给Scope分配权限", description = "给Scope分配权限",
+            responses = {
+                    @ApiResponse(description = "查询到的角色", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = OAuth2ScopeDto.class))),
+            })
+    @Parameters({
+            @Parameter(name = "scope", required = true, description = "范围请求参数"),
+    })
+    @PostMapping("/assigned")
     public Result<OAuth2Scope> assigned(@RequestBody OAuth2ScopeDto scope) {
+
         Set<OAuth2Permission> permissions = new HashSet<>();
         if (CollectionUtils.isNotEmpty(scope.getPermissions())) {
-            permissions = (Set) scope.getPermissions().stream().map(this::toEntity).collect(Collectors.toSet());
+            permissions = scope.getPermissions().stream().map(this::toEntity).collect(Collectors.toSet());
         }
-        OAuth2Scope result = this.scopeService.assigned(scope.getScopeId(), permissions);
-        return result((OAuth2ScopeController) result);
+
+        OAuth2Scope result = scopeService.assigned(scope.getScopeId(), permissions);
+        return result(result);
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
     @AccessLimited
-    @GetMapping({"/list"})
-    @Operation(summary = "获取全部范围", description = "获取全部范围", responses = {@ApiResponse(description = "全部数据列表", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))}), @ApiResponse(responseCode = "204", description = "查询成功，未查到数据"), @ApiResponse(responseCode = "500", description = "查询失败")})
+    @Operation(summary = "获取全部范围", description = "获取全部范围", responses = {
+            @ApiResponse(description = "全部数据列表", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "204", description = "查询成功，未查到数据"),
+            @ApiResponse(responseCode = "500", description = "查询失败")
+    })
+    @GetMapping("/list")
     public Result<List<OAuth2Scope>> findAll() {
-        return result((List) this.scopeService.findAll());
+        List<OAuth2Scope> oAuth2Scopes = scopeService.findAll();
+        return result(oAuth2Scopes);
     }
 
     @AccessLimited
-    @GetMapping({"/{scopeCode}"})
-    @Operation(summary = "根据范围代码查询应用范围", description = "根据范围代码查询应用范围", responses = {@ApiResponse(description = "查询到的应用范围", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OAuth2Scope.class))}), @ApiResponse(responseCode = "204", description = "查询成功，未查到数据"), @ApiResponse(responseCode = "500", description = "查询失败")})
+    @Operation(summary = "根据范围代码查询应用范围", description = "根据范围代码查询应用范围",
+            responses = {
+                    @ApiResponse(description = "查询到的应用范围", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = OAuth2Scope.class))),
+                    @ApiResponse(responseCode = "204", description = "查询成功，未查到数据"),
+                    @ApiResponse(responseCode = "500", description = "查询失败")
+            }
+    )
+    @GetMapping("/{scopeCode}")
     public Result<OAuth2Scope> findByScopeCode(@PathVariable("scopeCode") String scopeCode) {
-        OAuth2Scope scope = this.scopeService.findByScopeCode(scopeCode);
-        return result((OAuth2ScopeController) scope);
+        OAuth2Scope scope = scopeService.findByScopeCode(scopeCode);
+        return result(scope);
     }
 
     private OAuth2Permission toEntity(OAuth2PermissionDto dto) {
@@ -82,4 +105,5 @@ public class OAuth2ScopeController extends AbstractJpaWriteableController<OAuth2
         entity.setPermissionName(dto.getPermissionName());
         return entity;
     }
+
 }

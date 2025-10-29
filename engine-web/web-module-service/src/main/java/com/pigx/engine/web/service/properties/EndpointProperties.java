@@ -1,49 +1,148 @@
 package com.pigx.engine.web.service.properties;
 
-import com.pigx.engine.core.definition.constant.BaseConstants;
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.pigx.engine.core.definition.utils.WellFormedUtils;
-import com.google.common.base.MoreObjects;
+import com.pigx.engine.web.core.constant.WebConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = BaseConstants.PROPERTY_PREFIX_ENDPOINT)
-/* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/properties/EndpointProperties.class */
+
+@ConfigurationProperties(prefix = WebConstants.PROPERTY_PREFIX_ENDPOINT)
 public class EndpointProperties {
+
+    /**
+     * 认证中心服务名称
+     */
     private String uaaServiceName;
+    /**
+     * 用户中心服务名称
+     */
     private String upmsServiceName;
+    /**
+     * 消息服务名称
+     */
     private String messageServiceName;
+    /**
+     * 对象存储服务名称
+     */
     private String ossServiceName;
+
+    /**
+     * 统一网关服务地址。可以是IP+端口，可以是域名
+     */
     private String gatewayServiceUri;
+
+    /**
+     * 统一认证中心服务地址
+     */
     private String uaaServiceUri;
+    /**
+     * 统一权限管理服务地址
+     */
     private String upmsServiceUri;
+    /**
+     * 统一消息服务地址
+     */
     private String messageServiceUri;
+    /**
+     * 对象存储服务地址
+     */
     private String ossServiceUri;
+    /**
+     * OAuth2 Authorization Code 模式认证端点，/oauth2/authorize uri 地址，可修改为自定义地址
+     */
     private String authorizationUri;
-    private String pushedAuthorizationRequestUri;
-    private String accessTokenUri;
-    private String jwkSetUri;
-    private String tokenRevocationUri;
-    private String tokenIntrospectionUri;
-    private String deviceAuthorizationUri;
-    private String deviceVerificationUri;
-    private String oidcClientRegistrationUri;
-    private String oidcLogoutUri;
-    private String oidcUserInfoUri;
-    private String issuerUri;
+    /**
+     * OAuth2 Authorization Code 模式认证端点，/oauth2/authorize端点地址，可修改为自定义地址
+     */
     private String authorizationEndpoint = SystemConstants.OAUTH2_AUTHORIZATION_ENDPOINT;
+    /**
+     * OAuth2 Pushed Authorization Requests 模式认证端点，/oauth2/par uri 地址，可修改为自定义地址
+     */
+    private String pushedAuthorizationRequestUri;
+    /**
+     * OAuth2 Pushed Authorization Requests 模式认证端点，/oauth2/authorize端点地址，可修改为自定义地址
+     */
     private String pushedAuthorizationRequestEndpoint = SystemConstants.OAUTH2_PUSHED_AUTHORIZATION_REQUEST_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/token 申请 Token uri 地址，可修改为自定义地址
+     */
+    private String accessTokenUri;
+    /**
+     * OAuth2 /oauth2/token 申请 Token 端点地址，可修改为自定义地址
+     */
     private String accessTokenEndpoint = SystemConstants.OAUTH2_TOKEN_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/jwks uri 地址，可修改为自定义地址
+     */
+    private String jwkSetUri;
+    /**
+     * OAuth2 /oauth2/jwks 端点地址，可修改为自定义地址
+     */
     private String jwkSetEndpoint = SystemConstants.OAUTH2_JWK_SET_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/revoke 撤销 Token uri 地址，可修改为自定义地址
+     */
+    private String tokenRevocationUri;
+    /**
+     * OAuth2 /oauth2/revoke 撤销 Token 端点地址，可修改为自定义地址
+     */
     private String tokenRevocationEndpoint = SystemConstants.OAUTH2_TOKEN_REVOCATION_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/introspect 查看 Token uri地址，可修改为自定义地址
+     */
+    private String tokenIntrospectionUri;
+    /**
+     * OAuth2 /oauth2/introspect 查看 Token 端点地址，可修改为自定义地址
+     */
     private String tokenIntrospectionEndpoint = SystemConstants.OAUTH2_TOKEN_INTROSPECTION_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/device_authorization 设备授权认证 uri地址，可修改为自定义地址
+     */
+    private String deviceAuthorizationUri;
+    /**
+     * OAuth2 /oauth2/device_authorization 设备授权认证端点地址，可修改为自定义地址
+     */
     private String deviceAuthorizationEndpoint = SystemConstants.OAUTH2_DEVICE_AUTHORIZATION_ENDPOINT;
+    /**
+     * OAuth2 /oauth2/device_verification 设备授权校验 uri地址，可修改为自定义地址
+     */
+    private String deviceVerificationUri;
+    /**
+     * OAuth2 /oauth2/device_verification 设备授权校验端点地址，可修改为自定义地址
+     */
     private String deviceVerificationEndpoint = SystemConstants.OAUTH2_DEVICE_VERIFICATION_ENDPOINT;
+    /**
+     * OAuth2 OIDC /connect/register uri 地址，可修改为自定义地址
+     */
+    private String oidcClientRegistrationUri;
+    /**
+     * OAuth2 OIDC /connect/register 端点地址，可修改为自定义地址
+     */
     private String oidcClientRegistrationEndpoint = SystemConstants.OIDC_CLIENT_REGISTRATION_ENDPOINT;
+    /**
+     * OAuth2 OIDC /connect/logout uri 地址，可修改为自定义地址
+     */
+    private String oidcLogoutUri;
+    /**
+     * OAuth2 OIDC /connect/logout 端点地址，可修改为自定义地址
+     */
     private String oidcLogoutEndpoint = SystemConstants.OIDC_LOGOUT_ENDPOINT;
+    /**
+     * OAuth2 OIDC /userinfo uri 地址，可修改为自定义地址
+     */
+    private String oidcUserInfoUri;
+    /**
+     * OAuth2 OIDC /userinfo 端点地址，可修改为自定义地址
+     */
     private String oidcUserInfoEndpoint = SystemConstants.OIDC_USER_INFO_ENDPOINT;
+    /**
+     * Spring Authorization Server Issuer Url
+     */
+    private String issuerUri;
 
     public String getUaaServiceName() {
-        return this.uaaServiceName;
+        return uaaServiceName;
     }
 
     public void setUaaServiceName(String uaaServiceName) {
@@ -51,7 +150,7 @@ public class EndpointProperties {
     }
 
     public String getUpmsServiceName() {
-        return this.upmsServiceName;
+        return upmsServiceName;
     }
 
     public void setUpmsServiceName(String upmsServiceName) {
@@ -59,7 +158,7 @@ public class EndpointProperties {
     }
 
     public String getMessageServiceName() {
-        return this.messageServiceName;
+        return messageServiceName;
     }
 
     public void setMessageServiceName(String messageServiceName) {
@@ -67,7 +166,7 @@ public class EndpointProperties {
     }
 
     public String getOssServiceName() {
-        return this.ossServiceName;
+        return ossServiceName;
     }
 
     public void setOssServiceName(String ossServiceName) {
@@ -75,7 +174,7 @@ public class EndpointProperties {
     }
 
     public String getGatewayServiceUri() {
-        return this.gatewayServiceUri;
+        return gatewayServiceUri;
     }
 
     public void setGatewayServiceUri(String gatewayServiceUri) {
@@ -83,7 +182,7 @@ public class EndpointProperties {
     }
 
     public String getUaaServiceUri() {
-        return WellFormedUtils.serviceUri(this.uaaServiceUri, getUaaServiceName(), getGatewayServiceUri(), "UAA");
+        return WellFormedUtils.serviceUri(uaaServiceUri, getUaaServiceName(), getGatewayServiceUri(), "UAA");
     }
 
     public void setUaaServiceUri(String uaaServiceUri) {
@@ -91,7 +190,7 @@ public class EndpointProperties {
     }
 
     public String getUpmsServiceUri() {
-        return WellFormedUtils.serviceUri(this.upmsServiceUri, getUpmsServiceName(), getGatewayServiceUri(), "UPMS");
+        return WellFormedUtils.serviceUri(upmsServiceUri, getUpmsServiceName(), getGatewayServiceUri(), "UPMS");
     }
 
     public void setUpmsServiceUri(String upmsServiceUri) {
@@ -99,7 +198,7 @@ public class EndpointProperties {
     }
 
     public String getMessageServiceUri() {
-        return WellFormedUtils.serviceUri(this.messageServiceUri, getMessageServiceName(), getGatewayServiceUri(), "MESSAGE");
+        return WellFormedUtils.serviceUri(messageServiceUri, getMessageServiceName(), getGatewayServiceUri(), "MESSAGE");
     }
 
     public void setMessageServiceUri(String messageServiceUri) {
@@ -107,7 +206,7 @@ public class EndpointProperties {
     }
 
     public String getOssServiceUri() {
-        return WellFormedUtils.serviceUri(this.ossServiceUri, getOssServiceName(), getGatewayServiceUri(), "OSS");
+        return WellFormedUtils.serviceUri(ossServiceUri, getOssServiceName(), getGatewayServiceUri(), "OSS");
     }
 
     public void setOssServiceUri(String ossServiceUri) {
@@ -115,7 +214,7 @@ public class EndpointProperties {
     }
 
     public String getAuthorizationUri() {
-        return WellFormedUtils.sasUri(this.authorizationUri, getAuthorizationEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(authorizationUri, getAuthorizationEndpoint(), getIssuerUri());
     }
 
     public void setAuthorizationUri(String authorizationUri) {
@@ -123,7 +222,7 @@ public class EndpointProperties {
     }
 
     public String getPushedAuthorizationRequestUri() {
-        return WellFormedUtils.sasUri(this.pushedAuthorizationRequestUri, getPushedAuthorizationRequestEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(pushedAuthorizationRequestUri, getPushedAuthorizationRequestEndpoint(), getIssuerUri());
     }
 
     public void setPushedAuthorizationRequestUri(String pushedAuthorizationRequestUri) {
@@ -131,7 +230,7 @@ public class EndpointProperties {
     }
 
     public String getAccessTokenUri() {
-        return WellFormedUtils.sasUri(this.accessTokenUri, getAccessTokenEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(accessTokenUri, getAccessTokenEndpoint(), getIssuerUri());
     }
 
     public void setAccessTokenUri(String accessTokenUri) {
@@ -139,7 +238,7 @@ public class EndpointProperties {
     }
 
     public String getJwkSetUri() {
-        return WellFormedUtils.sasUri(this.jwkSetUri, getJwkSetEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(jwkSetUri, getJwkSetEndpoint(), getIssuerUri());
     }
 
     public void setJwkSetUri(String jwkSetUri) {
@@ -147,7 +246,7 @@ public class EndpointProperties {
     }
 
     public String getTokenRevocationUri() {
-        return WellFormedUtils.sasUri(this.tokenRevocationUri, getTokenRevocationEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(tokenRevocationUri, getTokenRevocationEndpoint(), getIssuerUri());
     }
 
     public void setTokenRevocationUri(String tokenRevocationUri) {
@@ -155,7 +254,7 @@ public class EndpointProperties {
     }
 
     public String getTokenIntrospectionUri() {
-        return WellFormedUtils.sasUri(this.tokenIntrospectionUri, getTokenIntrospectionEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(tokenIntrospectionUri, getTokenIntrospectionEndpoint(), getIssuerUri());
     }
 
     public void setTokenIntrospectionUri(String tokenIntrospectionUri) {
@@ -163,7 +262,7 @@ public class EndpointProperties {
     }
 
     public String getDeviceAuthorizationUri() {
-        return WellFormedUtils.sasUri(this.deviceAuthorizationUri, getDeviceAuthorizationEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(deviceAuthorizationUri, getDeviceAuthorizationEndpoint(), getIssuerUri());
     }
 
     public void setDeviceAuthorizationUri(String deviceAuthorizationUri) {
@@ -171,7 +270,7 @@ public class EndpointProperties {
     }
 
     public String getDeviceVerificationUri() {
-        return WellFormedUtils.sasUri(this.deviceVerificationUri, getDeviceVerificationEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(deviceVerificationUri, getDeviceVerificationEndpoint(), getIssuerUri());
     }
 
     public void setDeviceVerificationUri(String deviceVerificationUri) {
@@ -179,7 +278,7 @@ public class EndpointProperties {
     }
 
     public String getOidcClientRegistrationUri() {
-        return WellFormedUtils.sasUri(this.oidcClientRegistrationUri, getOidcClientRegistrationEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(oidcClientRegistrationUri, getOidcClientRegistrationEndpoint(), getIssuerUri());
     }
 
     public void setOidcClientRegistrationUri(String oidcClientRegistrationUri) {
@@ -187,7 +286,7 @@ public class EndpointProperties {
     }
 
     public String getOidcLogoutUri() {
-        return WellFormedUtils.sasUri(this.oidcLogoutUri, getOidcLogoutEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(oidcLogoutUri, getOidcLogoutEndpoint(), getIssuerUri());
     }
 
     public void setOidcLogoutUri(String oidcLogoutUri) {
@@ -195,7 +294,7 @@ public class EndpointProperties {
     }
 
     public String getOidcUserInfoUri() {
-        return WellFormedUtils.sasUri(this.oidcUserInfoUri, getOidcUserInfoEndpoint(), getIssuerUri());
+        return WellFormedUtils.sasUri(oidcUserInfoUri, getOidcUserInfoEndpoint(), getIssuerUri());
     }
 
     public void setOidcUserInfoUri(String oidcUserInfoUri) {
@@ -211,7 +310,7 @@ public class EndpointProperties {
     }
 
     public String getAuthorizationEndpoint() {
-        return this.authorizationEndpoint;
+        return authorizationEndpoint;
     }
 
     public void setAuthorizationEndpoint(String authorizationEndpoint) {
@@ -219,7 +318,7 @@ public class EndpointProperties {
     }
 
     public String getPushedAuthorizationRequestEndpoint() {
-        return this.pushedAuthorizationRequestEndpoint;
+        return pushedAuthorizationRequestEndpoint;
     }
 
     public void setPushedAuthorizationRequestEndpoint(String pushedAuthorizationRequestEndpoint) {
@@ -227,7 +326,7 @@ public class EndpointProperties {
     }
 
     public String getAccessTokenEndpoint() {
-        return this.accessTokenEndpoint;
+        return accessTokenEndpoint;
     }
 
     public void setAccessTokenEndpoint(String accessTokenEndpoint) {
@@ -235,7 +334,7 @@ public class EndpointProperties {
     }
 
     public String getJwkSetEndpoint() {
-        return this.jwkSetEndpoint;
+        return jwkSetEndpoint;
     }
 
     public void setJwkSetEndpoint(String jwkSetEndpoint) {
@@ -243,7 +342,7 @@ public class EndpointProperties {
     }
 
     public String getTokenRevocationEndpoint() {
-        return this.tokenRevocationEndpoint;
+        return tokenRevocationEndpoint;
     }
 
     public void setTokenRevocationEndpoint(String tokenRevocationEndpoint) {
@@ -251,7 +350,7 @@ public class EndpointProperties {
     }
 
     public String getTokenIntrospectionEndpoint() {
-        return this.tokenIntrospectionEndpoint;
+        return tokenIntrospectionEndpoint;
     }
 
     public void setTokenIntrospectionEndpoint(String tokenIntrospectionEndpoint) {
@@ -259,7 +358,7 @@ public class EndpointProperties {
     }
 
     public String getDeviceAuthorizationEndpoint() {
-        return this.deviceAuthorizationEndpoint;
+        return deviceAuthorizationEndpoint;
     }
 
     public void setDeviceAuthorizationEndpoint(String deviceAuthorizationEndpoint) {
@@ -267,7 +366,7 @@ public class EndpointProperties {
     }
 
     public String getDeviceVerificationEndpoint() {
-        return this.deviceVerificationEndpoint;
+        return deviceVerificationEndpoint;
     }
 
     public void setDeviceVerificationEndpoint(String deviceVerificationEndpoint) {
@@ -275,7 +374,7 @@ public class EndpointProperties {
     }
 
     public String getOidcClientRegistrationEndpoint() {
-        return this.oidcClientRegistrationEndpoint;
+        return oidcClientRegistrationEndpoint;
     }
 
     public void setOidcClientRegistrationEndpoint(String oidcClientRegistrationEndpoint) {
@@ -283,7 +382,7 @@ public class EndpointProperties {
     }
 
     public String getOidcUserInfoEndpoint() {
-        return this.oidcUserInfoEndpoint;
+        return oidcUserInfoEndpoint;
     }
 
     public void setOidcUserInfoEndpoint(String oidcUserInfoEndpoint) {
@@ -291,14 +390,42 @@ public class EndpointProperties {
     }
 
     public String getOidcLogoutEndpoint() {
-        return this.oidcLogoutEndpoint;
+        return oidcLogoutEndpoint;
     }
 
     public void setOidcLogoutEndpoint(String oidcLogoutEndpoint) {
         this.oidcLogoutEndpoint = oidcLogoutEndpoint;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("uaaServiceName", this.uaaServiceName).add("upmsServiceName", this.upmsServiceName).add("gatewayServiceUri", this.gatewayServiceUri).add("uaaServiceUri", this.uaaServiceUri).add("upmsServiceUri", this.upmsServiceUri).add("authorizationUri", this.authorizationUri).add("authorizationEndpoint", this.authorizationEndpoint).add("accessTokenUri", this.accessTokenUri).add("accessTokenEndpoint", this.accessTokenEndpoint).add("jwkSetUri", this.jwkSetUri).add("jwkSetEndpoint", this.jwkSetEndpoint).add("tokenRevocationUri", this.tokenRevocationUri).add("tokenRevocationEndpoint", this.tokenRevocationEndpoint).add("tokenIntrospectionUri", this.tokenIntrospectionUri).add("tokenIntrospectionEndpoint", this.tokenIntrospectionEndpoint).add("deviceAuthorizationUri", this.deviceAuthorizationUri).add("deviceAuthorizationEndpoint", this.deviceAuthorizationEndpoint).add("deviceVerificationUri", this.deviceVerificationUri).add("deviceVerificationEndpoint", this.deviceVerificationEndpoint).add("oidcClientRegistrationUri", this.oidcClientRegistrationUri).add("oidcClientRegistrationEndpoint", this.oidcClientRegistrationEndpoint).add("oidcLogoutUri", this.oidcLogoutUri).add("oidcLogoutEndpoint", this.oidcLogoutEndpoint).add("oidcUserInfoUri", this.oidcUserInfoUri).add("oidcUserInfoEndpoint", this.oidcUserInfoEndpoint).add("issuerUri", this.issuerUri).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("uaaServiceName", uaaServiceName)
+                .add("upmsServiceName", upmsServiceName)
+                .add("gatewayServiceUri", gatewayServiceUri)
+                .add("uaaServiceUri", uaaServiceUri)
+                .add("upmsServiceUri", upmsServiceUri)
+                .add("authorizationUri", authorizationUri)
+                .add("authorizationEndpoint", authorizationEndpoint)
+                .add("accessTokenUri", accessTokenUri)
+                .add("accessTokenEndpoint", accessTokenEndpoint)
+                .add("jwkSetUri", jwkSetUri)
+                .add("jwkSetEndpoint", jwkSetEndpoint)
+                .add("tokenRevocationUri", tokenRevocationUri)
+                .add("tokenRevocationEndpoint", tokenRevocationEndpoint)
+                .add("tokenIntrospectionUri", tokenIntrospectionUri)
+                .add("tokenIntrospectionEndpoint", tokenIntrospectionEndpoint)
+                .add("deviceAuthorizationUri", deviceAuthorizationUri)
+                .add("deviceAuthorizationEndpoint", deviceAuthorizationEndpoint)
+                .add("deviceVerificationUri", deviceVerificationUri)
+                .add("deviceVerificationEndpoint", deviceVerificationEndpoint)
+                .add("oidcClientRegistrationUri", oidcClientRegistrationUri)
+                .add("oidcClientRegistrationEndpoint", oidcClientRegistrationEndpoint)
+                .add("oidcLogoutUri", oidcLogoutUri)
+                .add("oidcLogoutEndpoint", oidcLogoutEndpoint)
+                .add("oidcUserInfoUri", oidcUserInfoUri)
+                .add("oidcUserInfoEndpoint", oidcUserInfoEndpoint)
+                .add("issuerUri", issuerUri)
+                .toString();
     }
 }

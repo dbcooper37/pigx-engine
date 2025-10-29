@@ -1,28 +1,28 @@
 package com.pigx.engine.rest.servlet.identity.dto;
 
-import com.pigx.engine.core.definition.domain.AbstractDto;
 import com.google.common.base.MoreObjects;
+import com.pigx.engine.core.definition.domain.AbstractDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
+
 @Schema(name = "OAuth2 权限请求 Dto")
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/dto/OAuth2PermissionDto.class */
 public class OAuth2PermissionDto extends AbstractDto {
 
-    @NotNull(message = "权限ID不能为空")
     @Schema(name = "权限ID")
+    @NotNull(message = "权限ID不能为空")
     private String permissionId;
 
-    @NotNull(message = "权限代码不能为空")
     @Schema(name = "权限代码")
+    @NotNull(message = "权限代码不能为空")
     private String permissionCode;
 
-    @NotNull(message = "服务ID不能为空")
     @Schema(name = "服务ID")
+    @NotNull(message = "服务ID不能为空")
     private String permissionName;
 
     public String getPermissionId() {
-        return this.permissionId;
+        return permissionId;
     }
 
     public void setPermissionId(String permissionId) {
@@ -30,7 +30,7 @@ public class OAuth2PermissionDto extends AbstractDto {
     }
 
     public String getPermissionCode() {
-        return this.permissionCode;
+        return permissionCode;
     }
 
     public void setPermissionCode(String permissionCode) {
@@ -38,14 +38,19 @@ public class OAuth2PermissionDto extends AbstractDto {
     }
 
     public String getPermissionName() {
-        return this.permissionName;
+        return permissionName;
     }
 
     public void setPermissionName(String permissionName) {
         this.permissionName = permissionName;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("permissionId", this.permissionId).add("permissionCode", this.permissionCode).add("permissionName", this.permissionName).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("permissionId", permissionId)
+                .add("permissionCode", permissionCode)
+                .add("permissionName", permissionName)
+                .toString();
     }
 }

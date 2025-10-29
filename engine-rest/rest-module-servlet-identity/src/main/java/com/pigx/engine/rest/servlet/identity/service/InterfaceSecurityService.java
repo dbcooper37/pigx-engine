@@ -1,18 +1,19 @@
 package com.pigx.engine.rest.servlet.identity.service;
 
 import com.pigx.engine.core.definition.domain.SecretKey;
-import com.pigx.engine.core.identity.constant.OAuth2ErrorKeys;
 import com.pigx.engine.core.identity.utils.SecurityUtils;
 import com.pigx.engine.web.servlet.crypto.HttpCryptoProcessor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Service;
 
+
 @Service
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/service/InterfaceSecurityService.class */
 public class InterfaceSecurityService {
+
     private final HttpCryptoProcessor httpCryptoProcessor;
     private final RegisteredClientRepository registeredClientRepository;
 
@@ -21,25 +22,41 @@ public class InterfaceSecurityService {
         this.registeredClientRepository = registeredClientRepository;
     }
 
-    /* JADX INFO: Thrown type has an unknown type hierarchy: org.springframework.security.oauth2.core.OAuth2AuthenticationException */
-    private RegisteredClient validateClient(String clientId, String clientSecret) throws OAuth2AuthenticationException {
-        RegisteredClient registeredClient = this.registeredClientRepository.findByClientId(clientId);
+    /**
+     * 检查终端是否是合法终端
+     *
+     * @param clientId     OAuth2 终端ID
+     * @param clientSecret OAuth2 终端密码
+     */
+    private RegisteredClient validateClient(String clientId, String clientSecret) {
+        RegisteredClient registeredClient = registeredClientRepository.findByClientId(clientId);
+
         boolean isMatch = false;
         if (ObjectUtils.isNotEmpty(registeredClient)) {
             isMatch = SecurityUtils.matches(clientSecret, registeredClient.getClientSecret());
         }
+
         if (!isMatch) {
-            throw new OAuth2AuthenticationException(OAuth2ErrorKeys.INVALID_CLIENT);
+            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
         }
+
         return registeredClient;
     }
 
-    public SecretKey createSecretKey(String clientId, String clientSecret, String sessionId) throws OAuth2AuthenticationException {
-        RegisteredClient registeredClient = validateClient(clientId, clientSecret);
-        return this.httpCryptoProcessor.createSecretKey(sessionId, registeredClient.getTokenSettings().getAccessTokenTimeToLive());
+    public SecretKey createSecretKey(String clientId, String clientSecret, String sessionId) {
+        // 检测终端是否是有效终端
+        RegisteredClient registeredClient = this.validateClient(clientId, clientSecret);
+        return httpCryptoProcessor.createSecretKey(sessionId, registeredClient.getTokenSettings().getAccessTokenTimeToLive());
     }
 
+    /**
+     * 前端用后端PublicKey加密前端PublicKey后，将该值传递给后端，用于加密 AES KEY
+     *
+     * @param sessionId          Session 标识
+     * @param confidentialBase64 前端用后端PublicKey加密前端PublicKey。前端使用node-rsa加密后的数据是base64编码
+     * @return 前端RSA PublicKey 加密后的 AES Key
+     */
     public String exchange(String sessionId, String confidentialBase64) {
-        return this.httpCryptoProcessor.exchange(sessionId, confidentialBase64);
+        return httpCryptoProcessor.exchange(sessionId, confidentialBase64);
     }
 }

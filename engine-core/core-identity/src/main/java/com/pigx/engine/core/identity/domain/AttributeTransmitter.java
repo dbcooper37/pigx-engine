@@ -1,23 +1,34 @@
 package com.pigx.engine.core.identity.domain;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
-/* loaded from: core-identity-3.5.7.0.jar:cn/herodotus/engine/core/identity/domain/AttributeTransmitter.class */
+
 public class AttributeTransmitter implements Serializable {
+
     private String attributeId;
+
     private String attributeCode;
+
     private String attributeName;
+
     private String webExpression;
+
     private String permissions;
+
     private String url;
+
     private String requestMethod;
+
     private String serviceId;
 
+    public AttributeTransmitter() {
+    }
+
     public String getAttributeId() {
-        return this.attributeId;
+        return attributeId;
     }
 
     public void setAttributeId(String attributeId) {
@@ -25,7 +36,7 @@ public class AttributeTransmitter implements Serializable {
     }
 
     public String getAttributeCode() {
-        return this.attributeCode;
+        return attributeCode;
     }
 
     public void setAttributeCode(String attributeCode) {
@@ -33,7 +44,7 @@ public class AttributeTransmitter implements Serializable {
     }
 
     public String getAttributeName() {
-        return this.attributeName;
+        return attributeName;
     }
 
     public void setAttributeName(String attributeName) {
@@ -41,7 +52,7 @@ public class AttributeTransmitter implements Serializable {
     }
 
     public String getWebExpression() {
-        return this.webExpression;
+        return webExpression;
     }
 
     public void setWebExpression(String webExpression) {
@@ -49,7 +60,7 @@ public class AttributeTransmitter implements Serializable {
     }
 
     public String getPermissions() {
-        return this.permissions;
+        return permissions;
     }
 
     public void setPermissions(String permissions) {
@@ -57,7 +68,7 @@ public class AttributeTransmitter implements Serializable {
     }
 
     public String getUrl() {
-        return this.url;
+        return url;
     }
 
     public void setUrl(String url) {
@@ -65,7 +76,7 @@ public class AttributeTransmitter implements Serializable {
     }
 
     public String getRequestMethod() {
-        return this.requestMethod;
+        return requestMethod;
     }
 
     public void setRequestMethod(String requestMethod) {
@@ -73,13 +84,14 @@ public class AttributeTransmitter implements Serializable {
     }
 
     public String getServiceId() {
-        return this.serviceId;
+        return serviceId;
     }
 
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -88,14 +100,25 @@ public class AttributeTransmitter implements Serializable {
             return false;
         }
         AttributeTransmitter that = (AttributeTransmitter) o;
-        return Objects.equal(this.attributeId, that.attributeId);
+        return Objects.equal(attributeId, that.attributeId);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.attributeId});
+        return Objects.hashCode(attributeId);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("attributeId", this.attributeId).add("attributeCode", this.attributeCode).add("attributeName", this.attributeName).add(SystemConstants.AUTHORITIES, this.webExpression).add("permissions", this.permissions).add("url", this.url).add("requestMethod", this.requestMethod).add("serviceId", this.serviceId).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("attributeId", attributeId)
+                .add("attributeCode", attributeCode)
+                .add("attributeName", attributeName)
+                .add("authorities", webExpression)
+                .add("permissions", permissions)
+                .add("url", url)
+                .add("requestMethod", requestMethod)
+                .add("serviceId", serviceId)
+                .toString();
     }
 }

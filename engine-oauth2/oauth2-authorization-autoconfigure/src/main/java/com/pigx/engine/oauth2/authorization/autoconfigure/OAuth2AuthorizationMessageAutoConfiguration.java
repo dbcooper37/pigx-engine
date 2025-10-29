@@ -19,45 +19,39 @@ import org.springframework.cloud.bus.jackson.RemoteApplicationEventScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/* JADX WARN: Classes with same name are omitted:
-  
- */
+
 @AutoConfiguration
-/* loaded from: oauth2-authorization-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authorization/autoconfigure/OAuth2AuthorizationMessageAutoConfiguration.class */
 public class OAuth2AuthorizationMessageAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(OAuth2AuthorizationMessageAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [OAuth2 Authorization Message] Configure.");
+        log.info("[PIGXD] |- Auto [OAuth2 Authorization Message] Configure.");
     }
 
+    @Bean
     @ConditionalOnMissingBean
     @ConditionalOnServletApplication
-    @Bean
     public RestMappingScanEventManager servletRequestMappingScanEventManager(SecurityAttributeAnalyzer analyzer) {
         DefaultRestMappingScanEventManager manager = new DefaultRestMappingScanEventManager(analyzer);
-        log.trace("[Herodotus] |- Bean [Servlet Request Mapping Scan Manager] Configure.");
+        log.trace("[PIGXD] |- Bean [Servlet Request Mapping Scan Manager] Configure.");
         return manager;
     }
 
-    /* JADX WARN: Classes with same name are omitted:
-  
- */
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnClass({StreamBusBridge.class})
-    @RemoteApplicationEventScan({"com.pigx.engine.oauth2.authorization.autoconfigure.bus"})
+    @ConditionalOnClass(StreamBusBridge.class)
     @ConditionalOnArchitecture(Architecture.DISTRIBUTED)
-    /* loaded from: oauth2-authorization-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authorization/autoconfigure/OAuth2AuthorizationMessageAutoConfiguration$BusMessageConfiguration.class */
+    @RemoteApplicationEventScan({
+            "com.pigx.engine.oauth2.authorization.autoconfigure.bus"
+    })
     static class BusMessageConfiguration {
-        BusMessageConfiguration() {
-        }
 
-        @ConditionalOnMissingBean
         @Bean
+        @ConditionalOnMissingBean
         public RemoteAttributeTransmitterSyncListener remoteSecurityMetadataSyncListener(SecurityAttributeAnalyzer analyzer, ServiceMatcher serviceMatcher) {
             RemoteAttributeTransmitterSyncListener listener = new RemoteAttributeTransmitterSyncListener(analyzer, serviceMatcher);
-            OAuth2AuthorizationMessageAutoConfiguration.log.trace("[Herodotus] |- Bean [Security Metadata Refresh Listener] Configure.");
+            log.trace("[PIGXD] |- Bean [Security Metadata Refresh Listener] Configure.");
             return listener;
         }
     }

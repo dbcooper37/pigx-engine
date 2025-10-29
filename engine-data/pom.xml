@@ -20,8 +20,5 @@
         <module>data-core-mongodb</module>
         <module>data-module-tenant</module>
         <module>data-module-hibernate</module>
-        <module>data-core-jpa</module>
-        <module>data-core-mongodb</module>
-        <module>data-module-tenant</module>
     </modules>
 </project>

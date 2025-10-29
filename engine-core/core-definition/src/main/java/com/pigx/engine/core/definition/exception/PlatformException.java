@@ -1,8 +1,10 @@
 package com.pigx.engine.core.definition.exception;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/exception/PlatformException.class */
+
 public class PlatformException extends Exception {
+
     public PlatformException() {
+        super();
     }
 
     public PlatformException(String message) {

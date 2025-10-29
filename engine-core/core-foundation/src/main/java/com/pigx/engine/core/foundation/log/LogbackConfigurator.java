@@ -13,8 +13,9 @@ import org.slf4j.ILoggerFactory;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.util.Assert;
 
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/log/LogbackConfigurator.class */
+
 public class LogbackConfigurator {
+
     private final LoggerContext context;
 
     public LogbackConfigurator(LoggerContext context) {
@@ -34,6 +35,7 @@ public class LogbackConfigurator {
     public Object getConfigurationLock() {
         return this.context.getConfigurationLock();
     }
+
 
     public void appender(String name, Appender<?> appender) {
         appender.setName(name);
@@ -70,7 +72,7 @@ public class LogbackConfigurator {
 
     @SafeVarargs
     public final void root(Level level, Appender<ILoggingEvent>... appenders) {
-        Logger logger = this.context.getLogger("ROOT");
+        Logger logger = this.context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         if (level != null) {
             logger.setLevel(level);
         }
@@ -80,8 +82,7 @@ public class LogbackConfigurator {
     }
 
     public void start(LifeCycle lifeCycle) {
-        if (lifeCycle instanceof ContextAware) {
-            ContextAware contextAware = (ContextAware) lifeCycle;
+        if (lifeCycle instanceof ContextAware contextAware) {
             contextAware.setContext(this.context);
         }
         lifeCycle.start();
@@ -91,7 +92,7 @@ public class LogbackConfigurator {
         try {
             return OptionHelper.substVars(value, this.context);
         } catch (ScanException ex) {
-            throw new RuntimeException((Throwable) ex);
+            throw new RuntimeException(ex);
         }
     }
 }

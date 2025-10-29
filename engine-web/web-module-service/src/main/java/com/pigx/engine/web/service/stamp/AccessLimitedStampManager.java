@@ -3,13 +3,16 @@ package com.pigx.engine.web.service.stamp;
 import com.pigx.engine.cache.jetcache.stamp.AbstractStampManager;
 import com.pigx.engine.web.core.constant.WebConstants;
 import com.pigx.engine.web.service.properties.SecureProperties;
-import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/* loaded from: web-module-service-3.5.7.0.jar:cn/herodotus/engine/web/service/stamp/AccessLimitedStampManager.class */
+import java.time.Duration;
+
+
 public class AccessLimitedStampManager extends AbstractStampManager<String, Long> {
+
     private static final Logger log = LoggerFactory.getLogger(AccessLimitedStampManager.class);
+
     private final SecureProperties secureProperties;
 
     public AccessLimitedStampManager(SecureProperties secureProperties) {
@@ -18,25 +21,38 @@ public class AccessLimitedStampManager extends AbstractStampManager<String, Long
     }
 
     public SecureProperties getSecureProperties() {
-        return this.secureProperties;
+        return secureProperties;
     }
 
-    @Override // com.pigx.engine.cache.jetcache.stamp.StampManager
+    @Override
     public Long nextStamp(String key) {
         return 1L;
     }
 
+    /**
+     * 计算剩余过期时间
+     * <p>
+     * 每次create或者put，缓存的过期时间都会被覆盖。（注意：Jetcache put 方法的参数名：expireAfterWrite）。
+     * 因为Jetcache没有Redis的incr之类的方法，那么每次放入Times值，都会更新过期时间，实际操作下来是变相的延长了过期时间。
+     *
+     * @param configuredDuration 注解上配置的、且可以正常解析的Duration值
+     * @param expireKey          时间标记存储Key值。
+     * @return 还剩余的过期时间 {@link Duration}
+     */
     public Duration calculateRemainingTime(Duration configuredDuration, String expireKey) {
-        Duration duration;
         Long begin = get(expireKey);
-        Long current = Long.valueOf(System.currentTimeMillis());
-        long interval = current.longValue() - begin.longValue();
-        log.debug("[Herodotus] |- AccessLimited operation interval [{}] millis.", Long.valueOf(interval));
+        Long current = System.currentTimeMillis();
+        long interval = current - begin;
+
+        log.debug("[PIGXD] |- AccessLimited operation interval [{}] millis.", interval);
+
+        Duration duration;
         if (!configuredDuration.isZero()) {
             duration = configuredDuration.minusMillis(interval);
         } else {
             duration = getExpire().minusMillis(interval);
         }
+
         return duration;
     }
 }

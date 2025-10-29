@@ -10,27 +10,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-/* JADX WARN: Classes with same name are omitted:
-  
- */
+
 @Component
-/* loaded from: oauth2-authorization-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authorization/autoconfigure/listener/LocalAccountStatusChangedListener.class */
 public class LocalAccountStatusChangedListener implements ApplicationListener<AccountStatusChangedEvent> {
+
     private static final Logger log = LoggerFactory.getLogger(LocalAccountStatusChangedListener.class);
+
     private final SysUserService sysUserService;
 
     public LocalAccountStatusChangedListener(SysUserService sysUserService) {
         this.sysUserService = sysUserService;
     }
 
+    @Override
     public void onApplicationEvent(AccountStatusChangedEvent event) {
-        log.info("[Herodotus] |- Account status changed LOCAL listener, response event!");
+
+        log.info("[PIGXD] |- Account status changed LOCAL listener, response event!");
+
         AccountStatus accountStatus = event.getData();
         if (ObjectUtils.isNotEmpty(accountStatus)) {
             DataItemStatus dataItemStatus = DataItemStatus.valueOf(accountStatus.getStatus());
             if (ObjectUtils.isNotEmpty(dataItemStatus)) {
-                log.debug("[Herodotus] |- [A2] Account status changed process BEGIN!");
-                this.sysUserService.changeStatus(accountStatus.getUserId(), dataItemStatus);
+                log.debug("[PIGXD] |- [A2] Account status changed process BEGIN!");
+                sysUserService.changeStatus(accountStatus.getUserId(), dataItemStatus);
             }
         }
     }

@@ -1,25 +1,42 @@
-package com.pigx.engine.autoconfigure.oauth2.domain;
+package com.pigx.engine.core.autoconfigure.oauth2.domain;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import java.io.Serializable;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.Assert;
 
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/oauth2/domain/HerodotusRequest.class */
+import java.io.Serializable;
+
+
 public final class HerodotusRequest implements Serializable {
+
     private String pattern;
+
     private String httpMethod;
 
     public HerodotusRequest() {
     }
 
+    /**
+     * Creates a matcher with the specific pattern which will match all HTTP methods in a
+     * case sensitive manner.
+     *
+     * @param pattern the ant pattern to use for matching
+     */
     public HerodotusRequest(String pattern) {
         this(pattern, null);
     }
 
+    /**
+     * Creates a matcher with the supplied pattern which will match the specified Http
+     * method
+     *
+     * @param pattern    the ant pattern to use for matching
+     * @param httpMethod the HTTP method. The {@code matches} method will return false if
+     *                   the incoming request doesn't have the same method.
+     */
     public HerodotusRequest(String pattern, String httpMethod) {
         Assert.hasText(pattern, "Pattern cannot be null or empty");
         this.pattern = pattern;
@@ -27,11 +44,11 @@ public final class HerodotusRequest implements Serializable {
     }
 
     public String getPattern() {
-        return this.pattern;
+        return pattern;
     }
 
     public String getHttpMethod() {
-        return this.httpMethod;
+        return httpMethod;
     }
 
     private String checkHttpMethod(String method) {
@@ -40,11 +57,11 @@ public final class HerodotusRequest implements Serializable {
             if (ObjectUtils.isNotEmpty(httpMethod)) {
                 return httpMethod.name();
             }
-            return null;
         }
         return null;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -53,14 +70,19 @@ public final class HerodotusRequest implements Serializable {
             return false;
         }
         HerodotusRequest that = (HerodotusRequest) o;
-        return Objects.equal(this.pattern, that.pattern) && Objects.equal(this.httpMethod, that.httpMethod);
+        return Objects.equal(pattern, that.pattern) && Objects.equal(httpMethod, that.httpMethod);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.pattern, this.httpMethod});
+        return Objects.hashCode(pattern, httpMethod);
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("pattern", this.pattern).add("httpMethod", this.httpMethod).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("pattern", pattern)
+                .add("httpMethod", httpMethod)
+                .toString();
     }
 }

@@ -1,0 +1,19 @@
+package com.pigx.engine.oss.dialect.minio.converter.sse;
+
+import com.google.common.base.Enums;
+import com.pigx.engine.oss.dialect.minio.enums.SseConfigurationEnums;
+import io.minio.messages.SseConfiguration;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.core.convert.converter.Converter;
+
+
+public class SseConfigurationToEnumConverter implements Converter<SseConfiguration, SseConfigurationEnums> {
+    @Override
+    public SseConfigurationEnums convert(SseConfiguration configuration) {
+        if (ObjectUtils.isNotEmpty(configuration) && ObjectUtils.isNotEmpty(configuration.rule())) {
+            return Enums.getIfPresent(SseConfigurationEnums.class, configuration.rule().sseAlgorithm().name()).or(SseConfigurationEnums.AES256);
+        }
+
+        return SseConfigurationEnums.DISABLED;
+    }
+}

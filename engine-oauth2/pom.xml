@@ -21,12 +21,5 @@
         <module>oauth2-authentication-autoconfigure</module>
         <module>oauth2-module-persistence-jpa</module>
         <module>oauth2-module-extension</module>
-        <module>oauth2-core</module>
-        <module>oauth2-module-authentication</module>
-        <module>oauth2-module-authorization</module>
-        <module>oauth2-authorization-autoconfigure</module>
-        <module>oauth2-authentication-autoconfigure</module>
-        <module>oauth2-module-persistence-jpa</module>
-        <module>oauth2-module-extension</module>
     </modules>
 </project>

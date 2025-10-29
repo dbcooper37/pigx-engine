@@ -20,40 +20,47 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 
+
 @Configuration(proxyBeanMethods = false)
-@EnableJpaRepositories(basePackages = {"com.pigx.engine.oauth2.persistence.sas.jpa.repository"})
-@EntityScan(basePackages = {"com.pigx.engine.oauth2.persistence.sas.jpa.entity"})
-@ComponentScan(basePackages = {"com.pigx.engine.oauth2.persistence.sas.jpa.service"})
-/* loaded from: oauth2-module-persistence-jpa-3.5.7.0.jar:cn/herodotus/engine/oauth2/persistence/sas/jpa/config/OAuth2PersistenceSasJpaConfiguration.class */
+@EntityScan(basePackages = {
+        "com.pigx.engine.oauth2.persistence.sas.jpa.entity"
+})
+@EnableJpaRepositories(basePackages = {
+        "com.pigx.engine.oauth2.persistence.sas.jpa.repository",
+})
+@ComponentScan(basePackages = {
+        "com.pigx.engine.oauth2.persistence.sas.jpa.service",
+})
 public class OAuth2PersistenceSasJpaConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(OAuth2PersistenceSasJpaConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [OAuth2 Data JPA] Configure.");
+        log.debug("[PIGXD] |- Module [OAuth2 Data JPA] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public RegisteredClientRepository registeredClientRepository(HerodotusRegisteredClientService herodotusRegisteredClientService, PasswordEncoder passwordEncoder) {
         JpaRegisteredClientRepository jpaRegisteredClientRepository = new JpaRegisteredClientRepository(herodotusRegisteredClientService, passwordEncoder);
-        log.trace("[Herodotus] |- Bean [Jpa Registered Client Repository] Configure.");
+        log.trace("[PIGXD] |- Bean [Jpa Registered Client Repository] Configure.");
         return jpaRegisteredClientRepository;
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public OAuth2AuthorizationService authorizationService(HerodotusAuthorizationService herodotusAuthorizationService, RegisteredClientRepository registeredClientRepository) {
         JpaOAuth2AuthorizationService jpaOAuth2AuthorizationService = new JpaOAuth2AuthorizationService(herodotusAuthorizationService, registeredClientRepository);
-        log.trace("[Herodotus] |- Bean [Jpa OAuth2 Authorization Service] Configure.");
+        log.trace("[PIGXD] |- Bean [Jpa OAuth2 Authorization Service] Configure.");
         return jpaOAuth2AuthorizationService;
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public OAuth2AuthorizationConsentService authorizationConsentService(HerodotusAuthorizationConsentService herodotusAuthorizationConsentService, RegisteredClientRepository registeredClientRepository) {
         JpaOAuth2AuthorizationConsentService jpaOAuth2AuthorizationConsentService = new JpaOAuth2AuthorizationConsentService(herodotusAuthorizationConsentService, registeredClientRepository);
-        log.trace("[Herodotus] |- Bean [Jpa OAuth2 Authorization Consent Service] Configure.");
+        log.trace("[PIGXD] |- Bean [Jpa OAuth2 Authorization Consent Service] Configure.");
         return jpaOAuth2AuthorizationConsentService;
     }
 }

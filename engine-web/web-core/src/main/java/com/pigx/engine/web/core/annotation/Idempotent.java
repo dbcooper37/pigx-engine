@@ -1,15 +1,20 @@
 package com.pigx.engine.web.core.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
-@Target({ElementType.METHOD})
+
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
 @Documented
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/annotation/Idempotent.class */
 public @interface Idempotent {
+
+    /**
+     * 过期时间，即幂等签章有效时间。使用Duration格式配置。。
+     * <p>
+     * 默认为：空，即不设置该属性。那么就使用StampProperies中的配置进行设置。
+     * 如果设置了该值，就以该值进行设置。
+     *
+     * @return {@link Long}
+     */
     String expire() default "PT5S";
 }

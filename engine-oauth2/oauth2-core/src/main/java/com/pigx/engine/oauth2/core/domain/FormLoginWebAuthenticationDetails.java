@@ -3,10 +3,20 @@ package com.pigx.engine.oauth2.core.domain;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
-/* loaded from: oauth2-core-3.5.7.0.jar:cn/herodotus/engine/oauth2/core/domain/FormLoginWebAuthenticationDetails.class */
+
 public class FormLoginWebAuthenticationDetails extends WebAuthenticationDetails {
+
+    /**
+     * 验证码是否关闭
+     */
     private final Boolean enabled;
+    /**
+     * 请求中，验证码对应的表单参数名。对应UI Properties 里面的 captcha parameter
+     */
     private final String parameterName;
+    /**
+     * 验证码分类
+     */
     private final String category;
     private final String code;
 
@@ -27,18 +37,18 @@ public class FormLoginWebAuthenticationDetails extends WebAuthenticationDetails 
     }
 
     public Boolean getEnabled() {
-        return this.enabled;
+        return enabled;
     }
 
     public String getCategory() {
-        return this.category;
+        return category;
     }
 
     public String getCode() {
-        return this.code;
+        return code;
     }
 
     public String getParameterName() {
-        return this.parameterName;
+        return parameterName;
     }
 }

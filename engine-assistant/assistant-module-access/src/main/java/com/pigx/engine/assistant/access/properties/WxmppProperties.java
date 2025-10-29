@@ -1,49 +1,87 @@
 package com.pigx.engine.assistant.access.properties;
 
-import com.pigx.engine.assistant.access.constant.AccessConstants;
 import com.google.common.base.MoreObjects;
-import java.util.List;
+import com.pigx.engine.assistant.access.constant.AccessConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = AccessConstants.PROPERTY_ACCESS_WXMPP)
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/properties/WxmppProperties.class */
-public class WxmppProperties {
-    private Boolean enabled;
-    private boolean useRedis;
-    private RedisConfig redis;
-    private List<MpConfig> configs;
+import java.util.List;
 
-    public boolean isUseRedis() {
-        return this.useRedis;
-    }
+
+@ConfigurationProperties(prefix = AccessConstants.PROPERTY_ACCESS_WXMPP)
+public class WxmppProperties {
+
+    /**
+     * 是否开启
+     */
+    private Boolean enabled;
+    /**
+     * 是否使用redis存储access token
+     */
+    private boolean useRedis;
+
+    /**
+     * redis 配置
+     */
+    private RedisConfig redis;
+    /**
+     * 多个公众号配置信息
+     */
+    private List<MpConfig> configs;
 
     public void setUseRedis(boolean useRedis) {
         this.useRedis = useRedis;
     }
 
-    public RedisConfig getRedis() {
-        return this.redis;
+    public boolean isUseRedis() {
+        return useRedis;
     }
 
     public void setRedis(RedisConfig redis) {
         this.redis = redis;
     }
 
-    public Boolean getEnabled() {
-        return this.enabled;
+    public RedisConfig getRedis() {
+        return redis;
     }
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
-    /* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/properties/WxmppProperties$RedisConfig.class */
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public List<MpConfig> getConfigs() {
+        return configs;
+    }
+
+    public void setConfigs(List<MpConfig> configs) {
+        this.configs = configs;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("useRedis", useRedis)
+                .add("redis", redis)
+                .add("configs", configs)
+                .toString();
+    }
+
     public static class RedisConfig {
+        /**
+         * redis服务器 主机地址
+         */
         private String host;
+
+        /**
+         * redis服务器 端口号
+         */
         private Integer port;
 
         public String getHost() {
-            return this.host;
+            return host;
         }
 
         public void setHost(String host) {
@@ -51,35 +89,45 @@ public class WxmppProperties {
         }
 
         public Integer getPort() {
-            return this.port;
+            return port;
         }
 
         public void setPort(Integer port) {
             this.port = port;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add("host", this.host).add("port", this.port).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("host", host)
+                    .add("port", port)
+                    .toString();
         }
     }
 
-    public List<MpConfig> getConfigs() {
-        return this.configs;
-    }
-
-    public void setConfigs(List<MpConfig> configs) {
-        this.configs = configs;
-    }
-
-    /* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/properties/WxmppProperties$MpConfig.class */
     public static class MpConfig {
+        /**
+         * 设置微信公众号的appid
+         */
         private String appId;
+
+        /**
+         * 设置微信公众号的app secret
+         */
         private String secret;
+
+        /**
+         * 设置微信公众号的token
+         */
         private String token;
+
+        /**
+         * 设置微信公众号的EncodingAESKey
+         */
         private String aesKey;
 
         public String getAppId() {
-            return this.appId;
+            return appId;
         }
 
         public void setAppId(String appId) {
@@ -87,7 +135,7 @@ public class WxmppProperties {
         }
 
         public String getSecret() {
-            return this.secret;
+            return secret;
         }
 
         public void setSecret(String secret) {
@@ -95,7 +143,7 @@ public class WxmppProperties {
         }
 
         public String getToken() {
-            return this.token;
+            return token;
         }
 
         public void setToken(String token) {
@@ -103,19 +151,21 @@ public class WxmppProperties {
         }
 
         public String getAesKey() {
-            return this.aesKey;
+            return aesKey;
         }
 
         public void setAesKey(String aesKey) {
             this.aesKey = aesKey;
         }
 
+        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).add("appId", this.appId).add("secret", this.secret).add("token", this.token).add("aesKey", this.aesKey).toString();
+            return MoreObjects.toStringHelper(this)
+                    .add("appId", appId)
+                    .add("secret", secret)
+                    .add("token", token)
+                    .add("aesKey", aesKey)
+                    .toString();
         }
-    }
-
-    public String toString() {
-        return MoreObjects.toStringHelper(this).add("useRedis", this.useRedis).add("redis", this.redis).add("configs", this.configs).toString();
     }
 }

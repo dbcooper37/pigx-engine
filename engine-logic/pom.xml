@@ -17,8 +17,5 @@
         <module>logic-module-identity</module>
         <module>logic-module-message</module>
         <module>logic-module-upms</module>
-        <module>logic-module-identity</module>
-        <module>logic-module-message</module>
-        <module>logic-module-upms</module>
     </modules>
 </project>

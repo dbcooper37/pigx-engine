@@ -66,5 +66,6 @@
         <module>engine-web</module>
         <module>engine-rest</module>
         <module>engine-starter</module>
+        <module>engine-oss</module>
     </modules>
 </project>

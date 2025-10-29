@@ -8,21 +8,23 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+
 @Component
-/* loaded from: logic-module-message-3.5.7.0.jar:cn/herodotus/engine/logic/message/listener/DialogueMessageListener.class */
 public class DialogueMessageListener implements ApplicationListener<SendDialogueMessageEvent> {
+
     private final DialogueDetailService dialogueDetailService;
 
     public DialogueMessageListener(DialogueDetailService dialogueDetailService) {
         this.dialogueDetailService = dialogueDetailService;
     }
 
+    @Override
     public void onApplicationEvent(SendDialogueMessageEvent event) {
         if (ObjectUtils.isNotEmpty(event)) {
             DialogueMessage dialogueMessage = event.getData();
             if (ObjectUtils.isNotEmpty(dialogueMessage)) {
                 DialogueDetail dialogueDetail = convertDialogueMessageToDialogueDetail(dialogueMessage);
-                this.dialogueDetailService.save(dialogueDetail);
+                dialogueDetailService.save(dialogueDetail);
             }
         }
     }

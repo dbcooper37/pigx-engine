@@ -11,12 +11,11 @@ import org.springframework.context.annotation.ComponentScan;
 @AutoConfiguration
 @ConditionalOnMultiTenant(MultiTenant.DATABASE)
 @ComponentScan(basePackages = {"com.pigx.engine.oauth2.authentication.autoconfigure.tenant"})
-/* loaded from: oauth2-authentication-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/autoconfigure/TenantDataSourceAutoConfiguration.class */
 public class TenantDataSourceAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(TenantDataSourceAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [Tenant Data Source] Configure.");
+        log.info("[PIGXD-ENGINE] |- Auto [Tenant Data Source] Configure.");
     }
 }

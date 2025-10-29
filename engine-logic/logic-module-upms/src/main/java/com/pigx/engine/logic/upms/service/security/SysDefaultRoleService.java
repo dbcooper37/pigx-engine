@@ -9,9 +9,10 @@ import com.pigx.engine.logic.upms.repository.security.SysDefaultRoleRepository;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
+
 @Service
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/service/security/SysDefaultRoleService.class */
 public class SysDefaultRoleService extends AbstractJpaService<SysDefaultRole, String> {
+
     private final SysDefaultRoleRepository sysDefaultRoleRepository;
     private final SysRoleService sysRoleService;
 
@@ -20,7 +21,7 @@ public class SysDefaultRoleService extends AbstractJpaService<SysDefaultRole, St
         this.sysRoleService = sysRoleService;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaReadableService
+    @Override
     public BaseJpaRepository<SysDefaultRole, String> getRepository() {
         return this.sysDefaultRoleRepository;
     }
@@ -29,13 +30,15 @@ public class SysDefaultRoleService extends AbstractJpaService<SysDefaultRole, St
         return this.sysDefaultRoleRepository.findByScene(scene);
     }
 
+
     public SysDefaultRole assign(String defaultId, String roleId) {
-        SysRole sysRole = this.sysRoleService.findByRoleId(roleId);
-        SysDefaultRole sysDefaultRole = this.sysDefaultRoleRepository.findByDefaultId(defaultId);
+        SysRole sysRole = sysRoleService.findByRoleId(roleId);
+        SysDefaultRole sysDefaultRole = sysDefaultRoleRepository.findByDefaultId(defaultId);
         if (ObjectUtils.isNotEmpty(sysDefaultRole) && ObjectUtils.isNotEmpty(sysRole)) {
             sysDefaultRole.setRole(sysRole);
-            return (SysDefaultRole) this.sysDefaultRoleRepository.saveAndFlush(sysDefaultRole);
+            return sysDefaultRoleRepository.saveAndFlush(sysDefaultRole);
         }
+
         return null;
     }
 }

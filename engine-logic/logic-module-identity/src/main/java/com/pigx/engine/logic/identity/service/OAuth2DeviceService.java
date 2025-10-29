@@ -9,8 +9,6 @@ import com.pigx.engine.logic.identity.entity.OAuth2Device;
 import com.pigx.engine.logic.identity.entity.OAuth2Scope;
 import com.pigx.engine.logic.identity.repository.OAuth2DeviceRepository;
 import com.pigx.engine.oauth2.persistence.sas.jpa.repository.HerodotusRegisteredClientRepository;
-import java.util.HashSet;
-import java.util.Set;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,76 +19,97 @@ import org.springframework.security.oauth2.server.authorization.oidc.OidcClientR
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+
 @Service
-/* loaded from: logic-module-identity-3.5.7.0.jar:cn/herodotus/engine/logic/identity/service/OAuth2DeviceService.class */
 public class OAuth2DeviceService extends AbstractJpaService<OAuth2Device, String> {
+
     private static final Logger log = LoggerFactory.getLogger(OAuth2ApplicationService.class);
+
     private final RegisteredClientRepository registeredClientRepository;
     private final HerodotusRegisteredClientRepository herodotusRegisteredClientRepository;
     private final OAuth2DeviceRepository deviceRepository;
-    private final Converter<OAuth2Device, RegisteredClient> oauth2DeviceToRegisteredClientConverter = new OAuth2DeviceToRegisteredClientConverter();
+    private final Converter<OAuth2Device, RegisteredClient> oauth2DeviceToRegisteredClientConverter;
     private final Converter<RegisteredClient, OAuth2Device> registeredClientToOAuth2DeviceConverter;
 
     public OAuth2DeviceService(RegisteredClientRepository registeredClientRepository, HerodotusRegisteredClientRepository herodotusRegisteredClientRepository, OAuth2DeviceRepository deviceRepository, OAuth2ScopeService scopeService) {
         this.registeredClientRepository = registeredClientRepository;
         this.herodotusRegisteredClientRepository = herodotusRegisteredClientRepository;
         this.deviceRepository = deviceRepository;
+        this.oauth2DeviceToRegisteredClientConverter = new OAuth2DeviceToRegisteredClientConverter();
         this.registeredClientToOAuth2DeviceConverter = new RegisteredClientToOAuth2DeviceConverter(scopeService);
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaReadableService
+    @Override
     public BaseJpaRepository<OAuth2Device, String> getRepository() {
-        return this.deviceRepository;
+        return deviceRepository;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaWriteableService
-    @Transactional(rollbackFor = {TransactionalRollbackException.class})
+    @Transactional(rollbackFor = TransactionalRollbackException.class)
+    @Override
     public OAuth2Device saveAndFlush(OAuth2Device entity) {
-        OAuth2Device device = (OAuth2Device) super.saveAndFlush((OAuth2DeviceService) entity);
+        OAuth2Device device = super.saveAndFlush(entity);
         if (ObjectUtils.isNotEmpty(device)) {
-            this.registeredClientRepository.save((RegisteredClient) this.oauth2DeviceToRegisteredClientConverter.convert(device));
+            registeredClientRepository.save(oauth2DeviceToRegisteredClientConverter.convert(device));
             return device;
+        } else {
+            log.error("[PIGXD] |- OAuth2DeviceService saveOrUpdate error, rollback data!");
+            throw new NullPointerException("save or update OAuth2DeviceService failed");
         }
-        log.error("[Herodotus] |- OAuth2DeviceService saveOrUpdate error, rollback data!");
-        throw new NullPointerException("save or update OAuth2DeviceService failed");
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaWriteableService, com.pigx.engine.data.core.service.BaseService
-    @Transactional(rollbackFor = {TransactionalRollbackException.class})
+    @Transactional(rollbackFor = TransactionalRollbackException.class)
+    @Override
     public void deleteById(String id) {
-        super.deleteById((OAuth2DeviceService) id);
-        this.herodotusRegisteredClientRepository.deleteById((HerodotusRegisteredClientRepository) id);
+        super.deleteById(id);
+        herodotusRegisteredClientRepository.deleteById(id);
     }
 
-    @Transactional(rollbackFor = {TransactionalRollbackException.class})
+    @Transactional(rollbackFor = TransactionalRollbackException.class)
     public OAuth2Device authorize(String deviceId, String[] scopeIds) {
+
         Set<OAuth2Scope> scopes = new HashSet<>();
         for (String scopeId : scopeIds) {
             OAuth2Scope scope = new OAuth2Scope();
             scope.setScopeId(scopeId);
             scopes.add(scope);
         }
-        return (OAuth2Device) findById(deviceId).map(entity -> {
-            entity.setScopes(scopes);
-            return entity;
-        }).map(this::saveAndFlush).orElse(null);
+
+        Optional<OAuth2Device> oldDevice = findById(deviceId);
+
+        return oldDevice.map(entity -> {
+                    entity.setScopes(scopes);
+                    return entity;
+                })
+                .map(this::saveAndFlush)
+                .orElse(null);
     }
 
+    /**
+     * 客户端自动注册是将信息存储在 oauth2_registered_client 中。
+     * 为了方便管理，将该条数据同步至 oauth2_device 表中。
+     *
+     * @param oidcClientRegistration {@link OidcClientRegistration}
+     * @return 是否同步成功
+     */
     public boolean sync(OidcClientRegistration oidcClientRegistration) {
-        RegisteredClient registeredClient = this.registeredClientRepository.findByClientId(oidcClientRegistration.getClientId());
+        RegisteredClient registeredClient = registeredClientRepository.findByClientId(oidcClientRegistration.getClientId());
+
         if (ObjectUtils.isNotEmpty(registeredClient)) {
-            OAuth2Device oauth2Device = (OAuth2Device) this.registeredClientToOAuth2DeviceConverter.convert(registeredClient);
+            OAuth2Device oauth2Device = registeredClientToOAuth2DeviceConverter.convert(registeredClient);
             if (ObjectUtils.isNotEmpty(oauth2Device)) {
-                OAuth2Device result = (OAuth2Device) this.deviceRepository.save(oauth2Device);
+                OAuth2Device result = deviceRepository.save(oauth2Device);
                 return ObjectUtils.isNotEmpty(result);
             }
-            return false;
         }
         return false;
     }
 
     public boolean activate(String clientId, boolean isActivated) {
-        int result = this.deviceRepository.activate(clientId, isActivated);
+        int result = deviceRepository.activate(clientId, isActivated);
         return result != 0;
     }
 }

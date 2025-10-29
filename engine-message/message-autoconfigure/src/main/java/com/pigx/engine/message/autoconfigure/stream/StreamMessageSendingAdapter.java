@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.ApplicationListener;
 
-/* loaded from: message-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/message/autoconfigure/stream/StreamMessageSendingAdapter.class */
 public class StreamMessageSendingAdapter implements ApplicationListener<StreamMessageSendingEvent> {
     private static final Logger log = LoggerFactory.getLogger(StreamMessageSendingAdapter.class);
     private final StreamBridge streamBridge;
@@ -19,7 +18,7 @@ public class StreamMessageSendingAdapter implements ApplicationListener<StreamMe
 
     public void onApplicationEvent(StreamMessageSendingEvent event) {
         StreamMessage message = event.getData();
-        log.debug("[Herodotus] |- [M4] Stream start to handle received message!");
+        log.debug("[PIGXD-ENGINE] |- [M4] Stream start to handle received message!");
         if (ObjectUtils.isEmpty(message.getBinderName())) {
             if (ObjectUtils.isEmpty(message.getOutputContentType())) {
                 this.streamBridge.send(message.getBindingName(), message.getBinderName(), message.getPayload());

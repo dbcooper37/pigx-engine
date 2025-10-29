@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping({"/security/tenant/datasource"})
 @Tags({@Tag(name = "系统安全管理接口"), @Tag(name = "多租户数据源接口")})
 @RestController
-/* loaded from: oauth2-authentication-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/autoconfigure/tenant/SysTenantDataSourceController.class */
 public class SysTenantDataSourceController extends AbstractJpaWriteableController<SysTenantDataSource, String> {
     private final SysTenantDataSourceService sysTenantDataSourceService;
 
@@ -41,6 +40,6 @@ public class SysTenantDataSourceController extends AbstractJpaWriteableControlle
     @GetMapping({"/{tenantId}"})
     public Result<SysTenantDataSource> findByRoleCode(@PathVariable("tenantId") String tenantId) {
         SysTenantDataSource sysTenantDataSource = this.sysTenantDataSourceService.findByTenantId(tenantId);
-        return result((SysTenantDataSourceController) sysTenantDataSource);
+        return result(sysTenantDataSource);
     }
 }

@@ -10,11 +10,17 @@
     <artifactId>facility-kafka-spring-boot-starter</artifactId>
     <name>facility-kafka-spring-boot-starter</name>
 
-    <packaging>jar</packaging>
-
-    <description>Kafka facilities starter</description>
+    <description>PigX Cloud 微服务基座组件库基于 Kafka 的消息事件自动配置 Starter</description>
 
     <dependencies>
-        <!-- add dependencies as needed -->
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>message-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-kafka</artifactId>
+        </dependency>
     </dependencies>
 </project>

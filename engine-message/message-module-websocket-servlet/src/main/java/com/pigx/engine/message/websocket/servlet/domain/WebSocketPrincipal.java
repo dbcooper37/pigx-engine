@@ -1,18 +1,22 @@
 package com.pigx.engine.message.websocket.servlet.domain;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
-import com.pigx.engine.core.identity.domain.UserPrincipal;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.pigx.engine.core.identity.domain.UserPrincipal;
+
 import java.security.Principal;
 import java.util.Set;
 
-/* loaded from: message-module-websocket-servlet-3.5.7.0.jar:cn/herodotus/engine/message/websocket/servlet/domain/WebSocketPrincipal.class */
+
 public class WebSocketPrincipal implements Principal {
+
     private String userId;
     private String username;
+
     private String employeeId;
+
     private String avatar;
+
     private Set<String> roles;
 
     public WebSocketPrincipal(UserPrincipal details) {
@@ -28,20 +32,27 @@ public class WebSocketPrincipal implements Principal {
     }
 
     public String getUsername() {
-        return this.username;
+        return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
-    @Override // java.security.Principal
+    /**
+     * 这里的 Name 是发送信息目标的标识。
+     * <p>
+     * 使用 Username 可控度不高，使用也不方便。直接用ID
+     *
+     * @return WebSocket 用户的唯一标识
+     */
+    @Override
     public String getName() {
         return this.userId;
     }
 
     public String getUserId() {
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {
@@ -49,7 +60,7 @@ public class WebSocketPrincipal implements Principal {
     }
 
     public String getEmployeeId() {
-        return this.employeeId;
+        return employeeId;
     }
 
     public void setEmployeeId(String employeeId) {
@@ -57,7 +68,7 @@ public class WebSocketPrincipal implements Principal {
     }
 
     public String getAvatar() {
-        return this.avatar;
+        return avatar;
     }
 
     public void setAvatar(String avatar) {
@@ -65,14 +76,14 @@ public class WebSocketPrincipal implements Principal {
     }
 
     public Set<String> getRoles() {
-        return this.roles;
+        return roles;
     }
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
     }
 
-    @Override // java.security.Principal
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -81,16 +92,21 @@ public class WebSocketPrincipal implements Principal {
             return false;
         }
         WebSocketPrincipal that = (WebSocketPrincipal) o;
-        return Objects.equal(this.userId, that.userId);
+        return Objects.equal(userId, that.userId);
     }
 
-    @Override // java.security.Principal
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.userId});
+        return Objects.hashCode(userId);
     }
 
-    @Override // java.security.Principal
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("userId", this.userId).add(SystemConstants.USERNAME, this.username).add(SystemConstants.EMPLOYEE_ID, this.employeeId).add(SystemConstants.AVATAR, this.avatar).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("userId", userId)
+                .add("username", username)
+                .add("employeeId", employeeId)
+                .add("avatar", avatar)
+                .toString();
     }
 }

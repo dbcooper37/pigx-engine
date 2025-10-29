@@ -1,9 +1,20 @@
 package com.pigx.engine.logic.upms.definition;
 
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/definition/SocialUserDetails.class */
+
 public interface SocialUserDetails {
+
+    /**
+     * 获取社交登录唯一标识
+     *
+     * @return String
+     */
     String getUuid();
 
+    /**
+     * 获取社交登录分类标识
+     *
+     * @return String
+     */
     String getSource();
 
     String getPhoneNumber();

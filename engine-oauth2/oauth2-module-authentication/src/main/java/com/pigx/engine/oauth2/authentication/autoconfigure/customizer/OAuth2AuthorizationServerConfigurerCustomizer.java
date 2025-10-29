@@ -7,7 +7,6 @@ import com.pigx.engine.oauth2.authentication.consumer.OAuth2TokenEndpointAuthent
 import com.pigx.engine.oauth2.authentication.customizer.HerodotusOidcUserInfoMapper;
 import com.pigx.engine.oauth2.authentication.provider.OAuth2ResourceOwnerPasswordAuthenticationConverter;
 import com.pigx.engine.oauth2.authentication.provider.OAuth2SocialCredentialsAuthenticationConverter;
-import java.util.Arrays;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistry;
@@ -18,7 +17,8 @@ import org.springframework.security.oauth2.server.authorization.web.authenticati
 import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2RefreshTokenAuthenticationConverter;
 import org.springframework.security.web.authentication.DelegatingAuthenticationConverter;
 
-/* loaded from: oauth2-authentication-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/autoconfigure/customizer/OAuth2AuthorizationServerConfigurerCustomizer.class */
+import java.util.Arrays;
+
 public class OAuth2AuthorizationServerConfigurerCustomizer implements Customizer<OAuth2AuthorizationServerConfigurer> {
     private final HttpSecurity httpSecurity;
     private final SessionRegistry sessionRegistry;

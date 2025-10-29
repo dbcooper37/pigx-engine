@@ -1,17 +1,28 @@
 package com.pigx.engine.web.core.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
+import java.time.Duration;
 
-@Target({ElementType.METHOD})
+
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
 @Documented
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/annotation/AccessLimited.class */
 public @interface AccessLimited {
+
+    /**
+     * 单位时间内同一个接口可以访问的次数
+     *
+     * @return int
+     */
     int maxTimes() default 0;
 
+    /**
+     * 持续时间，即在多长时间内，限制访问多少次。具体单位根据TimeUnit的设置而定。
+     * <p>
+     * 使用Duration格式{@link Duration}
+     * <p>
+     * 默认为：0，即不设置该属性。那么就使用StampProperies中的配置进行设置。
+     * 如果设置了该值，就以该值进行设置。
+     */
     String duration() default "";
 }

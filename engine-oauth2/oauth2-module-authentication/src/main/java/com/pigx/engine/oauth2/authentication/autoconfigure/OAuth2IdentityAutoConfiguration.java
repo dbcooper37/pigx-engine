@@ -11,12 +11,11 @@ import org.springframework.context.annotation.Import;
 
 @AutoConfiguration(after = {OAuth2AuthenticationAutoConfiguration.class})
 @Import({OAuth2ExtensionConfiguration.class, LogicIdentityConfiguration.class, RestServletIdentityConfiguration.class})
-/* loaded from: oauth2-authentication-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/autoconfigure/OAuth2IdentityAutoConfiguration.class */
 public class OAuth2IdentityAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(OAuth2IdentityAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [OAuth2 Identity] Configure.");
+        log.info("[PIGXD-ENGINE] |- Auto [OAuth2 Identity] Configure.");
     }
 }

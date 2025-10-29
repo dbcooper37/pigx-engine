@@ -1,21 +1,22 @@
 package com.pigx.engine.rest.servlet.upms.dto;
 
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.core.definition.domain.AbstractDto;
 import com.pigx.engine.logic.upms.entity.hr.SysDepartment;
 import com.pigx.engine.logic.upms.entity.hr.SysEmployee;
 import com.pigx.engine.logic.upms.entity.hr.SysOwnership;
-import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.collections4.CollectionUtils;
+
 
 @Schema(description = "增加人员归属参数BO对象")
-/* loaded from: rest-module-servlet-upms-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/upms/dto/AllocatableDeploy.class */
 public class AllocatableDeploy extends AbstractDto {
 
     @NotNull(message = "单位ID不能为空")
@@ -30,7 +31,7 @@ public class AllocatableDeploy extends AbstractDto {
     private List<SysEmployee> employees;
 
     public String getOrganizationId() {
-        return this.organizationId;
+        return organizationId;
     }
 
     public void setOrganizationId(String organizationId) {
@@ -38,7 +39,7 @@ public class AllocatableDeploy extends AbstractDto {
     }
 
     public String getDepartmentId() {
-        return this.departmentId;
+        return departmentId;
     }
 
     public void setDepartmentId(String departmentId) {
@@ -46,7 +47,7 @@ public class AllocatableDeploy extends AbstractDto {
     }
 
     public List<SysEmployee> getEmployees() {
-        return this.employees;
+        return employees;
     }
 
     public void setEmployees(List<SysEmployee> employees) {
@@ -55,23 +56,24 @@ public class AllocatableDeploy extends AbstractDto {
 
     public List<SysEmployee> getAllocatable() {
         if (CollectionUtils.isNotEmpty(this.employees)) {
-            return (List) this.employees.stream().peek(employee -> {
+            return employees.stream().peek(employee -> {
                 SysDepartment sysDepartment = new SysDepartment();
                 sysDepartment.setDepartmentId(this.departmentId);
                 Set<SysDepartment> sysDepartments = employee.getDepartments();
                 if (CollectionUtils.isEmpty(sysDepartments)) {
-                    sysDepartments = new HashSet();
+                    sysDepartments = new HashSet<>();
                 }
                 sysDepartments.add(sysDepartment);
                 employee.setDepartments(sysDepartments);
             }).collect(Collectors.toList());
         }
-        return new ArrayList();
+
+        return new ArrayList<>();
     }
 
     public List<SysOwnership> getOwnerships() {
         if (CollectionUtils.isNotEmpty(this.employees)) {
-            return (List) this.employees.stream().map(employee -> {
+            return this.employees.stream().map(employee -> {
                 SysOwnership sysOwnership = new SysOwnership();
                 sysOwnership.setEmployeeId(employee.getEmployeeId());
                 sysOwnership.setDepartmentId(this.departmentId);
@@ -79,10 +81,14 @@ public class AllocatableDeploy extends AbstractDto {
                 return sysOwnership;
             }).collect(Collectors.toList());
         }
-        return new ArrayList();
+        return new ArrayList<>();
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("organizationId", this.organizationId).add("departmentId", this.departmentId).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("organizationId", organizationId)
+                .add("departmentId", departmentId)
+                .toString();
     }
 }

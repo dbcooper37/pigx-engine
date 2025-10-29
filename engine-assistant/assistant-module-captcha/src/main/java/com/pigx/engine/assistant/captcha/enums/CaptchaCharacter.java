@@ -2,17 +2,30 @@ package com.pigx.engine.assistant.captcha.enums;
 
 import com.pigx.engine.assistant.captcha.provider.RandomProvider;
 
-/* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/enums/CaptchaCharacter.class */
-public enum CaptchaCharacter {
-    NUM_AND_CHAR(0, RandomProvider.CHAR_MAX_INDEX, "数字和字母混合"),
-    ONLY_NUM(0, 8, "纯数字"),
-    ONLY_CHAR(8, RandomProvider.CHAR_MAX_INDEX, "纯字母"),
-    ONLY_UPPER_CHAR(8, 31, "纯大写字母"),
-    ONLY_LOWER_CHAR(31, RandomProvider.LOWER_MAX_INDEX, "纯小写字母"),
-    NUM_AND_UPPER_CHAR(0, 31, "数字和大写字母");
 
+public enum CaptchaCharacter {
+
+    /**
+     * 验证码字母显示类别
+     */
+    NUM_AND_CHAR(RandomProvider.NUM_MIN_INDEX, RandomProvider.CHAR_MAX_INDEX, "数字和字母混合"),
+    ONLY_NUM(RandomProvider.NUM_MIN_INDEX, RandomProvider.NUM_MAX_INDEX, "纯数字"),
+    ONLY_CHAR(RandomProvider.CHAR_MIN_INDEX, RandomProvider.CHAR_MAX_INDEX, "纯字母"),
+    ONLY_UPPER_CHAR(RandomProvider.UPPER_MIN_INDEX, RandomProvider.UPPER_MAX_INDEX, "纯大写字母"),
+    ONLY_LOWER_CHAR(RandomProvider.LOWER_MIN_INDEX, RandomProvider.LOWER_MAX_INDEX, "纯小写字母"),
+    NUM_AND_UPPER_CHAR(RandomProvider.NUM_MIN_INDEX, RandomProvider.UPPER_MAX_INDEX, "数字和大写字母");
+
+    /**
+     * 字符枚举值开始位置
+     */
     private final int start;
+    /**
+     * 字符枚举值结束位置
+     */
     private final int end;
+    /**
+     * 类型说明
+     */
     private final String description;
 
     CaptchaCharacter(int start, int end, String description) {
@@ -22,14 +35,14 @@ public enum CaptchaCharacter {
     }
 
     public int getStart() {
-        return this.start;
+        return start;
     }
 
     public int getEnd() {
-        return this.end;
+        return end;
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 }

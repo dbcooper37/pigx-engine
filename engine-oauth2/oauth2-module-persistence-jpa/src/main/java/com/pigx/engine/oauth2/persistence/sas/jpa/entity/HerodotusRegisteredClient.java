@@ -1,24 +1,21 @@
 package com.pigx.engine.oauth2.persistence.sas.jpa.entity;
 
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.oauth2.core.constants.OAuth2Constants;
 import com.pigx.engine.oauth2.persistence.sas.jpa.definition.AbstractRegisteredClient;
 import com.pigx.engine.oauth2.persistence.sas.jpa.generator.HerodotusRegisteredClientIdGenerator;
-import com.google.common.base.MoreObjects;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import java.util.Objects;
-import org.hibernate.annotations.Cache;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = OAuth2Constants.REGION_OAUTH2_REGISTERED_CLIENT)
-@Cacheable
+import java.util.Objects;
+
+
 @Entity
-@Table(name = "oauth2_registered_client", indexes = {@Index(name = "oauth2_registered_client_id_idx", columnList = "id"), @Index(name = "oauth2_registered_client_cid_idx", columnList = "client_id")})
-/* loaded from: oauth2-module-persistence-jpa-3.5.7.0.jar:cn/herodotus/engine/oauth2/persistence/sas/jpa/entity/HerodotusRegisteredClient.class */
+@Table(name = "oauth2_registered_client", indexes = {
+        @Index(name = "oauth2_registered_client_id_idx", columnList = "id"),
+        @Index(name = "oauth2_registered_client_cid_idx", columnList = "client_id")})
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = OAuth2Constants.REGION_OAUTH2_REGISTERED_CLIENT)
 public class HerodotusRegisteredClient extends AbstractRegisteredClient {
 
     @Id
@@ -44,27 +41,27 @@ public class HerodotusRegisteredClient extends AbstractRegisteredClient {
     @Column(name = "token_settings", nullable = false, length = 2000)
     private String tokenSettings;
 
-    @Override // com.pigx.engine.core.identity.domain.RegisteredClientDetails
+    @Override
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    @Override // com.pigx.engine.core.identity.domain.RegisteredClientDetails
+    @Override
     public String getClientId() {
-        return this.clientId;
+        return clientId;
     }
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    @Override // com.pigx.engine.core.identity.domain.RegisteredClientDetails
+    @Override
     public String getClientSecret() {
-        return this.clientSecret;
+        return clientSecret;
     }
 
     public void setClientSecret(String clientSecret) {
@@ -72,7 +69,7 @@ public class HerodotusRegisteredClient extends AbstractRegisteredClient {
     }
 
     public String getClientName() {
-        return this.clientName;
+        return clientName;
     }
 
     public void setClientName(String clientName) {
@@ -80,7 +77,7 @@ public class HerodotusRegisteredClient extends AbstractRegisteredClient {
     }
 
     public String getScopes() {
-        return this.scopes;
+        return scopes;
     }
 
     public void setScopes(String scopes) {
@@ -88,7 +85,7 @@ public class HerodotusRegisteredClient extends AbstractRegisteredClient {
     }
 
     public String getClientSettings() {
-        return this.clientSettings;
+        return clientSettings;
     }
 
     public void setClientSettings(String clientSettings) {
@@ -96,13 +93,14 @@ public class HerodotusRegisteredClient extends AbstractRegisteredClient {
     }
 
     public String getTokenSettings() {
-        return this.tokenSettings;
+        return tokenSettings;
     }
 
     public void setTokenSettings(String tokenSettings) {
         this.tokenSettings = tokenSettings;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -111,15 +109,24 @@ public class HerodotusRegisteredClient extends AbstractRegisteredClient {
             return false;
         }
         HerodotusRegisteredClient that = (HerodotusRegisteredClient) o;
-        return Objects.equals(this.id, that.id);
+        return Objects.equals(id, that.id);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(id);
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("id", this.id).add("clientId", this.clientId).add("clientSecret", this.clientSecret).add("clientName", this.clientName).add("scopes", this.scopes).add("clientSettings", this.clientSettings).add("tokenSettings", this.tokenSettings).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("clientId", clientId)
+                .add("clientSecret", clientSecret)
+                .add("clientName", clientName)
+                .add("scopes", scopes)
+                .add("clientSettings", clientSettings)
+                .add("tokenSettings", tokenSettings)
+                .toString();
     }
 }

@@ -15,43 +15,44 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableConfigurationProperties({JustAuthProperties.class})
+
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnJustAuthEnabled
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/config/AssistantAccessJustAuthConfiguration.class */
+@EnableConfigurationProperties(JustAuthProperties.class)
 public class AssistantAccessJustAuthConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(AssistantAccessJustAuthConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Assistant Access JustAuth] Configure.");
+        log.debug("[PIGXD] |- Module [Assistant Access JustAuth] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public JustAuthStateStampManager justAuthStateStampManager(JustAuthProperties justAuthProperties) {
         JustAuthStateStampManager justAuthStateStampManager = new JustAuthStateStampManager(justAuthProperties);
-        log.trace("[Herodotus] |- Bean [Just Auth State Redis Cache] Configure.");
+        log.trace("[PIGXD] |- Bean [Just Auth State Redis Cache] Configure.");
         return justAuthStateStampManager;
     }
 
-    @ConditionalOnMissingBean
-    @ConditionalOnBean({JustAuthStateStampManager.class})
     @Bean
+    @ConditionalOnBean(JustAuthStateStampManager.class)
+    @ConditionalOnMissingBean
     public JustAuthProcessor justAuthProcessor(JustAuthStateStampManager justAuthStateStampManager, JustAuthProperties justAuthProperties) {
         JustAuthProcessor justAuthProcessor = new JustAuthProcessor();
         justAuthProcessor.setJustAuthStateRedisCache(justAuthStateStampManager);
         justAuthProcessor.setJustAuthProperties(justAuthProperties);
-        log.trace("[Herodotus] |- Bean [Just Auth Request Generator] Configure.");
+        log.trace("[PIGXD] |- Bean [Just Auth Request Generator] Configure.");
         return justAuthProcessor;
     }
 
+    @Bean(AccountCategory.JUST_AUTH_HANDLER)
+    @ConditionalOnBean(JustAuthProcessor.class)
     @ConditionalOnMissingBean
-    @ConditionalOnBean({JustAuthProcessor.class})
-    @Bean({AccountCategory.JUST_AUTH_HANDLER})
     public JustAuthAccessHandler justAuthAccessHandler(JustAuthProcessor justAuthProcessor) {
         JustAuthAccessHandler justAuthAccessHandler = new JustAuthAccessHandler(justAuthProcessor);
-        log.trace("[Herodotus] |- Bean [Just Auth Access Handler] Configure.");
+        log.trace("[PIGXD] |- Bean [Just Auth Access Handler] Configure.");
         return justAuthAccessHandler;
     }
 }

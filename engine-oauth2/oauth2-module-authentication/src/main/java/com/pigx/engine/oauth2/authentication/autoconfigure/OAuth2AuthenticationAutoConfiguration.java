@@ -14,12 +14,11 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties({OAuth2AuthenticationProperties.class})
 @AutoConfiguration
 @Import({OAuth2PersistenceSasJpaConfiguration.class, OAuth2AuthenticationConfiguration.class, OAuth2AuthenticationMessageConfiguration.class})
-/* loaded from: oauth2-authentication-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/autoconfigure/OAuth2AuthenticationAutoConfiguration.class */
 public class OAuth2AuthenticationAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(OAuth2AuthenticationAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Auto [OAuth2 Authentication] Configure.");
+        log.info("[PIGXD-ENGINE] |- Auto [OAuth2 Authentication] Configure.");
     }
 }

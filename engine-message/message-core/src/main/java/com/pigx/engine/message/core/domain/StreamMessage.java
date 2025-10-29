@@ -1,18 +1,20 @@
 package com.pigx.engine.message.core.domain;
 
 import com.google.common.base.MoreObjects;
-import java.io.Serializable;
 import org.springframework.util.MimeType;
 
-/* loaded from: message-core-3.5.7.0.jar:cn/herodotus/engine/message/core/domain/StreamMessage.class */
+import java.io.Serializable;
+
+
 public class StreamMessage implements Serializable {
+
     private String bindingName;
     private String binderName;
     private Object payload;
     private MimeType outputContentType;
 
     public String getBindingName() {
-        return this.bindingName;
+        return bindingName;
     }
 
     public void setBindingName(String bindingName) {
@@ -20,7 +22,7 @@ public class StreamMessage implements Serializable {
     }
 
     public String getBinderName() {
-        return this.binderName;
+        return binderName;
     }
 
     public void setBinderName(String binderName) {
@@ -28,7 +30,7 @@ public class StreamMessage implements Serializable {
     }
 
     public Object getPayload() {
-        return this.payload;
+        return payload;
     }
 
     public void setPayload(Object payload) {
@@ -36,14 +38,20 @@ public class StreamMessage implements Serializable {
     }
 
     public MimeType getOutputContentType() {
-        return this.outputContentType;
+        return outputContentType;
     }
 
     public void setOutputContentType(MimeType outputContentType) {
         this.outputContentType = outputContentType;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("bindingName", this.bindingName).add("binderName", this.binderName).add("payload", this.payload).add("outputContentType", this.outputContentType).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("bindingName", bindingName)
+                .add("binderName", binderName)
+                .add("payload", payload)
+                .add("outputContentType", outputContentType)
+                .toString();
     }
 }

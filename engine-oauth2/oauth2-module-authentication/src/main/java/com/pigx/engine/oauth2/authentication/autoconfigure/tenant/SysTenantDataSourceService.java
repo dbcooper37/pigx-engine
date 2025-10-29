@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-/* loaded from: oauth2-authentication-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/autoconfigure/tenant/SysTenantDataSourceService.class */
 public class SysTenantDataSourceService extends AbstractJpaService<SysTenantDataSource, String> {
     private static final Logger log = LoggerFactory.getLogger(SysTenantDataSourceService.class);
     private final SysTenantDataSourceRepository sysTenantDataSourceRepository;
@@ -25,7 +24,7 @@ public class SysTenantDataSourceService extends AbstractJpaService<SysTenantData
 
     public SysTenantDataSource findByTenantId(String tenantId) {
         SysTenantDataSource sysRole = this.sysTenantDataSourceRepository.findByTenantId(tenantId);
-        log.debug("[Herodotus] |- SysTenantDataSource Service findByTenantId.");
+        log.debug("[PIGXD-ENGINE] |- SysTenantDataSource Service findByTenantId.");
         return sysRole;
     }
 }

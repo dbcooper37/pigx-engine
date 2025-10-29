@@ -1,4 +1,4 @@
-package com.pigx.engine.autoconfigure.oauth2.servlet;
+package com.pigx.engine.core.autoconfigure.oauth2.servlet;
 
 import com.pigx.engine.core.autoconfigure.oauth2.OAuth2AuthorizationProperties;
 import com.pigx.engine.core.autoconfigure.oauth2.definition.AbstractSecurityMatcherConfigurer;
@@ -7,9 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/oauth2/servlet/ServletOAuth2ResourceMatcherConfigurer.class */
+
 public class ServletOAuth2ResourceMatcherConfigurer extends AbstractSecurityMatcherConfigurer {
+
     private final ResourceUrlProvider resourceUrlProvider;
+
     private final RequestMatcher[] staticRequestMatchers;
     private final RequestMatcher[] permitAllRequestMatchers;
     private final RequestMatcher[] hasAuthenticatedRequestMatchers;
@@ -23,19 +25,25 @@ public class ServletOAuth2ResourceMatcherConfigurer extends AbstractSecurityMatc
     }
 
     public RequestMatcher[] getStaticRequestMatchers() {
-        return this.staticRequestMatchers;
+        return staticRequestMatchers;
     }
 
     public RequestMatcher[] getPermitAllRequestMatchers() {
-        return this.permitAllRequestMatchers;
+        return permitAllRequestMatchers;
     }
 
     public RequestMatcher[] getHasAuthenticatedRequestMatchers() {
-        return this.hasAuthenticatedRequestMatchers;
+        return hasAuthenticatedRequestMatchers;
     }
 
+    /**
+     * 判断是否为静态资源
+     *
+     * @param uri 请求 URL
+     * @return 是否为静态资源
+     */
     public boolean isStaticRequest(String uri) {
-        String staticUri = this.resourceUrlProvider.getForLookupPath(uri);
+        String staticUri = resourceUrlProvider.getForLookupPath(uri);
         return StringUtils.isNotBlank(staticUri);
     }
 

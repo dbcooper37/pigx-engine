@@ -1,19 +1,27 @@
 package com.pigx.engine.message.core.domain;
 
-import com.pigx.engine.core.identity.domain.AbstractRest;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.pigx.engine.core.identity.domain.AbstractRest;
 
-/* loaded from: message-core-3.5.7.0.jar:cn/herodotus/engine/message/core/domain/RestMapping.class */
+
 public class RestMapping extends AbstractRest {
+
     private String mappingId;
+
     private String mappingCode;
+
     private String className;
+
     private String methodName;
+
     private String description;
 
+    public RestMapping() {
+    }
+
     public String getMappingId() {
-        return this.mappingId;
+        return mappingId;
     }
 
     public void setMappingId(String mappingId) {
@@ -21,7 +29,7 @@ public class RestMapping extends AbstractRest {
     }
 
     public String getMappingCode() {
-        return this.mappingCode;
+        return mappingCode;
     }
 
     public void setMappingCode(String mappingCode) {
@@ -29,7 +37,7 @@ public class RestMapping extends AbstractRest {
     }
 
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     public void setClassName(String className) {
@@ -37,7 +45,7 @@ public class RestMapping extends AbstractRest {
     }
 
     public String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     public void setMethodName(String methodName) {
@@ -45,13 +53,14 @@ public class RestMapping extends AbstractRest {
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -60,15 +69,23 @@ public class RestMapping extends AbstractRest {
             return false;
         }
         RestMapping that = (RestMapping) o;
-        return Objects.equal(this.mappingId, that.mappingId);
+        return Objects.equal(mappingId, that.mappingId);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.mappingId});
+        return Objects.hashCode(mappingId);
     }
 
-    @Override // com.pigx.engine.core.identity.domain.AbstractRest
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("mappingId", this.mappingId).add("mappingCode", this.mappingCode).add("className", this.className).add("methodName", this.methodName).add("description", this.description).addValue(super.toString()).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("mappingId", mappingId)
+                .add("mappingCode", mappingCode)
+                .add("className", className)
+                .add("methodName", methodName)
+                .add("description", description)
+                .addValue(super.toString())
+                .toString();
     }
 }

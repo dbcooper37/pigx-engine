@@ -1,12 +1,12 @@
 package com.pigx.engine.rest.servlet.identity.dto;
 
-import com.pigx.engine.core.definition.domain.AbstractDto;
 import com.google.common.base.MoreObjects;
+import com.pigx.engine.core.definition.domain.AbstractDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
+
 @Schema(name = "加密创建请求")
-/* loaded from: rest-module-servlet-identity-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/identity/dto/SessionCreate.class */
 public class SessionCreate extends AbstractDto {
 
     @NotBlank(message = "客户端ID不能为空")
@@ -21,7 +21,7 @@ public class SessionCreate extends AbstractDto {
     private String sessionId;
 
     public String getClientId() {
-        return this.clientId;
+        return clientId;
     }
 
     public void setClientId(String clientId) {
@@ -29,7 +29,7 @@ public class SessionCreate extends AbstractDto {
     }
 
     public String getClientSecret() {
-        return this.clientSecret;
+        return clientSecret;
     }
 
     public void setClientSecret(String clientSecret) {
@@ -37,14 +37,19 @@ public class SessionCreate extends AbstractDto {
     }
 
     public String getSessionId() {
-        return this.sessionId;
+        return sessionId;
     }
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("clientId", this.clientId).add("clientSecret", this.clientSecret).add("sessionId", this.sessionId).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("clientId", clientId)
+                .add("clientSecret", clientSecret)
+                .add("sessionId", sessionId)
+                .toString();
     }
 }

@@ -1,24 +1,23 @@
 package com.pigx.engine.oauth2.persistence.sas.jpa.entity;
 
+import com.google.common.base.MoreObjects;
 import com.pigx.engine.core.definition.domain.BaseEntity;
 import com.pigx.engine.oauth2.core.constants.OAuth2Constants;
 import com.pigx.engine.oauth2.persistence.sas.jpa.generator.HerodotusAuthorizationIdGenerator;
-import com.google.common.base.MoreObjects;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import org.hibernate.annotations.Cache;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = OAuth2Constants.REGION_OAUTH2_AUTHORIZATION)
-@Cacheable
+import java.time.LocalDateTime;
+
+
 @Entity
-@Table(name = "oauth2_authorization", indexes = {@Index(name = "oauth2_authorization_id_idx", columnList = "id"), @Index(name = "oauth2_authorization_rci_idx", columnList = "registered_client_id"), @Index(name = "oauth2_authorization_pn_idx", columnList = "principal_name")})
-/* loaded from: oauth2-module-persistence-jpa-3.5.7.0.jar:cn/herodotus/engine/oauth2/persistence/sas/jpa/entity/HerodotusAuthorization.class */
+@Table(name = "oauth2_authorization", indexes = {
+        @Index(name = "oauth2_authorization_id_idx", columnList = "id"),
+        @Index(name = "oauth2_authorization_rci_idx", columnList = "registered_client_id"),
+        @Index(name = "oauth2_authorization_pn_idx", columnList = "principal_name")}
+)
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = OAuth2Constants.REGION_OAUTH2_AUTHORIZATION)
 public class HerodotusAuthorization implements BaseEntity {
 
     @Id
@@ -126,7 +125,7 @@ public class HerodotusAuthorization implements BaseEntity {
     private String deviceCodeMetadata;
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
@@ -134,7 +133,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getRegisteredClientId() {
-        return this.registeredClientId;
+        return registeredClientId;
     }
 
     public void setRegisteredClientId(String registeredClientId) {
@@ -142,7 +141,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getPrincipalName() {
-        return this.principalName;
+        return principalName;
     }
 
     public void setPrincipalName(String principalName) {
@@ -150,7 +149,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAuthorizationGrantType() {
-        return this.authorizationGrantType;
+        return authorizationGrantType;
     }
 
     public void setAuthorizationGrantType(String authorizationGrantType) {
@@ -158,7 +157,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAuthorizedScopes() {
-        return this.authorizedScopes;
+        return authorizedScopes;
     }
 
     public void setAuthorizedScopes(String authorizedScopes) {
@@ -166,7 +165,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAttributes() {
-        return this.attributes;
+        return attributes;
     }
 
     public void setAttributes(String attributes) {
@@ -174,7 +173,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getState() {
-        return this.state;
+        return state;
     }
 
     public void setState(String state) {
@@ -182,7 +181,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAuthorizationCodeValue() {
-        return this.authorizationCodeValue;
+        return authorizationCodeValue;
     }
 
     public void setAuthorizationCodeValue(String authorizationCodeValue) {
@@ -190,7 +189,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getAuthorizationCodeIssuedAt() {
-        return this.authorizationCodeIssuedAt;
+        return authorizationCodeIssuedAt;
     }
 
     public void setAuthorizationCodeIssuedAt(LocalDateTime authorizationCodeIssuedAt) {
@@ -198,7 +197,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getAuthorizationCodeExpiresAt() {
-        return this.authorizationCodeExpiresAt;
+        return authorizationCodeExpiresAt;
     }
 
     public void setAuthorizationCodeExpiresAt(LocalDateTime authorizationCodeExpiresAt) {
@@ -206,7 +205,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAuthorizationCodeMetadata() {
-        return this.authorizationCodeMetadata;
+        return authorizationCodeMetadata;
     }
 
     public void setAuthorizationCodeMetadata(String authorizationCodeMetadata) {
@@ -214,7 +213,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAccessTokenValue() {
-        return this.accessTokenValue;
+        return accessTokenValue;
     }
 
     public void setAccessTokenValue(String accessTokenValue) {
@@ -222,7 +221,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getAccessTokenIssuedAt() {
-        return this.accessTokenIssuedAt;
+        return accessTokenIssuedAt;
     }
 
     public void setAccessTokenIssuedAt(LocalDateTime accessTokenIssuedAt) {
@@ -230,7 +229,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getAccessTokenExpiresAt() {
-        return this.accessTokenExpiresAt;
+        return accessTokenExpiresAt;
     }
 
     public void setAccessTokenExpiresAt(LocalDateTime accessTokenExpiresAt) {
@@ -238,7 +237,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAccessTokenMetadata() {
-        return this.accessTokenMetadata;
+        return accessTokenMetadata;
     }
 
     public void setAccessTokenMetadata(String accessTokenMetadata) {
@@ -246,7 +245,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAccessTokenType() {
-        return this.accessTokenType;
+        return accessTokenType;
     }
 
     public void setAccessTokenType(String accessTokenType) {
@@ -254,7 +253,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getAccessTokenScopes() {
-        return this.accessTokenScopes;
+        return accessTokenScopes;
     }
 
     public void setAccessTokenScopes(String accessTokenScopes) {
@@ -262,7 +261,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getOidcIdTokenValue() {
-        return this.oidcIdTokenValue;
+        return oidcIdTokenValue;
     }
 
     public void setOidcIdTokenValue(String oidcIdTokenValue) {
@@ -270,7 +269,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getOidcIdTokenIssuedAt() {
-        return this.oidcIdTokenIssuedAt;
+        return oidcIdTokenIssuedAt;
     }
 
     public void setOidcIdTokenIssuedAt(LocalDateTime oidcIdTokenIssuedAt) {
@@ -278,7 +277,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getOidcIdTokenExpiresAt() {
-        return this.oidcIdTokenExpiresAt;
+        return oidcIdTokenExpiresAt;
     }
 
     public void setOidcIdTokenExpiresAt(LocalDateTime oidcIdTokenExpiresAt) {
@@ -286,7 +285,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getOidcIdTokenMetadata() {
-        return this.oidcIdTokenMetadata;
+        return oidcIdTokenMetadata;
     }
 
     public void setOidcIdTokenMetadata(String oidcIdTokenMetadata) {
@@ -294,7 +293,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getOidcIdTokenClaims() {
-        return this.oidcIdTokenClaims;
+        return oidcIdTokenClaims;
     }
 
     public void setOidcIdTokenClaims(String oidcIdTokenClaims) {
@@ -302,7 +301,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getRefreshTokenValue() {
-        return this.refreshTokenValue;
+        return refreshTokenValue;
     }
 
     public void setRefreshTokenValue(String refreshTokenValue) {
@@ -310,7 +309,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getRefreshTokenIssuedAt() {
-        return this.refreshTokenIssuedAt;
+        return refreshTokenIssuedAt;
     }
 
     public void setRefreshTokenIssuedAt(LocalDateTime refreshTokenIssuedAt) {
@@ -318,7 +317,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getRefreshTokenExpiresAt() {
-        return this.refreshTokenExpiresAt;
+        return refreshTokenExpiresAt;
     }
 
     public void setRefreshTokenExpiresAt(LocalDateTime refreshTokenExpiresAt) {
@@ -326,7 +325,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getRefreshTokenMetadata() {
-        return this.refreshTokenMetadata;
+        return refreshTokenMetadata;
     }
 
     public void setRefreshTokenMetadata(String refreshTokenMetadata) {
@@ -334,7 +333,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getUserCodeValue() {
-        return this.userCodeValue;
+        return userCodeValue;
     }
 
     public void setUserCodeValue(String userCodeValue) {
@@ -342,7 +341,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getUserCodeIssuedAt() {
-        return this.userCodeIssuedAt;
+        return userCodeIssuedAt;
     }
 
     public void setUserCodeIssuedAt(LocalDateTime userCodeIssuedAt) {
@@ -350,7 +349,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getUserCodeExpiresAt() {
-        return this.userCodeExpiresAt;
+        return userCodeExpiresAt;
     }
 
     public void setUserCodeExpiresAt(LocalDateTime userCodeExpiresAt) {
@@ -358,7 +357,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getUserCodeMetadata() {
-        return this.userCodeMetadata;
+        return userCodeMetadata;
     }
 
     public void setUserCodeMetadata(String userCodeMetadata) {
@@ -366,7 +365,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getDeviceCodeValue() {
-        return this.deviceCodeValue;
+        return deviceCodeValue;
     }
 
     public void setDeviceCodeValue(String deviceCodeValue) {
@@ -374,7 +373,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getDeviceCodeIssuedAt() {
-        return this.deviceCodeIssuedAt;
+        return deviceCodeIssuedAt;
     }
 
     public void setDeviceCodeIssuedAt(LocalDateTime deviceCodeIssuedAt) {
@@ -382,7 +381,7 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public LocalDateTime getDeviceCodeExpiresAt() {
-        return this.deviceCodeExpiresAt;
+        return deviceCodeExpiresAt;
     }
 
     public void setDeviceCodeExpiresAt(LocalDateTime deviceCodeExpiresAt) {
@@ -390,14 +389,21 @@ public class HerodotusAuthorization implements BaseEntity {
     }
 
     public String getDeviceCodeMetadata() {
-        return this.deviceCodeMetadata;
+        return deviceCodeMetadata;
     }
 
     public void setDeviceCodeMetadata(String deviceCodeMetadata) {
         this.deviceCodeMetadata = deviceCodeMetadata;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("id", this.id).add("registeredClientId", this.registeredClientId).add("principalName", this.principalName).add("attributes", this.attributes).add("state", this.state).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("registeredClientId", registeredClientId)
+                .add("principalName", principalName)
+                .add("attributes", attributes)
+                .add("state", state)
+                .toString();
     }
 }

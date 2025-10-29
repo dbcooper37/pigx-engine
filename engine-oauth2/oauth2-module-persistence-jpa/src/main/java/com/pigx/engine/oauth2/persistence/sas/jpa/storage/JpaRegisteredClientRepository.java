@@ -10,8 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 
-/* loaded from: oauth2-module-persistence-jpa-3.5.7.0.jar:cn/herodotus/engine/oauth2/persistence/sas/jpa/storage/JpaRegisteredClientRepository.class */
+import java.util.Optional;
+
+
 public class JpaRegisteredClientRepository implements RegisteredClientRepository {
+
     private final HerodotusRegisteredClientService herodotusRegisteredClientService;
     private final Converter<HerodotusRegisteredClient, RegisteredClient> herodotusToOAuth2Converter;
     private final Converter<RegisteredClient, HerodotusRegisteredClient> oauth2ToHerodotusConverter;
@@ -23,16 +26,20 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
         this.oauth2ToHerodotusConverter = new OAuth2ToHerodotusRegisteredClientConverter(jacksonProcessor, passwordEncoder);
     }
 
+    @Override
     public void save(RegisteredClient registeredClient) {
         this.herodotusRegisteredClientService.save(toEntity(registeredClient));
     }
 
+    @Override
     public RegisteredClient findById(String id) {
-        return (RegisteredClient) this.herodotusRegisteredClientService.findById(id).map(this::toObject).orElse(null);
+        Optional<HerodotusRegisteredClient> herodotusRegisteredClient = this.herodotusRegisteredClientService.findById(id);
+        return herodotusRegisteredClient.map(this::toObject).orElse(null);
     }
 
+    @Override
     public RegisteredClient findByClientId(String clientId) {
-        return (RegisteredClient) this.herodotusRegisteredClientService.findByClientId(clientId).map(this::toObject).orElse(null);
+        return this.herodotusRegisteredClientService.findByClientId(clientId).map(this::toObject).orElse(null);
     }
 
     public void remove(String id) {
@@ -40,10 +47,10 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
     }
 
     private RegisteredClient toObject(HerodotusRegisteredClient herodotusRegisteredClient) {
-        return (RegisteredClient) this.herodotusToOAuth2Converter.convert(herodotusRegisteredClient);
+        return herodotusToOAuth2Converter.convert(herodotusRegisteredClient);
     }
 
     private HerodotusRegisteredClient toEntity(RegisteredClient registeredClient) {
-        return (HerodotusRegisteredClient) this.oauth2ToHerodotusConverter.convert(registeredClient);
+        return oauth2ToHerodotusConverter.convert(registeredClient);
     }
 }

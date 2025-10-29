@@ -8,8 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 
-/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/configurer/OAuth2FormLoginWebAuthenticationDetailSource.class */
+
 public class OAuth2FormLoginWebAuthenticationDetailSource implements AuthenticationDetailsSource<HttpServletRequest, FormLoginWebAuthenticationDetails> {
+
     private final OAuth2AuthenticationProperties authenticationProperties;
     private final HttpCryptoProcessor httpCryptoProcessor;
 
@@ -18,13 +19,18 @@ public class OAuth2FormLoginWebAuthenticationDetailSource implements Authenticat
         this.httpCryptoProcessor = httpCryptoProcessor;
     }
 
+    @Override
     public FormLoginWebAuthenticationDetails buildDetails(HttpServletRequest request) {
-        String encryptedCode = request.getParameter(this.authenticationProperties.getFormLogin().getCaptchaParameter());
+
+        String encryptedCode = request.getParameter(authenticationProperties.getFormLogin().getCaptchaParameter());
+
         String sessionId = SessionUtils.analyseSessionId(request);
+
         String code = null;
         if (StringUtils.isNotBlank(sessionId) && StringUtils.isNotBlank(encryptedCode)) {
-            code = this.httpCryptoProcessor.decrypt(sessionId, encryptedCode);
+            code = httpCryptoProcessor.decrypt(sessionId, encryptedCode);
         }
-        return new FormLoginWebAuthenticationDetails(request, this.authenticationProperties.getFormLogin().getCaptchaEnabled(), this.authenticationProperties.getFormLogin().getCaptchaParameter(), this.authenticationProperties.getFormLogin().getCategory(), code);
+
+        return new FormLoginWebAuthenticationDetails(request, authenticationProperties.getFormLogin().getCaptchaEnabled(), authenticationProperties.getFormLogin().getCaptchaParameter(), authenticationProperties.getFormLogin().getCategory(), code);
     }
 }

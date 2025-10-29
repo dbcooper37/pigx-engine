@@ -1,84 +1,140 @@
 package com.pigx.engine.web.core.definition;
 
-import com.pigx.engine.core.definition.domain.BaseDomain;
-import com.pigx.engine.core.definition.domain.Pagination;
-import com.pigx.engine.core.definition.domain.Result;
 import cn.hutool.v7.core.tree.MapTree;
 import cn.hutool.v7.core.tree.TreeNode;
 import cn.hutool.v7.core.tree.TreeUtil;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.pigx.engine.core.definition.constant.SystemConstants;
+import com.pigx.engine.core.definition.domain.BaseDomain;
+import com.pigx.engine.core.definition.domain.Pagination;
+import com.pigx.engine.core.definition.domain.Result;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.convert.converter.Converter;
 
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/definition/Controller.class */
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * <p> Description : Controller基础定义 </p>
+ * <p>
+ * 这里只在方法上做了泛型，主要是考虑到返回的结果数据可以是各种类型，而不一定受限于某一种类型。
+ *
+ * @author : gengwei.zheng
+ * @date : 2024/1/30 1:06
+ */
 public interface Controller extends Pagination {
+
+    /**
+     * 数据实体转换为统一响应实体
+     *
+     * @param domain 数据实体
+     * @param <D>    {@link BaseDomain} 子类型
+     * @return {@link Result} Entity
+     */
     default <D extends BaseDomain> Result<D> result(D domain) {
         if (ObjectUtils.isNotEmpty(domain)) {
             return Result.content(domain);
+        } else {
+            return Result.empty();
         }
-        return Result.empty();
     }
 
+    /**
+     * 数据列表转换为统一响应实体
+     *
+     * @param domains 数据实体 List
+     * @param <D>     {@link BaseDomain} 子类型
+     * @return {@link Result} List
+     */
     default <D extends BaseDomain> Result<List<D>> result(List<D> domains) {
+
         if (null == domains) {
             return Result.failure("查询数据失败！");
         }
+
         if (CollectionUtils.isNotEmpty(domains)) {
             return Result.success("查询数据成功！", domains);
+        } else {
+            return Result.empty("未查询到数据！");
         }
-        return Result.empty("未查询到数据！");
     }
 
+    /**
+     * 数组转换为统一响应实体
+     *
+     * @param domains 数组
+     * @param <T>     数组类型
+     * @return {@link Result} List
+     */
     default <T> Result<T[]> result(T[] domains) {
+
         if (null == domains) {
             return Result.failure("查询数据失败！");
         }
+
         if (ArrayUtils.isNotEmpty(domains)) {
             return Result.success("查询数据成功！", domains);
+        } else {
+            return Result.empty("未查询到数据！");
         }
-        return Result.empty("未查询到数据！");
     }
 
+    /**
+     * 数据 Map 转换为统一响应实体
+     *
+     * @param map 数据 Map
+     * @return {@link Result} Map
+     */
     default Result<Map<String, Object>> result(Map<String, Object> map) {
+
         if (null == map) {
             return Result.failure("查询数据失败！");
         }
+
         if (MapUtils.isNotEmpty(map)) {
             return Result.success("查询数据成功！", map);
+        } else {
+            return Result.empty("未查询到数据！");
         }
-        return Result.empty("未查询到数据！");
     }
 
+    /**
+     * 数据操作结果转换为统一响应实体
+     *
+     * @param parameter 数据ID
+     * @return {@link Result} String
+     */
     default Result<String> result(String parameter) {
         if (ObjectUtils.isNotEmpty(parameter)) {
             return Result.success("操作成功!", parameter);
+        } else {
+            return Result.failure("操作失败!", parameter);
         }
-        return Result.failure("操作失败!", parameter);
     }
 
+    /**
+     * 数据操作结果转换为统一响应实体
+     *
+     * @param status 操作状态
+     * @return {@link Result} String
+     */
     default Result<Boolean> result(boolean status) {
         if (status) {
             return Result.success("操作成功!", true);
+        } else {
+            return Result.failure("操作失败!", false);
         }
-        return Result.failure("操作失败!", false);
     }
 
     default <D extends BaseDomain> Result<List<MapTree<String>>> result(List<D> domains, Converter<D, TreeNode<String>> toTreeNode) {
         if (ObjectUtils.isNotEmpty(domains)) {
-            Stream<D> stream = domains.stream();
-            Objects.requireNonNull(toTreeNode);
-            List<TreeNode<String>> treeNodes = (List) stream.map((v1) -> {
-                return r1.convert(v1);
-            }).collect(Collectors.toList());
-            return Result.success("查询数据成功", TreeUtil.build(treeNodes, "0"));
+            List<TreeNode<String>> treeNodes = domains.stream().map(toTreeNode::convert).collect(Collectors.toList());
+            return Result.success("查询数据成功", TreeUtil.build(treeNodes, SystemConstants.TREE_ROOT_ID));
+        } else {
+            return Result.empty("未查询到数据！");
         }
-        return Result.empty("未查询到数据！");
     }
 }

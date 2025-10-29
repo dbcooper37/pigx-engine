@@ -1,22 +1,15 @@
 package com.pigx.engine.assistant.captcha.provider;
 
-import com.pigx.engine.assistant.captcha.enums.CaptchaResource;
-import com.pigx.engine.assistant.captcha.enums.FontStyle;
-import com.pigx.engine.assistant.captcha.properties.CaptchaProperties;
-import com.pigx.engine.core.foundation.utils.ResourceResolverUtils;
 import cn.hutool.v7.core.data.id.IdUtil;
 import cn.hutool.v7.core.io.IORuntimeException;
 import cn.hutool.v7.core.io.file.FileUtil;
 import cn.hutool.v7.extra.management.ManagementUtil;
 import cn.hutool.v7.swing.FontUtil;
 import cn.hutool.v7.swing.img.ImgUtil;
-import java.awt.Font;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.pigx.engine.assistant.captcha.enums.CaptchaResource;
+import com.pigx.engine.assistant.captcha.enums.FontStyle;
+import com.pigx.engine.assistant.captcha.properties.CaptchaProperties;
+import com.pigx.engine.core.foundation.utils.ResourceResolverUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,18 +20,29 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+
 @Component
-/* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/provider/ResourceProvider.class */
 public class ResourceProvider implements InitializingBean {
+
     private static final Logger log = LoggerFactory.getLogger(ResourceProvider.class);
+
     private static final String FONT_RESOURCE = "classpath*:/fonts/*.ttf";
     private static final String FONT_FOLDER = "/usr/share/fonts/herodotus/";
+
+    private final Map<String, String[]> imageIndexes = new ConcurrentHashMap<>();
+    private final Map<String, String> jigsawOriginalImages = new ConcurrentHashMap<>();
+    private final Map<String, String> jigsawTemplateImages = new ConcurrentHashMap<>();
+    private final Map<String, String> wordClickImages = new ConcurrentHashMap<>();
     private final CaptchaProperties captchaProperties;
-    private final Map<String, String[]> imageIndexes = new ConcurrentHashMap();
-    private final Map<String, String> jigsawOriginalImages = new ConcurrentHashMap();
-    private final Map<String, String> jigsawTemplateImages = new ConcurrentHashMap();
-    private final Map<String, String> wordClickImages = new ConcurrentHashMap();
-    private Map<String, Font> fonts = new ConcurrentHashMap();
+    private Map<String, Font> fonts = new ConcurrentHashMap<>();
 
     public ResourceProvider(CaptchaProperties captchaProperties) {
         this.captchaProperties = captchaProperties;
@@ -59,52 +63,55 @@ public class ResourceProvider implements InitializingBean {
                 }
                 return images;
             } catch (IOException e) {
-                log.error("[Herodotus] |- Analysis the  location [{}] catch io error!", location, e);
+                log.error("[PIGXD] |- Analysis the  location [{}] catch io error!", location, e);
             }
         }
-        return new ConcurrentHashMap(8);
+
+        return new ConcurrentHashMap<>(8);
     }
 
     private static Font getFont(Resource resource) {
+
         try {
             return FontUtil.createFont(resource.getInputStream());
         } catch (IORuntimeException e) {
-            log.warn("[Herodotus] |- Can not read font in the resources folder, maybe in docker.");
+            // 虽然 java.awt.Font 抛出的是 IOException, 因为使用 Hutool FontUtil 将错误又包装了一次。所以出错时必须要拦截 IORuntimeException，否则会导致错误不被拦截直接抛出，应用启动失败。
+            log.warn("[PIGXD] |- Can not read font in the resources folder, maybe in docker.");
+            // TODO: 2022-10-21 尝试在 docker alpine 下解决字体问题的多种方式之一。目前改用 debian，下面代码已经不再需要。暂留，确保确实没有问题后再做处理
             Font fontInfileSystem = getFontUnderDocker(resource.getFilename());
             if (ObjectUtils.isNotEmpty(fontInfileSystem)) {
                 return fontInfileSystem;
             }
-            return null;
-        } catch (IOException e2) {
-            log.error("[Herodotus] |- Resource object in resources folder catch io error!", e2);
-            return null;
+        } catch (IOException e) {
+            log.error("[PIGXD] |- Resource object in resources folder catch io error!", e);
         }
+
+        return null;
     }
 
     private static Font getFontUnderDocker(String filename) {
         if (ManagementUtil.getOsInfo().isLinux()) {
-            String path = "/usr/share/fonts/herodotus/" + filename;
+            String path = FONT_FOLDER + filename;
+
             File file = new File(path);
             if (ObjectUtils.isNotEmpty(file) && FileUtil.exists(file)) {
                 System.out.println(file.getAbsolutePath());
                 try {
                     Font font = FontUtil.createFont(file);
-                    log.debug("[Herodotus] |- Read font [{}] under the DOCKER.", font.getFontName());
+                    log.debug("[PIGXD] |- Read font [{}] under the DOCKER.", font.getFontName());
                     return font;
                 } catch (IORuntimeException e) {
-                    log.error("[Herodotus] |- Read font under the DOCKER catch error.");
-                    return null;
-                } catch (NullPointerException e2) {
-                    log.error("[Herodotus] |- Read font under the DOCKER catch null error.");
-                    return null;
+                    log.error("[PIGXD] |- Read font under the DOCKER catch error.");
+                } catch (NullPointerException e) {
+                    log.error("[PIGXD] |- Read font under the DOCKER catch null error.");
                 }
             }
-            return null;
         }
         return null;
     }
 
     private static Map<String, Font> getFonts(String location) {
+
         if (ResourceResolverUtils.isClasspathAllUrl(location)) {
             try {
                 Resource[] resources = ResourceResolverUtils.getResources(location);
@@ -119,55 +126,67 @@ public class ResourceProvider implements InitializingBean {
                 }
                 return fonts;
             } catch (IOException e) {
-                log.error("[Herodotus] |- Analysis the  location [{}] catch io error!", location, e);
+                log.error("[PIGXD] |- Analysis the  location [{}] catch io error!", location, e);
             }
         }
-        return new ConcurrentHashMap(8);
+
+        return new ConcurrentHashMap<>(8);
     }
 
     public CaptchaProperties getCaptchaProperties() {
-        return this.captchaProperties;
+        return captchaProperties;
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
+
         String systemName = ManagementUtil.getOsInfo().getName();
-        log.debug("[Herodotus] |- Before captcha resource loading, check system. Current system is [{}]", systemName);
-        log.debug("[Herodotus] |- Captcha resource loading is BEGIN！");
-        loadImages(this.jigsawOriginalImages, getCaptchaProperties().getJigsaw().getOriginalResource(), CaptchaResource.JIGSAW_ORIGINAL);
-        loadImages(this.jigsawTemplateImages, getCaptchaProperties().getJigsaw().getTemplateResource(), CaptchaResource.JIGSAW_TEMPLATE);
-        loadImages(this.wordClickImages, getCaptchaProperties().getWordClick().getImageResource(), CaptchaResource.WORD_CLICK);
+        log.debug("[PIGXD] |- Before captcha resource loading, check system. Current system is [{}]", systemName);
+
+        log.debug("[PIGXD] |- Captcha resource loading is BEGIN！");
+
+        loadImages(jigsawOriginalImages, getCaptchaProperties().getJigsaw().getOriginalResource(), CaptchaResource.JIGSAW_ORIGINAL);
+
+        loadImages(jigsawTemplateImages, getCaptchaProperties().getJigsaw().getTemplateResource(), CaptchaResource.JIGSAW_TEMPLATE);
+
+        loadImages(wordClickImages, getCaptchaProperties().getWordClick().getImageResource(), CaptchaResource.WORD_CLICK);
+
         loadFonts();
-        log.debug("[Herodotus] |- Jigsaw captcha resource loading is END！");
+
+        log.debug("[PIGXD] |- Jigsaw captcha resource loading is END！");
     }
 
     private void loadImages(Map<String, String> container, String location, CaptchaResource captchaResource) {
         Map<String, String> resource = getImages(location);
+
         if (MapUtils.isNotEmpty(resource)) {
             container.putAll(resource);
-            log.debug("[Herodotus] |- {} load complete, total number is [{}]", captchaResource.getContent(), Integer.valueOf(resource.size()));
-            this.imageIndexes.put(captchaResource.name(), (String[]) resource.keySet().toArray(new String[0]));
+            log.debug("[PIGXD] |- {} load complete, total number is [{}]", captchaResource.getContent(), resource.size());
+            imageIndexes.put(captchaResource.name(), resource.keySet().toArray(new String[0]));
         }
     }
 
     private void loadFonts() {
-        if (MapUtils.isEmpty(this.fonts)) {
+        if (MapUtils.isEmpty(fonts)) {
             this.fonts = getFonts(FONT_RESOURCE);
-            log.debug("[Herodotus] |- Font load complete, total number is [{}]", Integer.valueOf(this.fonts.size()));
+            log.debug("[PIGXD] |- Font load complete, total number is [{}]", fonts.size());
         }
     }
 
     private Font getDefaultFont(String fontName, int fontSize, FontStyle fontStyle) {
         if (StringUtils.isNotBlank(fontName)) {
             return new Font(fontName, fontStyle.getMapping(), fontSize);
+        } else {
+            return new Font("WenQuanYi Zen Hei", fontStyle.getMapping(), fontSize);
         }
-        return new Font("WenQuanYi Zen Hei", fontStyle.getMapping(), fontSize);
     }
 
     public Font getFont(String fontName, int fontSize, FontStyle fontStyle) {
-        if (MapUtils.isEmpty(this.fonts) || ObjectUtils.isEmpty(this.fonts.get(fontName))) {
+        if (MapUtils.isEmpty(fonts) || ObjectUtils.isEmpty(fonts.get(fontName))) {
             return getDefaultFont(fontName, fontSize, fontStyle);
+        } else {
+            return fonts.get(fontName).deriveFont(fontStyle.getMapping(), Integer.valueOf(fontSize).floatValue());
         }
-        return this.fonts.get(fontName).deriveFont(fontStyle.getMapping(), Integer.valueOf(fontSize).floatValue());
     }
 
     public Font getFont(String fontName) {
@@ -176,7 +195,7 @@ public class ResourceProvider implements InitializingBean {
 
     public Font getGraphicFont() {
         String fontName = getCaptchaProperties().getGraphics().getFont().getFontName();
-        return getFont(fontName);
+        return this.getFont(fontName);
     }
 
     public Font getWaterMarkFont(int fontSize) {
@@ -203,26 +222,27 @@ public class ResourceProvider implements InitializingBean {
         if (StringUtils.isNotBlank(data)) {
             return ImgUtil.toImage(data);
         }
+
         return null;
     }
 
     public String getRandomBase64OriginalImage() {
-        return getRandomBase64Image(this.jigsawOriginalImages, CaptchaResource.JIGSAW_ORIGINAL);
+        return getRandomBase64Image(jigsawOriginalImages, CaptchaResource.JIGSAW_ORIGINAL);
     }
 
     public String getRandomBase64TemplateImage() {
-        return getRandomBase64Image(this.jigsawTemplateImages, CaptchaResource.JIGSAW_TEMPLATE);
+        return getRandomBase64Image(jigsawTemplateImages, CaptchaResource.JIGSAW_TEMPLATE);
     }
 
     public BufferedImage getRandomOriginalImage() {
-        return getRandomImage(this.jigsawOriginalImages, CaptchaResource.JIGSAW_ORIGINAL);
+        return getRandomImage(jigsawOriginalImages, CaptchaResource.JIGSAW_ORIGINAL);
     }
 
     public BufferedImage getRandomTemplateImage() {
-        return getRandomImage(this.jigsawOriginalImages, CaptchaResource.JIGSAW_ORIGINAL);
+        return getRandomImage(jigsawOriginalImages, CaptchaResource.JIGSAW_ORIGINAL);
     }
 
     public BufferedImage getRandomWordClickImage() {
-        return getRandomImage(this.wordClickImages, CaptchaResource.WORD_CLICK);
+        return getRandomImage(wordClickImages, CaptchaResource.WORD_CLICK);
     }
 }

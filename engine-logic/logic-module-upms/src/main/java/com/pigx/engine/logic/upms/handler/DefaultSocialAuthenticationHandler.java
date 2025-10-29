@@ -1,5 +1,7 @@
 package com.pigx.engine.logic.upms.handler;
 
+import cn.hutool.v7.core.bean.BeanUtil;
+import com.google.common.collect.ImmutableSet;
 import com.pigx.engine.assistant.access.definition.domain.AccessUserDetails;
 import com.pigx.engine.assistant.access.exception.AccessIdentityVerificationFailedException;
 import com.pigx.engine.assistant.access.factory.AccessHandlerStrategyFactory;
@@ -12,90 +14,91 @@ import com.pigx.engine.logic.upms.entity.security.SysSocialUser;
 import com.pigx.engine.logic.upms.entity.security.SysUser;
 import com.pigx.engine.logic.upms.service.security.SysSocialUserService;
 import com.pigx.engine.logic.upms.service.security.SysUserService;
-import cn.hutool.v7.core.bean.BeanUtil;
-import com.google.common.collect.ImmutableSet;
+import com.pigx.engine.oauth2.core.exception.SocialCredentialsParameterBindingFailedException;
+import com.pigx.engine.oauth2.core.exception.UsernameAlreadyExistsException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/handler/DefaultSocialAuthenticationHandler.class */
+
 public class DefaultSocialAuthenticationHandler extends AbstractSocialAuthenticationHandler {
+
     private final SysUserService sysUserService;
     private final SysSocialUserService sysSocialUserService;
     private final AccessHandlerStrategyFactory accessHandlerStrategyFactory;
-    private final Converter<SysUser, HerodotusUser> toUser = new SysUserToHerodotusUserConverter();
+
+    private final Converter<SysUser, HerodotusUser> toUser;
 
     public DefaultSocialAuthenticationHandler(SysUserService sysUserService, SysSocialUserService sysSocialUserService, AccessHandlerStrategyFactory accessHandlerStrategyFactory) {
         this.sysUserService = sysUserService;
         this.sysSocialUserService = sysSocialUserService;
         this.accessHandlerStrategyFactory = accessHandlerStrategyFactory;
+        this.toUser = new SysUserToHerodotusUserConverter();
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.AbstractSocialAuthenticationHandler
+    @Override
     public SocialUserDetails identity(String source, AccessPrincipal accessPrincipal) throws AccessIdentityVerificationFailedException {
-        AccessUserDetails accessUserDetails = this.accessHandlerStrategyFactory.findAccessUserDetails(source, accessPrincipal);
-        if (BeanUtil.isNotEmpty(accessUserDetails, new String[0])) {
+        AccessUserDetails accessUserDetails = accessHandlerStrategyFactory.findAccessUserDetails(source, accessPrincipal);
+
+        if (BeanUtil.isNotEmpty(accessUserDetails)) {
             SysSocialUser sysSocialUser = new SysSocialUser();
-            BeanUtil.copyProperties(accessUserDetails, sysSocialUser, new String[0]);
+            BeanUtil.copyProperties(accessUserDetails, sysSocialUser);
             return sysSocialUser;
         }
+
         throw new AccessIdentityVerificationFailedException("Access Identity Verification Failed!");
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.AbstractSocialAuthenticationHandler
+    @Override
     public SocialUserDetails isUserExist(SocialUserDetails socialUserDetails) {
         String uuid = socialUserDetails.getUuid();
         String source = socialUserDetails.getSource();
         if (StringUtils.isNotBlank(uuid) && StringUtils.isNotBlank(source)) {
-            return this.sysSocialUserService.findByUuidAndSource(uuid, source);
+            return sysSocialUserService.findByUuidAndSource(uuid, source);
         }
+
         return null;
     }
 
-    /* JADX WARN: Byte code manipulation detected: skipped illegal throws declarations: [com.pigx.engine.oauth2.core.exception.UsernameAlreadyExistsException] */
-    @Override // com.pigx.engine.logic.upms.definition.AbstractSocialAuthenticationHandler
-    public HerodotusUser register(SocialUserDetails socialUserDetails) {
-        return this.sysUserService.registerUserDetails(socialUserDetails);
+    @Override
+    public HerodotusUser register(SocialUserDetails socialUserDetails) throws UsernameAlreadyExistsException {
+        return sysUserService.registerUserDetails(socialUserDetails);
     }
 
-    /* JADX WARN: Byte code manipulation detected: skipped illegal throws declarations: [com.pigx.engine.oauth2.core.exception.SocialCredentialsParameterBindingFailedException] */
-    @Override // com.pigx.engine.logic.upms.definition.AbstractSocialAuthenticationHandler
-    public void binding(String userId, SocialUserDetails socialUserDetails) {
-        if (socialUserDetails instanceof SysSocialUser) {
-            SysSocialUser sysSocialUser = (SysSocialUser) socialUserDetails;
+    @Override
+    public void binding(String userId, SocialUserDetails socialUserDetails) throws SocialCredentialsParameterBindingFailedException {
+        if (socialUserDetails instanceof SysSocialUser sysSocialUser) {
             SysUser sysUser = new SysUser();
             sysUser.setUserId(userId);
-            sysSocialUser.setUsers(ImmutableSet.builder().add(sysUser).build());
-            this.sysSocialUserService.saveAndFlush(sysSocialUser);
+            sysSocialUser.setUsers(ImmutableSet.<SysUser>builder().add(sysUser).build());
+            sysSocialUserService.saveAndFlush(sysSocialUser);
         }
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.AbstractSocialAuthenticationHandler
+    @Override
     public void additionalRegisterOperation(HerodotusUser herodotusUserDetails, SocialUserDetails socialUserDetails) {
+
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.AbstractSocialAuthenticationHandler
+    @Override
     public HerodotusUser signIn(SocialUserDetails socialUserDetails) {
-        if (socialUserDetails instanceof SysSocialUser) {
-            SysSocialUser sysSocialUser = (SysSocialUser) socialUserDetails;
+        if (socialUserDetails instanceof SysSocialUser sysSocialUser) {
             SysUser sysUser = sysSocialUser.getUsers().stream().findFirst().orElse(null);
             if (ObjectUtils.isNotEmpty(sysUser)) {
-                return (HerodotusUser) this.toUser.convert(sysUser);
+                return toUser.convert(sysUser);
+            } else {
+                return null;
             }
-            return null;
         }
+
         return null;
     }
 
-    @Override // com.pigx.engine.logic.upms.definition.AbstractSocialAuthenticationHandler
+    @Override
     public void additionalSignInOperation(HerodotusUser herodotusUserDetails, SocialUserDetails newSocialUserDetails, SocialUserDetails oldSocialUserDetails) {
-        if (newSocialUserDetails instanceof SysSocialUser) {
-            SysSocialUser newSysSocialUser = (SysSocialUser) newSocialUserDetails;
-            if (oldSocialUserDetails instanceof SysSocialUser) {
-                SysSocialUser oldSysSocialUser = (SysSocialUser) oldSocialUserDetails;
-                setSocialUserInfo(oldSysSocialUser, newSysSocialUser.getAccessToken(), newSysSocialUser.getExpireIn(), newSysSocialUser.getRefreshToken(), newSysSocialUser.getRefreshTokenExpireIn(), newSysSocialUser.getScope(), newSysSocialUser.getTokenType(), newSysSocialUser.getUid(), newSysSocialUser.getOpenId(), newSysSocialUser.getAccessCode(), newSysSocialUser.getUnionId());
-                this.sysSocialUserService.saveAndFlush(oldSysSocialUser);
-            }
+        if (newSocialUserDetails instanceof SysSocialUser newSysSocialUser && oldSocialUserDetails instanceof SysSocialUser oldSysSocialUser) {
+            setSocialUserInfo(oldSysSocialUser, newSysSocialUser.getAccessToken(), newSysSocialUser.getExpireIn(), newSysSocialUser.getRefreshToken(), newSysSocialUser.getRefreshTokenExpireIn(), newSysSocialUser.getScope(), newSysSocialUser.getTokenType(), newSysSocialUser.getUid(), newSysSocialUser.getOpenId(), newSysSocialUser.getAccessCode(), newSysSocialUser.getUnionId());
+            sysSocialUserService.saveAndFlush(oldSysSocialUser);
         }
     }
 

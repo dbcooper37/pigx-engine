@@ -1,13 +1,15 @@
 package com.pigx.engine.web.core.support;
 
+
 import com.pigx.engine.core.definition.constant.BaseConstants;
 import com.pigx.engine.core.foundation.context.PropertyResolver;
 import com.pigx.engine.web.core.constant.WebConstants;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ConditionContext;
 
-/* loaded from: web-core-3.5.7.0.jar:cn/herodotus/engine/web/core/support/WebPropertyFinder.class */
+
 public class WebPropertyFinder {
+
     public static String getApplicationName(ApplicationContext applicationContext) {
         return PropertyResolver.getProperty(applicationContext.getEnvironment(), BaseConstants.ITEM_SPRING_APPLICATION_NAME);
     }

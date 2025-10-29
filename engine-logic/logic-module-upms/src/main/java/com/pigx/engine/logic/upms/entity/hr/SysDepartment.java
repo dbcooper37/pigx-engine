@@ -1,84 +1,77 @@
 package com.pigx.engine.logic.upms.entity.hr;
 
-import com.pigx.engine.core.definition.constant.ErrorCodeMapperBuilderOrdered;
-import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
-import com.pigx.engine.logic.upms.constants.LogicUpmsConstants;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
+import com.pigx.engine.logic.upms.constants.LogicUpmsConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.Cache;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.UuidGenerator;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_DEPARTMENT)
+
 @Schema(name = "部门")
-@Cacheable
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "departmentId")
 @Table(name = "sys_department", indexes = {@Index(name = "sys_department_id_idx", columnList = "department_id")})
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/entity/hr/SysDepartment.class */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "departmentId")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_DEPARTMENT)
 public class SysDepartment extends AbstractSysEntity {
 
-    @Id
     @Schema(name = "部门ID")
+    @Id
     @UuidGenerator
     @Column(name = "department_id", length = 64)
     private String departmentId;
 
-    @Column(name = "department_name", length = 200)
     @Schema(name = "部门名称")
+    @Column(name = "department_name", length = 200)
     private String departmentName;
 
-    @Column(name = "a4_biz_dept_id", length = 64)
     @Schema(name = "4A标准部门ID")
+    @Column(name = "a4_biz_dept_id", length = 64)
     private String a4BizDeptId;
 
-    @Column(name = "biz_dept_code", length = ErrorCodeMapperBuilderOrdered.ACCESS)
     @Schema(name = "标准部门代码")
+    @Column(name = "biz_dept_code", length = 60)
     private String bizDeptCode;
 
-    @Column(name = "biz_dept_desc", length = 256)
     @Schema(name = "标准部门说明")
+    @Column(name = "biz_dept_desc", length = 256)
     private String bizDeptDesc;
 
-    @Column(name = "biz_dept_id", length = 64)
     @Schema(name = "标准部门ID")
+    @Column(name = "biz_dept_id", length = 64)
     private String bizDeptId;
 
-    @Column(name = "biz_dept_name", length = 200)
     @Schema(name = "标准部门名称")
+    @Column(name = "biz_dept_name", length = 200)
     private String bizDeptName;
 
-    @Column(name = "biz_dept_type", length = ErrorCodeMapperBuilderOrdered.OAUTH2)
     @Schema(name = "标准部门类型")
+    @Column(name = "biz_dept_type", length = 30)
     private String bizDeptType;
 
-    @Column(name = "partition_code", length = 256)
     @Schema(name = "分区代码")
+    @Column(name = "partition_code", length = 256)
     private String partitionCode;
 
-    @Column(name = "short_name", length = 200)
     @Schema(name = "部门简称")
+    @Column(name = "short_name", length = 200)
     private String shortName;
 
-    @Column(name = "parent_id", length = 64)
     @Schema(name = "上级部门ID")
+    @Column(name = "parent_id", length = 64)
     private String parentId;
 
-    @Column(name = "organization_id", length = 64)
     @Schema(name = "所属单位ID")
+    @Column(name = "organization_id", length = 64)
     private String organizationId;
 
     public String getDepartmentId() {
-        return this.departmentId;
+        return departmentId;
     }
 
     public void setDepartmentId(String departmentId) {
@@ -86,7 +79,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getDepartmentName() {
-        return this.departmentName;
+        return departmentName;
     }
 
     public void setDepartmentName(String departmentName) {
@@ -94,7 +87,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getA4BizDeptId() {
-        return this.a4BizDeptId;
+        return a4BizDeptId;
     }
 
     public void setA4BizDeptId(String a4BizDeptId) {
@@ -102,7 +95,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getBizDeptCode() {
-        return this.bizDeptCode;
+        return bizDeptCode;
     }
 
     public void setBizDeptCode(String bizDeptCode) {
@@ -110,7 +103,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getBizDeptDesc() {
-        return this.bizDeptDesc;
+        return bizDeptDesc;
     }
 
     public void setBizDeptDesc(String bizDeptDesc) {
@@ -118,7 +111,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getBizDeptId() {
-        return this.bizDeptId;
+        return bizDeptId;
     }
 
     public void setBizDeptId(String bizDeptId) {
@@ -126,7 +119,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getBizDeptName() {
-        return this.bizDeptName;
+        return bizDeptName;
     }
 
     public void setBizDeptName(String bizDeptName) {
@@ -134,7 +127,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getBizDeptType() {
-        return this.bizDeptType;
+        return bizDeptType;
     }
 
     public void setBizDeptType(String bizDeptType) {
@@ -142,7 +135,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getPartitionCode() {
-        return this.partitionCode;
+        return partitionCode;
     }
 
     public void setPartitionCode(String partitionCode) {
@@ -150,7 +143,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getShortName() {
-        return this.shortName;
+        return shortName;
     }
 
     public void setShortName(String shortName) {
@@ -158,7 +151,7 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getParentId() {
-        return this.parentId;
+        return parentId;
     }
 
     public void setParentId(String parentId) {
@@ -166,13 +159,14 @@ public class SysDepartment extends AbstractSysEntity {
     }
 
     public String getOrganizationId() {
-        return this.organizationId;
+        return organizationId;
     }
 
     public void setOrganizationId(String organizationId) {
         this.organizationId = organizationId;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -181,15 +175,29 @@ public class SysDepartment extends AbstractSysEntity {
             return false;
         }
         SysDepartment that = (SysDepartment) o;
-        return Objects.equal(this.departmentId, that.departmentId);
+        return Objects.equal(departmentId, that.departmentId);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.departmentId});
+        return Objects.hashCode(departmentId);
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("departmentId", this.departmentId).add("departmentName", this.departmentName).add("a4BizDeptId", this.a4BizDeptId).add("bizDeptCode", this.bizDeptCode).add("bizDeptDesc", this.bizDeptDesc).add("bizDeptId", this.bizDeptId).add("bizDeptName", this.bizDeptName).add("bizDeptType", this.bizDeptType).add("partitionCode", this.partitionCode).add("shortName", this.shortName).add("parentId", this.parentId).add("organizationId", this.organizationId).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("departmentId", departmentId)
+                .add("departmentName", departmentName)
+                .add("a4BizDeptId", a4BizDeptId)
+                .add("bizDeptCode", bizDeptCode)
+                .add("bizDeptDesc", bizDeptDesc)
+                .add("bizDeptId", bizDeptId)
+                .add("bizDeptName", bizDeptName)
+                .add("bizDeptType", bizDeptType)
+                .add("partitionCode", partitionCode)
+                .add("shortName", shortName)
+                .add("parentId", parentId)
+                .add("organizationId", organizationId)
+                .toString();
     }
 }

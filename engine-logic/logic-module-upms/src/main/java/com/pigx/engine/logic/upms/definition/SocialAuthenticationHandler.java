@@ -4,7 +4,22 @@ import com.pigx.engine.core.identity.domain.AccessPrincipal;
 import com.pigx.engine.core.identity.domain.HerodotusUser;
 import org.springframework.security.core.AuthenticationException;
 
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/definition/SocialAuthenticationHandler.class */
+
 public interface SocialAuthenticationHandler {
+
+    /**
+     * 社交登录
+     * <p>
+     * 1. 首先在第三方系统进行认证，或者手机号码、扫码认证。返回认证后的信息
+     * 2. 根据认证返回的信息，在系统中查询是否有对应的用户信息。
+     * 2.1. 如果有对应的信息，根据需要更新社交用户的信息，然后返回系统用户信息，进行登录。
+     * 2.2. 如果没有对应信息，就先进行用户的注册，然后进行社交用户和系统用户的绑定。
+     *
+     * @param source          社交登录提供者分类
+     * @param accessPrincipal 社交登录所需要的信息 {@link AccessPrincipal}
+     * @return 系统用户
+     * @throws AuthenticationException {@link AuthenticationException} 认证错误
+     */
     HerodotusUser authentication(String source, AccessPrincipal accessPrincipal) throws AuthenticationException;
+
 }

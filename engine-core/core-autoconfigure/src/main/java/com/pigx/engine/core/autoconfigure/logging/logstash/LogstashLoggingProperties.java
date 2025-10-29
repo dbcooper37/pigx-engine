@@ -1,21 +1,41 @@
-package com.pigx.engine.autoconfigure.logging.logstash;
+package com.pigx.engine.core.autoconfigure.logging.logstash;
 
 import ch.qos.logback.core.util.Duration;
 import com.pigx.engine.core.definition.constant.BaseConstants;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+
 @ConfigurationProperties(prefix = BaseConstants.PROPERTY_LOG_LOGSTASH)
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/logging/logstash/LogstashLoggingProperties.class */
 public class LogstashLoggingProperties {
+
+    /**
+     * 日志中心的 logstash 服务器主机。
+     */
     private String host = "127.0.0.1";
+    /**
+     * 日志中心的 logstash 服务器端口。
+     */
     private Integer port = 5044;
-    private Duration keepAliveDuration = Duration.buildByMinutes(5.0d);
-    private Duration reconnectionDelay = Duration.buildBySeconds(30.0d);
-    private Duration writeTimeout = Duration.buildByMinutes(1.0d);
+    /**
+     * 保持活动持续时间，默认5分钟，单位：分钟
+     */
+    private Duration keepAliveDuration = Duration.buildByMinutes(5);
+
+    /**
+     * 尝试连接到目标间隔时间，默认30秒， 单位：秒
+     */
+    private Duration reconnectionDelay = Duration.buildBySeconds(30);
+    /**
+     * 日志写入超时时间，默认1分钟，单位：分钟
+     */
+    private Duration writeTimeout = Duration.buildByMinutes(1);
+    /**
+     * 是否开启 Logstash 日志
+     */
     private Boolean enabled = Boolean.FALSE;
 
     public String getHost() {
-        return this.host;
+        return host;
     }
 
     public void setHost(String host) {
@@ -23,7 +43,7 @@ public class LogstashLoggingProperties {
     }
 
     public Integer getPort() {
-        return this.port;
+        return port;
     }
 
     public void setPort(Integer port) {
@@ -31,7 +51,7 @@ public class LogstashLoggingProperties {
     }
 
     public Duration getKeepAliveDuration() {
-        return this.keepAliveDuration;
+        return keepAliveDuration;
     }
 
     public void setKeepAliveDuration(Duration keepAliveDuration) {
@@ -39,7 +59,7 @@ public class LogstashLoggingProperties {
     }
 
     public Duration getReconnectionDelay() {
-        return this.reconnectionDelay;
+        return reconnectionDelay;
     }
 
     public void setReconnectionDelay(Duration reconnectionDelay) {
@@ -47,7 +67,7 @@ public class LogstashLoggingProperties {
     }
 
     public Duration getWriteTimeout() {
-        return this.writeTimeout;
+        return writeTimeout;
     }
 
     public void setWriteTimeout(Duration writeTimeout) {
@@ -55,7 +75,7 @@ public class LogstashLoggingProperties {
     }
 
     public Boolean getEnabled() {
-        return this.enabled;
+        return enabled;
     }
 
     public void setEnabled(Boolean enabled) {

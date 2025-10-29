@@ -13,24 +13,31 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+
 @Configuration(proxyBeanMethods = false)
-@EnableJpaRepositories(basePackages = {"com.pigx.engine.logic.identity.repository"})
-@EntityScan(basePackages = {"com.pigx.engine.logic.identity.entity"})
-@ComponentScan(basePackages = {"com.pigx.engine.logic.identity.service"})
-/* loaded from: logic-module-identity-3.5.7.0.jar:cn/herodotus/engine/logic/identity/config/LogicIdentityConfiguration.class */
+@EntityScan(basePackages = {
+        "com.pigx.engine.logic.identity.entity"
+})
+@EnableJpaRepositories(basePackages = {
+        "com.pigx.engine.logic.identity.repository",
+})
+@ComponentScan(basePackages = {
+        "com.pigx.engine.logic.identity.service",
+})
 public class LogicIdentityConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(LogicIdentityConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Logic Identity] Configure.");
+        log.debug("[PIGXD] |- Module [Logic Identity] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public ClientDetailsService clientDetailsService(OAuth2ApplicationService applicationService) {
         HerodotusClientDetailsService herodotusClientDetailsService = new HerodotusClientDetailsService(applicationService);
-        log.trace("[Herodotus] |- Bean [Herodotus Client Details Service] Configure.");
+        log.trace("[PIGXD] |- Bean [Herodotus Client Details Service] Configure.");
         return herodotusClientDetailsService;
     }
 }

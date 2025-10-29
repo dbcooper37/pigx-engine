@@ -2,19 +2,44 @@ package com.pigx.engine.core.definition.domain.captcha;
 
 import java.util.List;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/captcha/Metadata.class */
+
 public class Metadata {
+
+    /**
+     * 滑块拼图验证码生成的带抠图背景图Base64
+     */
     private String originalImageBase64;
+    /**
+     * 滑块拼图验证码滑块拼图Base64
+     */
     private String sliderImageBase64;
+    /**
+     * 滑块拼图验证码抠图位置坐标。
+     */
     private Coordinate coordinate;
+    /**
+     * 文字点选验证码生成的带文字背景图。
+     */
     private String wordClickImageBase64;
+    /**
+     * 文字点选验证码文字坐标信息列表
+     */
     private List<Coordinate> coordinates;
+    /**
+     * 文字点选验证码校验文字
+     */
     private List<String> words;
+    /**
+     * 图形验证码生成的图片
+     */
     private String graphicImageBase64;
+    /**
+     * 图形验证码校验内容
+     */
     private String characters;
 
     public String getOriginalImageBase64() {
-        return this.originalImageBase64;
+        return originalImageBase64;
     }
 
     public void setOriginalImageBase64(String originalImageBase64) {
@@ -22,7 +47,7 @@ public class Metadata {
     }
 
     public String getSliderImageBase64() {
-        return this.sliderImageBase64;
+        return sliderImageBase64;
     }
 
     public void setSliderImageBase64(String sliderImageBase64) {
@@ -30,7 +55,7 @@ public class Metadata {
     }
 
     public Coordinate getCoordinate() {
-        return this.coordinate;
+        return coordinate;
     }
 
     public void setCoordinate(Coordinate coordinate) {
@@ -38,7 +63,7 @@ public class Metadata {
     }
 
     public String getWordClickImageBase64() {
-        return this.wordClickImageBase64;
+        return wordClickImageBase64;
     }
 
     public void setWordClickImageBase64(String wordClickImageBase64) {
@@ -46,7 +71,7 @@ public class Metadata {
     }
 
     public List<Coordinate> getCoordinates() {
-        return this.coordinates;
+        return coordinates;
     }
 
     public void setCoordinates(List<Coordinate> coordinates) {
@@ -54,7 +79,7 @@ public class Metadata {
     }
 
     public List<String> getWords() {
-        return this.words;
+        return words;
     }
 
     public void setWords(List<String> words) {
@@ -62,7 +87,7 @@ public class Metadata {
     }
 
     public String getGraphicImageBase64() {
-        return this.graphicImageBase64;
+        return graphicImageBase64;
     }
 
     public void setGraphicImageBase64(String graphicImageBase64) {
@@ -70,7 +95,7 @@ public class Metadata {
     }
 
     public String getCharacters() {
-        return this.characters;
+        return characters;
     }
 
     public void setCharacters(String characters) {

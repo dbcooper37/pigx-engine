@@ -4,13 +4,36 @@ import com.pigx.engine.core.definition.domain.captcha.Captcha;
 import com.pigx.engine.core.definition.domain.captcha.Metadata;
 import com.pigx.engine.core.definition.domain.captcha.Verification;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/support/CaptchaRenderer.class */
+
 public interface CaptchaRenderer {
+
+    /**
+     * 验证码绘制
+     *
+     * @return 绘制的验证码和校验信息 {@link Metadata}
+     */
     Metadata draw();
 
+    /**
+     * 创建验证码
+     *
+     * @param key 验证码标识，用于标记在缓存中的存储
+     * @return 验证码数据 {@link Captcha}
+     */
     Captcha getCapcha(String key);
 
+    /**
+     * 验证码校验
+     *
+     * @param verification 前端传入的验证值
+     * @return true 验证成功，返回错误信息
+     */
     boolean verify(Verification verification);
 
+    /**
+     * 获取验证码类别
+     *
+     * @return 验证码类别
+     */
     String getCategory();
 }

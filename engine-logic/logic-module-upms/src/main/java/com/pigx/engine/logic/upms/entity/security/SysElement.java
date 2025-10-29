@@ -1,42 +1,30 @@
 package com.pigx.engine.logic.upms.entity.security;
 
-import com.pigx.engine.core.definition.constant.ErrorCodeMapperBuilderOrdered;
-import com.pigx.engine.core.definition.constant.SystemConstants;
-import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
-import com.pigx.engine.logic.upms.constants.LogicUpmsConstants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
+import com.pigx.engine.logic.upms.constants.LogicUpmsConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Cacheable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import java.util.HashSet;
-import java.util.Set;
-import org.hibernate.annotations.Cache;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UuidGenerator;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_ELEMENT)
-@Cacheable
+import java.util.HashSet;
+import java.util.Set;
+
+
 @Entity
 @Table(name = "sys_element", indexes = {@Index(name = "sys_element_id_idx", columnList = "element_id")})
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/entity/security/SysElement.class */
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_ELEMENT)
 public class SysElement extends AbstractSysEntity {
 
     @Id
-    @Column(name = "element_id", length = 64)
     @UuidGenerator
+    @Column(name = "element_id", length = 64)
     private String elementId;
 
     @Column(name = "parent_id", length = 64)
@@ -45,7 +33,7 @@ public class SysElement extends AbstractSysEntity {
     @Column(name = "path", length = 512)
     private String path;
 
-    @Column(name = "name", length = ErrorCodeMapperBuilderOrdered.MESSAGE)
+    @Column(name = "name", length = 50)
     private String name;
 
     @Column(name = "component", length = 512)
@@ -57,7 +45,7 @@ public class SysElement extends AbstractSysEntity {
     @Column(name = "title", length = 100)
     private String title;
 
-    @Column(name = "type", length = ErrorCodeMapperBuilderOrdered.MESSAGE)
+    @Column(name = "type", length = 50)
     private String type;
 
     @Column(name = "icon", length = 100)
@@ -83,15 +71,19 @@ public class SysElement extends AbstractSysEntity {
     @Column(name = "ignore_auth")
     private Boolean ignoreAuth = false;
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_ROLE)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = LogicUpmsConstants.REGION_SYS_ROLE)
     @Schema(name = "元素角色")
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "sys_element_role", joinColumns = {@JoinColumn(name = "element_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")}, uniqueConstraints = {@UniqueConstraint(columnNames = {"element_id", "role_id"})}, indexes = {@Index(name = "sys_element_role_eid_idx", columnList = "element_id"), @Index(name = "sys_element_role_rid_idx", columnList = "role_id")})
     @Fetch(FetchMode.SUBSELECT)
-    private Set<SysRole> roles = new HashSet();
+    @JoinTable(name = "sys_element_role",
+            joinColumns = {@JoinColumn(name = "element_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")},
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"element_id", "role_id"})},
+            indexes = {@Index(name = "sys_element_role_eid_idx", columnList = "element_id"), @Index(name = "sys_element_role_rid_idx", columnList = "role_id")})
+    private Set<SysRole> roles = new HashSet<>();
 
     public String getElementId() {
-        return this.elementId;
+        return elementId;
     }
 
     public void setElementId(String elementId) {
@@ -99,7 +91,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public String getParentId() {
-        return this.parentId;
+        return parentId;
     }
 
     public void setParentId(String parentId) {
@@ -107,7 +99,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public String getPath() {
-        return this.path;
+        return path;
     }
 
     public void setPath(String path) {
@@ -115,7 +107,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -123,7 +115,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public String getComponent() {
-        return this.component;
+        return component;
     }
 
     public void setComponent(String component) {
@@ -131,7 +123,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public String getRedirect() {
-        return this.redirect;
+        return redirect;
     }
 
     public void setRedirect(String redirect) {
@@ -139,7 +131,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public void setTitle(String title) {
@@ -147,7 +139,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public String getType() {
-        return this.type;
+        return type;
     }
 
     public void setType(String type) {
@@ -155,7 +147,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public String getIcon() {
-        return this.icon;
+        return icon;
     }
 
     public void setIcon(String icon) {
@@ -163,7 +155,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public Boolean getHaveChild() {
-        return this.haveChild;
+        return haveChild;
     }
 
     public void setHaveChild(Boolean haveChild) {
@@ -171,7 +163,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public Boolean getNotKeepAlive() {
-        return this.notKeepAlive;
+        return notKeepAlive;
     }
 
     public void setNotKeepAlive(Boolean notKeepAlive) {
@@ -179,7 +171,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public Boolean getHideAllChild() {
-        return this.hideAllChild;
+        return hideAllChild;
     }
 
     public void setHideAllChild(Boolean hideAllChild) {
@@ -187,7 +179,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public Boolean getDetailContent() {
-        return this.detailContent;
+        return detailContent;
     }
 
     public void setDetailContent(Boolean detailContent) {
@@ -195,7 +187,7 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public Boolean getIgnoreAuth() {
-        return this.ignoreAuth;
+        return ignoreAuth;
     }
 
     public void setIgnoreAuth(Boolean ignoreAuth) {
@@ -203,13 +195,14 @@ public class SysElement extends AbstractSysEntity {
     }
 
     public Set<SysRole> getRoles() {
-        return this.roles;
+        return roles;
     }
 
     public void setRoles(Set<SysRole> roles) {
         this.roles = roles;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -218,15 +211,32 @@ public class SysElement extends AbstractSysEntity {
             return false;
         }
         SysElement sysMenu = (SysElement) o;
-        return Objects.equal(this.elementId, sysMenu.elementId);
+        return Objects.equal(elementId, sysMenu.elementId);
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hashCode(new Object[]{this.elementId});
+        return Objects.hashCode(elementId);
     }
 
-    @Override // com.pigx.engine.data.core.jpa.entity.AbstractSysEntity, com.pigx.engine.data.core.jpa.entity.AbstractAuditEntity, com.pigx.engine.data.core.jpa.entity.AbstractEntity
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("elementId", this.elementId).add("parentId", this.parentId).add("path", this.path).add("name", this.name).add("component", this.component).add("redirect", this.redirect).add("title", this.title).add("type", this.type).add("icon", this.icon).add("haveChild", this.haveChild).add("notKeepAlive", this.notKeepAlive).add("hideAllChild", this.hideAllChild).add("detailContent", this.detailContent).add("ignoreAuth", this.ignoreAuth).add(SystemConstants.ROLES, this.roles).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("elementId", elementId)
+                .add("parentId", parentId)
+                .add("path", path)
+                .add("name", name)
+                .add("component", component)
+                .add("redirect", redirect)
+                .add("title", title)
+                .add("type", type)
+                .add("icon", icon)
+                .add("haveChild", haveChild)
+                .add("notKeepAlive", notKeepAlive)
+                .add("hideAllChild", hideAllChild)
+                .add("detailContent", detailContent)
+                .add("ignoreAuth", ignoreAuth)
+                .add("roles", roles)
+                .toString();
     }
 }

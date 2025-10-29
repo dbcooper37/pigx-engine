@@ -7,15 +7,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@EnableHerodotusLogicMessage
+
 @Configuration(proxyBeanMethods = false)
-@ComponentScan(basePackages = {"com.pigx.engine.rest.servlet.message.controller"})
-/* loaded from: rest-module-servlet-message-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/message/config/RestServletMessageConfiguration.class */
+@EnableHerodotusLogicMessage
+@ComponentScan(basePackages = {
+        "com.pigx.engine.rest.servlet.message.controller",
+})
 public class RestServletMessageConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(RestServletMessageConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Rest Servlet Message] Configure.");
+        log.debug("[PIGXD] |- Module [Rest Servlet Message] Configure.");
     }
 }

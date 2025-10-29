@@ -8,21 +8,22 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration(proxyBeanMethods = false)
-/* loaded from: web-module-servlet-3.5.7.0.jar:cn/herodotus/engine/web/servlet/config/TenantConfiguration.class */
 public class TenantConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(TenantConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Protect Tenant] Configure.");
+        log.debug("[PIGXD] |- Module [Protect Tenant] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public MultiTenantInterceptor tenantInterceptor() {
         MultiTenantInterceptor multiTenantInterceptor = new MultiTenantInterceptor();
-        log.trace("[Herodotus] |- Bean [Idempotent Interceptor] Configure.");
+        log.trace("[PIGXD] |- Bean [Idempotent Interceptor] Configure.");
         return multiTenantInterceptor;
     }
 }

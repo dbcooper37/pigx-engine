@@ -8,15 +8,22 @@ import org.springframework.security.config.annotation.web.configurers.ExceptionH
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
-/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/customizer/OAuth2ExceptionHandlingConfigurerCustomizer.class */
+
 public class OAuth2ExceptionHandlingConfigurerCustomizer implements Customizer<ExceptionHandlingConfigurer<HttpSecurity>> {
+
     private final OAuth2AuthenticationProperties authenticationProperties;
 
     public OAuth2ExceptionHandlingConfigurerCustomizer(OAuth2AuthenticationProperties authenticationProperties) {
         this.authenticationProperties = authenticationProperties;
     }
 
+    @Override
     public void customize(ExceptionHandlingConfigurer<HttpSecurity> configurer) {
-        configurer.defaultAuthenticationEntryPointFor(new LoginUrlAuthenticationEntryPoint(this.authenticationProperties.getFormLogin().getLoginPageUrl()), new MediaTypeRequestMatcher(new MediaType[]{MediaType.TEXT_HTML}));
+        configurer
+                .defaultAuthenticationEntryPointFor(
+                        new LoginUrlAuthenticationEntryPoint(authenticationProperties.getFormLogin().getLoginPageUrl()),
+                        new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                );
     }
 }
+

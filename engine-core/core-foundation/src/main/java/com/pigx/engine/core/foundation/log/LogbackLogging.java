@@ -1,17 +1,26 @@
 package com.pigx.engine.core.foundation.log;
 
 import com.google.common.base.MoreObjects;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.boot.logging.LogLevel;
 
-/* loaded from: core-foundation-3.5.7.0.jar:cn/herodotus/engine/core/foundation/log/LogbackLogging.class */
+import java.util.HashMap;
+import java.util.Map;
+
+
 public class LogbackLogging {
+
+    /**
+     * 日志级别，默认为INFO
+     */
     private LogLevel level = LogLevel.INFO;
-    private Map<String, LogLevel> loggers = new HashMap();
+
+    /**
+     * 日志输出内容配置
+     */
+    private Map<String, LogLevel> loggers = new HashMap<>();
 
     public LogLevel getLevel() {
-        return this.level;
+        return level;
     }
 
     public void setLevel(LogLevel level) {
@@ -19,14 +28,17 @@ public class LogbackLogging {
     }
 
     public Map<String, LogLevel> getLoggers() {
-        return this.loggers;
+        return loggers;
     }
 
     public void setLoggers(Map<String, LogLevel> loggers) {
         this.loggers = loggers;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("level", this.level).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("level", level)
+                .toString();
     }
 }

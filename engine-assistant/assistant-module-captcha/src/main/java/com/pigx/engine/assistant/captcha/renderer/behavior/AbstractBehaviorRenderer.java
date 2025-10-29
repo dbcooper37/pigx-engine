@@ -2,13 +2,13 @@ package com.pigx.engine.assistant.captcha.renderer.behavior;
 
 import com.pigx.engine.assistant.captcha.definition.AbstractRenderer;
 import com.pigx.engine.assistant.captcha.provider.ResourceProvider;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
+
+import java.awt.*;
 import java.nio.charset.StandardCharsets;
 
-/* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/renderer/behavior/AbstractBehaviorRenderer.class */
+
 public abstract class AbstractBehaviorRenderer<K, V> extends AbstractRenderer<K, V> {
+
     protected AbstractBehaviorRenderer(ResourceProvider resourceProvider, String cacheName) {
         super(resourceProvider, cacheName);
     }
@@ -24,13 +24,13 @@ public abstract class AbstractBehaviorRenderer<K, V> extends AbstractRenderer<K,
                 enCount++;
             }
         }
-        int zhOffset = (getHalfWatermarkFontSize() * zhCount) + 5;
+        int zhOffset = getHalfWatermarkFontSize() * zhCount + 5;
         int enOffset = enCount * 8;
         return zhOffset + enOffset;
     }
 
     private int getWatermarkFontSize() {
-        return getCaptchaProperties().getWatermark().getFontSize().intValue();
+        return getCaptchaProperties().getWatermark().getFontSize();
     }
 
     private int getHalfWatermarkFontSize() {
@@ -39,11 +39,11 @@ public abstract class AbstractBehaviorRenderer<K, V> extends AbstractRenderer<K,
 
     protected void addWatermark(Graphics graphics, int width, int height) {
         int fontSize = getHalfWatermarkFontSize();
-        Font watermakFont = getResourceProvider().getWaterMarkFont(fontSize);
+        Font watermakFont = this.getResourceProvider().getWaterMarkFont(fontSize);
         graphics.setFont(watermakFont);
         graphics.setColor(Color.white);
-        String content = getCaptchaProperties().getWatermark().getContent();
-        graphics.drawString(content, width - getEnOrZhLength(content), (height - getHalfWatermarkFontSize()) + 7);
+        String content = this.getCaptchaProperties().getWatermark().getContent();
+        graphics.drawString(content, width - getEnOrZhLength(content), height - getHalfWatermarkFontSize() + 7);
     }
 
     protected boolean isUnderOffset(int actualValue, int standardValue, int threshold) {

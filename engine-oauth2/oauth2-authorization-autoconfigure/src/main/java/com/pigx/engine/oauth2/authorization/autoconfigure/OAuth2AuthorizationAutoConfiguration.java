@@ -19,34 +19,39 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@EnableAspectJAutoProxy(exposeProxy = true, proxyTargetClass = true)
+
 @AutoConfiguration
 @EnableAsync
-@RemoteApplicationEventScan({"com.pigx.engine.oauth2.authorization.autoconfigure.bus"})
-@Import({OAuth2ServletAuthorizationConfiguration.class})
-@ComponentScan(basePackageClasses = {SecurityGlobalExceptionHandler.class})
-/* loaded from: oauth2-authorization-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/oauth2/authorization/autoconfigure/OAuth2AuthorizationAutoConfiguration.class */
+@EnableAspectJAutoProxy(exposeProxy = true, proxyTargetClass = true)
+@Import({
+        OAuth2ServletAuthorizationConfiguration.class
+})
+@ComponentScan(basePackageClasses = SecurityGlobalExceptionHandler.class)
+@RemoteApplicationEventScan({
+        "com.pigx.engine.oauth2.authorization.autoconfigure.bus"
+})
 public class OAuth2AuthorizationAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(OAuth2AuthorizationAutoConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.info("[Herodotus] |- Module [OAuth2 Resource Server Starter] Configure.");
+        log.info("[PIGXD] |- Module [OAuth2 Resource Server Starter] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public RemoteAttributeTransmitterSyncListener remoteSecurityMetadataSyncListener(SecurityAttributeAnalyzer securityAttributeAnalyzer, ServiceMatcher serviceMatcher) {
         RemoteAttributeTransmitterSyncListener listener = new RemoteAttributeTransmitterSyncListener(securityAttributeAnalyzer, serviceMatcher);
-        log.trace("[Herodotus] |- Bean [Security Metadata Refresh Listener] Configure.");
+        log.trace("[PIGXD] |- Bean [Security Metadata Refresh Listener] Configure.");
         return listener;
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public RestMappingScanEventManager requestMappingScanEventManager(SecurityAttributeAnalyzer securityAttributeAnalyzer) {
         DefaultRestMappingScanEventManager manager = new DefaultRestMappingScanEventManager(securityAttributeAnalyzer);
-        log.trace("[Herodotus] |- Bean [Request Mapping Scan Manager] Configure.");
+        log.trace("[PIGXD] |- Bean [Request Mapping Scan Manager] Configure.");
         return manager;
     }
 }

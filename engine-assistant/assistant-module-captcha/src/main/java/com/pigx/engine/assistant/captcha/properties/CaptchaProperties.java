@@ -6,16 +6,26 @@ import com.pigx.engine.assistant.captcha.enums.CaptchaFont;
 import com.pigx.engine.assistant.captcha.enums.FontStyle;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+
 @ConfigurationProperties(prefix = CaptchaConstants.PROPERTY_ASSISTANT_CAPTCHA)
-/* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/properties/CaptchaProperties.class */
 public class CaptchaProperties {
+
     private Graphics graphics = new Graphics();
+    /**
+     * 水印配置
+     */
     private Watermark watermark = new Watermark();
+    /**
+     * 滑块拼图验证码配置
+     */
     private Jigsaw jigsaw = new Jigsaw();
+    /**
+     * 文字点选验证码配置
+     */
     private WordClick wordClick = new WordClick();
 
     public Graphics getGraphics() {
-        return this.graphics;
+        return graphics;
     }
 
     public void setGraphics(Graphics graphics) {
@@ -23,7 +33,7 @@ public class CaptchaProperties {
     }
 
     public Watermark getWatermark() {
-        return this.watermark;
+        return watermark;
     }
 
     public void setWatermark(Watermark watermark) {
@@ -31,7 +41,7 @@ public class CaptchaProperties {
     }
 
     public Jigsaw getJigsaw() {
-        return this.jigsaw;
+        return jigsaw;
     }
 
     public void setJigsaw(Jigsaw jigsaw) {
@@ -39,24 +49,39 @@ public class CaptchaProperties {
     }
 
     public WordClick getWordClick() {
-        return this.wordClick;
+        return wordClick;
     }
 
     public void setWordClick(WordClick wordClick) {
         this.wordClick = wordClick;
     }
 
-    /* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/properties/CaptchaProperties$Graphics.class */
     public static class Graphics {
+        /**
+         * 验证码字符个数
+         */
         private int length = 5;
+        /**
+         * 验证码显示宽度
+         */
         private int width = 130;
+        /**
+         * 验证码显示高度
+         */
         private int height = 48;
+        /**
+         * 算数类型验证码算法复杂度
+         */
         private int complexity = 2;
+        /**
+         * 字符类型
+         */
         private CaptchaCharacter letter = CaptchaCharacter.NUM_AND_CHAR;
+
         private CaptchaFont font = CaptchaFont.LEXOGRAPHER;
 
         public int getLength() {
-            return this.length;
+            return length;
         }
 
         public void setLength(int length) {
@@ -64,7 +89,7 @@ public class CaptchaProperties {
         }
 
         public int getWidth() {
-            return this.width;
+            return width;
         }
 
         public void setWidth(int width) {
@@ -72,7 +97,7 @@ public class CaptchaProperties {
         }
 
         public int getHeight() {
-            return this.height;
+            return height;
         }
 
         public void setHeight(int height) {
@@ -80,7 +105,7 @@ public class CaptchaProperties {
         }
 
         public CaptchaFont getFont() {
-            return this.font;
+            return font;
         }
 
         public void setFont(CaptchaFont captchaFont) {
@@ -88,7 +113,7 @@ public class CaptchaProperties {
         }
 
         public CaptchaCharacter getLetter() {
-            return this.letter;
+            return letter;
         }
 
         public void setLetter(CaptchaCharacter letter) {
@@ -96,7 +121,7 @@ public class CaptchaProperties {
         }
 
         public int getComplexity() {
-            return this.complexity;
+            return complexity;
         }
 
         public void setComplexity(int complexity) {
@@ -104,15 +129,30 @@ public class CaptchaProperties {
         }
     }
 
-    /* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/properties/CaptchaProperties$Watermark.class */
+    /**
+     * 右下角水印文字(我的水印)
+     */
     public static class Watermark {
-        private String content = "PigX Cloud";
+        /**
+         * 水印内容
+         */
+        private String content = "Dante Cloud";
+        /**
+         * 水印字体
+         */
         private String fontName = "WenQuanZhengHei.ttf";
+        /**
+         * 字体样式： 0:PLAIN; 1:BOLD; 2:ITALI；
+         */
         private FontStyle fontStyle = FontStyle.BOLD;
+
+        /**
+         * 水印文字中，汉字的大小，默认：25
+         */
         private Integer fontSize = 25;
 
         public String getContent() {
-            return this.content;
+            return content;
         }
 
         public void setContent(String content) {
@@ -120,7 +160,7 @@ public class CaptchaProperties {
         }
 
         public String getFontName() {
-            return this.fontName;
+            return fontName;
         }
 
         public void setFontName(String fontName) {
@@ -128,7 +168,7 @@ public class CaptchaProperties {
         }
 
         public Integer getFontSize() {
-            return this.fontSize;
+            return fontSize;
         }
 
         public void setFontSize(Integer fontSize) {
@@ -136,7 +176,7 @@ public class CaptchaProperties {
         }
 
         public FontStyle getFontStyle() {
-            return this.fontStyle;
+            return fontStyle;
         }
 
         public void setFontStyle(FontStyle fontStyle) {
@@ -144,15 +184,31 @@ public class CaptchaProperties {
         }
     }
 
-    /* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/properties/CaptchaProperties$Jigsaw.class */
+    /**
+     * 拼图滑块验证码
+     */
     public static class Jigsaw {
+        /**
+         * 拼图滑块验证码原图资源路径，格式：classpath:/xxx
+         */
         private String originalResource = "classpath*:images/jigsaw/original/*.png";
+        /**
+         * 拼图滑块验证码拼图模版资源路径，格式：classpath:/xxx
+         */
         private String templateResource = "classpath*:images/jigsaw/template/*.png";
+
+        /**
+         * 滑动干扰项, 可选值为(0/1/2), 默认值为：0，即无干扰项
+         */
         private Integer interference = 0;
+
+        /**
+         * 偏差值，滑动结果与标准结果间可接受的偏差值。默认：5
+         */
         private Integer deviation = 5;
 
         public String getOriginalResource() {
-            return this.originalResource;
+            return originalResource;
         }
 
         public void setOriginalResource(String originalResource) {
@@ -160,7 +216,7 @@ public class CaptchaProperties {
         }
 
         public String getTemplateResource() {
-            return this.templateResource;
+            return templateResource;
         }
 
         public void setTemplateResource(String templateResource) {
@@ -168,7 +224,7 @@ public class CaptchaProperties {
         }
 
         public Integer getInterference() {
-            return this.interference;
+            return interference;
         }
 
         public void setInterference(Integer interference) {
@@ -176,7 +232,7 @@ public class CaptchaProperties {
         }
 
         public Integer getDeviation() {
-            return this.deviation;
+            return deviation;
         }
 
         public void setDeviation(Integer deviation) {
@@ -184,17 +240,39 @@ public class CaptchaProperties {
         }
     }
 
-    /* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/properties/CaptchaProperties$WordClick.class */
+    /**
+     * 文字点选验证码
+     */
     public static class WordClick {
+
+        /**
+         * 文字点选验证码资源路径，格式：classpath:/xxx
+         */
         private String imageResource = "classpath*:images/word-click/*.png";
+
+        /**
+         * 文字点选验证码文字个数
+         */
         private Integer wordCount = 5;
+        /**
+         * 随机颜色
+         */
         private boolean randomColor = true;
+        /**
+         * 字体样式： 0:PLAIN; 1:BOLD; 2:ITALI；
+         */
         private FontStyle fontStyle = FontStyle.BOLD;
+        /**
+         * 水印字体
+         */
         private String fontName = "WenQuanZhengHei.ttf";
+        /**
+         * 文字点选验证码资源路径字体大小
+         */
         private Integer fontSize = 25;
 
         public String getImageResource() {
-            return this.imageResource;
+            return imageResource;
         }
 
         public void setImageResource(String imageResource) {
@@ -202,7 +280,7 @@ public class CaptchaProperties {
         }
 
         public Integer getWordCount() {
-            return this.wordCount;
+            return wordCount;
         }
 
         public void setWordCount(Integer wordCount) {
@@ -210,7 +288,7 @@ public class CaptchaProperties {
         }
 
         public Integer getFontSize() {
-            return this.fontSize;
+            return fontSize;
         }
 
         public void setFontSize(Integer fontSize) {
@@ -218,7 +296,7 @@ public class CaptchaProperties {
         }
 
         public boolean isRandomColor() {
-            return this.randomColor;
+            return randomColor;
         }
 
         public void setRandomColor(boolean randomColor) {
@@ -226,7 +304,7 @@ public class CaptchaProperties {
         }
 
         public String getFontName() {
-            return this.fontName;
+            return fontName;
         }
 
         public void setFontName(String fontName) {
@@ -234,7 +312,7 @@ public class CaptchaProperties {
         }
 
         public FontStyle getFontStyle() {
-            return this.fontStyle;
+            return fontStyle;
         }
 
         public void setFontStyle(FontStyle fontStyle) {
@@ -242,3 +320,4 @@ public class CaptchaProperties {
         }
     }
 }
+

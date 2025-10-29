@@ -5,11 +5,6 @@ import com.pigx.engine.data.core.jpa.service.AbstractJpaService;
 import com.pigx.engine.oauth2.persistence.sas.jpa.entity.HerodotusAuthorization;
 import com.pigx.engine.oauth2.persistence.sas.jpa.repository.HerodotusAuthorizationRepository;
 import jakarta.persistence.criteria.Predicate;
-import java.lang.invoke.SerializedLambda;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,89 +12,73 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-@Service
-/* loaded from: oauth2-module-persistence-jpa-3.5.7.0.jar:cn/herodotus/engine/oauth2/persistence/sas/jpa/service/HerodotusAuthorizationService.class */
-public class HerodotusAuthorizationService extends AbstractJpaService<HerodotusAuthorization, String> {
-    private static final Logger log = LoggerFactory.getLogger(HerodotusAuthorizationService.class);
-    private final HerodotusAuthorizationRepository herodotusAuthorizationRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-    private static /* synthetic */ Object $deserializeLambda$(SerializedLambda lambda) {
-        switch (lambda.getImplMethodName()) {
-            case "lambda$findByStateOrAuthorizationCodeValueOrAccessTokenValueOrRefreshTokenValueOrOidcIdTokenValueOrUserCodeValueOrDeviceCodeValue$32f66c14$1":
-                if (lambda.getImplMethodKind() == 6 && lambda.getFunctionalInterfaceClass().equals("org/springframework/data/jpa/domain/Specification") && lambda.getFunctionalInterfaceMethodName().equals("toPredicate") && lambda.getFunctionalInterfaceMethodSignature().equals("(Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;") && lambda.getImplClass().equals("cn/herodotus/engine/oauth2/persistence/sas/jpa/service/HerodotusAuthorizationService") && lambda.getImplMethodSignature().equals("(Ljava/lang/String;Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;")) {
-                    String str = (String) lambda.getCapturedArg(0);
-                    return (root, criteriaQuery, criteriaBuilder) -> {
-                        List<Predicate> predicates = new ArrayList<>();
-                        predicates.add(criteriaBuilder.equal(root.get("state"), str));
-                        predicates.add(criteriaBuilder.equal(root.get("authorizationCodeValue"), str));
-                        predicates.add(criteriaBuilder.equal(root.get("accessTokenValue"), str));
-                        predicates.add(criteriaBuilder.equal(root.get("refreshTokenValue"), str));
-                        predicates.add(criteriaBuilder.equal(root.get("oidcIdTokenValue"), str));
-                        predicates.add(criteriaBuilder.equal(root.get("userCodeValue"), str));
-                        predicates.add(criteriaBuilder.equal(root.get("deviceCodeValue"), str));
-                        Predicate[] predicateArray = new Predicate[predicates.size()];
-                        criteriaQuery.where(criteriaBuilder.or((Predicate[]) predicates.toArray(predicateArray)));
-                        return criteriaQuery.getRestriction();
-                    };
-                }
-                break;
-        }
-        throw new IllegalArgumentException("Invalid lambda deserialization");
-    }
+
+@Service
+public class HerodotusAuthorizationService extends AbstractJpaService<HerodotusAuthorization, String> {
+
+    private static final Logger log = LoggerFactory.getLogger(HerodotusAuthorizationService.class);
+
+    private final HerodotusAuthorizationRepository herodotusAuthorizationRepository;
 
     @Autowired
     public HerodotusAuthorizationService(HerodotusAuthorizationRepository herodotusAuthorizationRepository) {
         this.herodotusAuthorizationRepository = herodotusAuthorizationRepository;
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaReadableService
+    @Override
     public BaseJpaRepository<HerodotusAuthorization, String> getRepository() {
         return this.herodotusAuthorizationRepository;
     }
 
     public Optional<HerodotusAuthorization> findByState(String state) {
         Optional<HerodotusAuthorization> result = this.herodotusAuthorizationRepository.findByState(state);
-        log.debug("[Herodotus] |- HerodotusAuthorization Service findByState.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service findByState.");
         return result;
     }
 
     public Optional<HerodotusAuthorization> findByAuthorizationCode(String authorizationCode) {
         Optional<HerodotusAuthorization> result = this.herodotusAuthorizationRepository.findByAuthorizationCodeValue(authorizationCode);
-        log.debug("[Herodotus] |- HerodotusAuthorization Service findByAuthorizationCode.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service findByAuthorizationCode.");
         return result;
     }
 
     public Optional<HerodotusAuthorization> findByAccessToken(String accessToken) {
         Optional<HerodotusAuthorization> result = this.herodotusAuthorizationRepository.findByAccessTokenValue(accessToken);
-        log.debug("[Herodotus] |- HerodotusAuthorization Service findByAccessToken.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service findByAccessToken.");
         return result;
     }
 
     public Optional<HerodotusAuthorization> findByRefreshToken(String refreshToken) {
         Optional<HerodotusAuthorization> result = this.herodotusAuthorizationRepository.findByRefreshTokenValue(refreshToken);
-        log.debug("[Herodotus] |- HerodotusAuthorization Service findByRefreshToken.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service findByRefreshToken.");
         return result;
     }
 
     public Optional<HerodotusAuthorization> findByOidcIdTokenValue(String idToken) {
         Optional<HerodotusAuthorization> result = this.herodotusAuthorizationRepository.findByOidcIdTokenValue(idToken);
-        log.debug("[Herodotus] |- HerodotusAuthorization Service findByOidcIdTokenValue.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service findByOidcIdTokenValue.");
         return result;
     }
 
     public Optional<HerodotusAuthorization> findByUserCodeValue(String userCode) {
         Optional<HerodotusAuthorization> result = this.herodotusAuthorizationRepository.findByUserCodeValue(userCode);
-        log.debug("[Herodotus] |- HerodotusAuthorization Service findByUserCodeValue.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service findByUserCodeValue.");
         return result;
     }
 
     public Optional<HerodotusAuthorization> findByDeviceCodeValue(String deviceCode) {
         Optional<HerodotusAuthorization> result = this.herodotusAuthorizationRepository.findByDeviceCodeValue(deviceCode);
-        log.debug("[Herodotus] |- HerodotusAuthorization Service findByDeviceCodeValue.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service findByDeviceCodeValue.");
         return result;
     }
 
     public Optional<HerodotusAuthorization> findByStateOrAuthorizationCodeValueOrAccessTokenValueOrRefreshTokenValueOrOidcIdTokenValueOrUserCodeValueOrDeviceCodeValue(String token) {
+
         Specification<HerodotusAuthorization> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("state"), token));
@@ -109,23 +88,25 @@ public class HerodotusAuthorizationService extends AbstractJpaService<HerodotusA
             predicates.add(criteriaBuilder.equal(root.get("oidcIdTokenValue"), token));
             predicates.add(criteriaBuilder.equal(root.get("userCodeValue"), token));
             predicates.add(criteriaBuilder.equal(root.get("deviceCodeValue"), token));
+
             Predicate[] predicateArray = new Predicate[predicates.size()];
-            criteriaQuery.where(criteriaBuilder.or((Predicate[]) predicates.toArray(predicateArray)));
+            criteriaQuery.where(criteriaBuilder.or(predicates.toArray(predicateArray)));
             return criteriaQuery.getRestriction();
         };
+
         Optional<HerodotusAuthorization> result = this.herodotusAuthorizationRepository.findOne(specification);
-        log.trace("[Herodotus] |- HerodotusAuthorization Service findByDetection.");
+        log.trace("[PIGXD] |- HerodotusAuthorization Service findByDetection.");
         return result;
     }
 
     public void clearHistoryToken() {
         this.herodotusAuthorizationRepository.deleteByRefreshTokenExpiresAtBefore(LocalDateTime.now());
-        log.debug("[Herodotus] |- HerodotusAuthorization Service clearExpireAccessToken.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service clearExpireAccessToken.");
     }
 
     public List<HerodotusAuthorization> findAvailableAuthorizations(String registeredClientId, String principalName) {
         List<HerodotusAuthorization> authorizations = this.herodotusAuthorizationRepository.findAllByRegisteredClientIdAndPrincipalNameAndAccessTokenExpiresAtAfter(registeredClientId, principalName, LocalDateTime.now());
-        log.debug("[Herodotus] |- HerodotusAuthorization Service findAvailableAuthorizations.");
+        log.debug("[PIGXD] |- HerodotusAuthorization Service findAvailableAuthorizations.");
         return authorizations;
     }
 
@@ -135,7 +116,7 @@ public class HerodotusAuthorizationService extends AbstractJpaService<HerodotusA
         if (CollectionUtils.isNotEmpty(authorizations)) {
             count = authorizations.size();
         }
-        log.debug("[Herodotus] |- HerodotusAuthorization Service current authorization count is [{}].", Integer.valueOf(count));
+        log.debug("[PIGXD] |- HerodotusAuthorization Service current authorization count is [{}].", count);
         return count;
     }
 }

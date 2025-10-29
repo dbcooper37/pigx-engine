@@ -9,21 +9,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+
 @Configuration(proxyBeanMethods = false)
-/* loaded from: web-module-servlet-3.5.7.0.jar:cn/herodotus/engine/web/servlet/config/TemplateConfiguration.class */
 public class TemplateConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(TemplateConfiguration.class);
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[Herodotus] |- Module [Servlet Template] Configure.");
+        log.debug("[PIGXD] |- Module [Servlet Template] Configure.");
     }
 
-    @ConditionalOnMissingBean
     @Bean
+    @ConditionalOnMissingBean
     public ThymeleafTemplateHandler thymeleafTemplateHandler(SpringTemplateEngine springTemplateEngine) {
         ThymeleafTemplateHandler handler = new ThymeleafTemplateHandler(springTemplateEngine);
-        log.trace("[Herodotus] |- Bean [Servlet Thymeleaf Template Handler] Configure.");
+        log.trace("[PIGXD] |- Bean [Servlet Thymeleaf Template Handler] Configure.");
         return handler;
     }
 }

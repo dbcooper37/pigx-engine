@@ -1,12 +1,12 @@
 package com.pigx.engine.core.definition.domain;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.google.common.base.MoreObjects;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.io.Serializable;
 
+
 @Schema(name = "响应错误详情", description = "为兼容Validation而增加的Validation错误信息实体")
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/domain/Error.class */
 public class Error implements Serializable {
 
     @Schema(name = "Exception完整信息", type = "string")
@@ -25,7 +25,7 @@ public class Error implements Serializable {
     private StackTraceElement[] stackTrace;
 
     public String getDetail() {
-        return this.detail;
+        return detail;
     }
 
     public void setDetail(String detail) {
@@ -33,7 +33,7 @@ public class Error implements Serializable {
     }
 
     public String getMessage() {
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -41,7 +41,7 @@ public class Error implements Serializable {
     }
 
     public String getCode() {
-        return this.code;
+        return code;
     }
 
     public void setCode(String code) {
@@ -49,7 +49,7 @@ public class Error implements Serializable {
     }
 
     public String getField() {
-        return this.field;
+        return field;
     }
 
     public void setField(String field) {
@@ -57,14 +57,20 @@ public class Error implements Serializable {
     }
 
     public StackTraceElement[] getStackTrace() {
-        return this.stackTrace;
+        return stackTrace;
     }
 
     public void setStackTrace(StackTraceElement[] stackTrace) {
         this.stackTrace = stackTrace;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("detail", this.detail).add("message", this.message).add(SystemConstants.CODE, this.code).add("field", this.field).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("detail", detail)
+                .add("message", message)
+                .add("code", code)
+                .add("field", field)
+                .toString();
     }
 }

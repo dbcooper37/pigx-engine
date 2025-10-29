@@ -3,38 +3,102 @@ package com.pigx.engine.oauth2.persistence.sas.jpa.repository;
 import com.pigx.engine.data.core.jpa.repository.BaseJpaRepository;
 import com.pigx.engine.oauth2.persistence.sas.jpa.entity.HerodotusAuthorization;
 import jakarta.persistence.QueryHint;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import org.hibernate.jpa.AvailableHints;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.transaction.annotation.Transactional;
 
-/* loaded from: oauth2-module-persistence-jpa-3.5.7.0.jar:cn/herodotus/engine/oauth2/persistence/sas/jpa/repository/HerodotusAuthorizationRepository.class */
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+
 public interface HerodotusAuthorizationRepository extends BaseJpaRepository<HerodotusAuthorization, String> {
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+
+    /**
+     * 根据 State 查询 OAuth2 认证信息
+     *
+     * @param state OAuth2 Authorization Code 模式参数 State
+     * @return OAuth2 认证信息 {@link HerodotusAuthorization}
+     */
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     Optional<HerodotusAuthorization> findByState(String state);
 
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    /**
+     * 根据 authorizationCode 查询 OAuth2 认证信息
+     *
+     * @param authorizationCode OAuth2 Authorization Code 模式参数 code
+     * @return OAuth2 认证信息 {@link HerodotusAuthorization}
+     */
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     Optional<HerodotusAuthorization> findByAuthorizationCodeValue(String authorizationCode);
 
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    /**
+     * 根据 Access Token 查询 OAuth2 认证信息
+     *
+     * @param accessToken OAuth2 accessToken
+     * @return OAuth2 认证信息 {@link HerodotusAuthorization}
+     */
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     Optional<HerodotusAuthorization> findByAccessTokenValue(String accessToken);
 
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    /**
+     * 根据 Refresh Token 查询 OAuth2 认证信息
+     *
+     * @param refreshToken OAuth2 refreshToken
+     * @return OAuth2 认证信息 {@link HerodotusAuthorization}
+     */
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     Optional<HerodotusAuthorization> findByRefreshTokenValue(String refreshToken);
 
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    /**
+     * 根据 Id Token 查询 OAuth2 认证信息
+     *
+     * @param idToken OAuth2 idToken
+     * @return OAuth2 认证信息 {@link HerodotusAuthorization}
+     */
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     Optional<HerodotusAuthorization> findByOidcIdTokenValue(String idToken);
 
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    /**
+     * 根据 User Code 查询 OAuth2 认证信息
+     *
+     * @param userCode OAuth2 userCode
+     * @return OAuth2 认证信息 {@link HerodotusAuthorization}
+     */
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     Optional<HerodotusAuthorization> findByUserCodeValue(String userCode);
 
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    /**
+     * 根据 Device Code 查询 OAuth2 认证信息
+     *
+     * @param deviceCode OAuth2 deviceCode
+     * @return OAuth2 认证信息 {@link HerodotusAuthorization}
+     */
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     Optional<HerodotusAuthorization> findByDeviceCodeValue(String deviceCode);
 
+    /**
+     * 根据客户端ID和用户名查询未过期Token
+     *
+     * @param registeredClientId 客户端ID
+     * @param principalName      用户名称
+     * @param localDateTime      时间
+     * @return 认证信息列表
+     */
     List<HerodotusAuthorization> findAllByRegisteredClientIdAndPrincipalNameAndAccessTokenExpiresAtAfter(String registeredClientId, String principalName, LocalDateTime localDateTime);
 
+    /**
+     * 根据 RefreshToken 过期时间，清理历史 Token信息
+     * <p>
+     * OAuth2Authorization 表中存在 AccessToken、OidcToken、RefreshToken 等三个过期时间。
+     * 正常的删除逻辑应该是三个过期时间都已经过期才行。但是有特殊情况：
+     * 1. OidcToken 的过期时间有可能为空，这就增加了 SQL 处理的复杂度。
+     * 2. 逻辑上 RefreshToken 的过期应该是最长的(这是默认配置正确的情况)
+     * 因此，目前就简单的根据 RefreshToken过期时间进行处理
+     *
+     * @param localDateTime 时间
+     */
     @Modifying
     @Transactional
     void deleteByRefreshTokenExpiresAtBefore(LocalDateTime localDateTime);

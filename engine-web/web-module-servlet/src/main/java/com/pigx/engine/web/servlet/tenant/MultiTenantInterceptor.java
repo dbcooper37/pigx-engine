@@ -11,28 +11,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-/* loaded from: web-module-servlet-3.5.7.0.jar:cn/herodotus/engine/web/servlet/tenant/MultiTenantInterceptor.class */
+
 public class MultiTenantInterceptor implements HandlerInterceptor {
+
     private static final Logger log = LoggerFactory.getLogger(MultiTenantInterceptor.class);
 
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         String tenantId = HeaderUtils.getHerodotusTenantId(request);
         if (StringUtils.isBlank(tenantId)) {
             tenantId = SystemConstants.TENANT_ID;
         }
         TenantContextHolder.setTenantId(tenantId);
-        log.debug("[Herodotus] |- TENANT ID is : [{}].", tenantId);
+        log.debug("[PIGXD] |- TENANT ID is : [{}].", tenantId);
+
         String path = request.getRequestURI();
         String sessionId = SessionUtils.getSessionId(request);
         String herodotusSessionId = HeaderUtils.getHerodotusSessionId(request);
-        log.debug("[Herodotus] |- SESSION ID for [{}] is : [{}].", path, sessionId);
-        log.debug("[Herodotus] |- SESSION ID of HERODOTUS for [{}] is : [{}].", path, herodotusSessionId);
+
+        log.debug("[PIGXD] |- SESSION ID for [{}] is : [{}].", path, sessionId);
+        log.debug("[PIGXD] |- SESSION ID of HERODOTUS for [{}] is : [{}].", path, herodotusSessionId);
+
         return true;
     }
 
+    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         String path = request.getRequestURI();
         TenantContextHolder.clear();
-        log.debug("[Herodotus] |- Tenant Interceptor CLEAR tenantId for request [{}].", path);
+        log.debug("[PIGXD] |- Tenant Interceptor CLEAR tenantId for request [{}].", path);
     }
 }

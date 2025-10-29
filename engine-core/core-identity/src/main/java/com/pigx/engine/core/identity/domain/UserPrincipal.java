@@ -1,20 +1,27 @@
 package com.pigx.engine.core.identity.domain;
 
-import com.pigx.engine.core.definition.constant.SystemConstants;
 import com.google.common.base.MoreObjects;
+import com.pigx.engine.core.definition.constant.SystemConstants;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: core-identity-3.5.7.0.jar:cn/herodotus/engine/core/identity/domain/UserPrincipal.class */
+
 public class UserPrincipal implements HerodotusPrincipal, Serializable {
+
     private String id;
+
     private String name;
+
     private String email;
+
     private String avatar;
+
     private Set<String> roles;
+
     private String employeeId;
 
     public UserPrincipal() {
@@ -27,36 +34,36 @@ public class UserPrincipal implements HerodotusPrincipal, Serializable {
         this.avatar = avatar;
     }
 
-    @Override // com.pigx.engine.core.identity.domain.HerodotusPrincipal
+    @Override
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    @Override // java.security.Principal
+    @Override
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override // com.pigx.engine.core.identity.domain.HerodotusPrincipal
+    @Override
     public String getAvatar() {
-        return this.avatar;
+        return avatar;
     }
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 
-    @Override // com.pigx.engine.core.identity.domain.HerodotusPrincipal
+    @Override
     public String getEmail() {
-        return this.email;
+        return email;
     }
 
     public void setEmail(String email) {
@@ -64,7 +71,7 @@ public class UserPrincipal implements HerodotusPrincipal, Serializable {
     }
 
     public Set<String> getRoles() {
-        return this.roles;
+        return roles;
     }
 
     public void setRoles(Set<String> roles) {
@@ -72,7 +79,7 @@ public class UserPrincipal implements HerodotusPrincipal, Serializable {
     }
 
     public String getEmployeeId() {
-        return this.employeeId;
+        return employeeId;
     }
 
     public void setEmployeeId(String employeeId) {
@@ -90,7 +97,7 @@ public class UserPrincipal implements HerodotusPrincipal, Serializable {
         return map;
     }
 
-    @Override // java.security.Principal
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -99,16 +106,23 @@ public class UserPrincipal implements HerodotusPrincipal, Serializable {
             return false;
         }
         UserPrincipal that = (UserPrincipal) o;
-        return Objects.equals(this.id, that.id) && Objects.equals(this.name, that.name);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
-    @Override // java.security.Principal
+    @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name);
+        return Objects.hash(id, name);
     }
 
-    @Override // java.security.Principal
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("id", this.id).add("name", this.name).add(SystemConstants.SCOPE_EMAIL, this.email).add(SystemConstants.AVATAR, this.avatar).add(SystemConstants.ROLES, this.roles).add(SystemConstants.EMPLOYEE_ID, this.employeeId).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .add("email", email)
+                .add("avatar", avatar)
+                .add("roles", roles)
+                .add("employeeId", employeeId)
+                .toString();
     }
 }

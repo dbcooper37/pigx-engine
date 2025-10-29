@@ -1,18 +1,18 @@
 package com.pigx.engine.logic.upms.converter;
 
-import com.pigx.engine.core.definition.constant.SymbolConstants;
 import com.pigx.engine.core.foundation.founction.ListConverter;
 import com.pigx.engine.core.identity.domain.AttributeTransmitter;
 import com.pigx.engine.logic.upms.entity.security.SysAttribute;
 import com.pigx.engine.logic.upms.entity.security.SysPermission;
-import java.util.List;
-import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/converter/SysAttributeToAttributeTransmitterConverter.class */
+import java.util.List;
+import java.util.Set;
+
+
 public class SysAttributeToAttributeTransmitterConverter implements ListConverter<SysAttribute, AttributeTransmitter> {
-    @Override // com.pigx.engine.core.foundation.founction.ListConverter
+    @Override
     public AttributeTransmitter from(SysAttribute source) {
         AttributeTransmitter target = new AttributeTransmitter();
         target.setAttributeId(source.getAttributeId());
@@ -28,11 +28,10 @@ public class SysAttributeToAttributeTransmitterConverter implements ListConverte
 
     private String permissionToCommaDelimitedString(Set<SysPermission> sysAuthorities) {
         if (CollectionUtils.isNotEmpty(sysAuthorities)) {
-            List<String> codes = sysAuthorities.stream().map((v0) -> {
-                return v0.getPermissionCode();
-            }).toList();
+            List<String> codes = sysAuthorities.stream().map(SysPermission::getPermissionCode).toList();
             return StringUtils.collectionToCommaDelimitedString(codes);
+        } else {
+            return "";
         }
-        return SymbolConstants.BLANK;
     }
 }

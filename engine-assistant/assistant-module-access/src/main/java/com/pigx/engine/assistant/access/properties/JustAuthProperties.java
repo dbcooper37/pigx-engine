@@ -1,23 +1,37 @@
+
 package com.pigx.engine.assistant.access.properties;
 
-import com.pigx.engine.assistant.access.constant.AccessConstants;
-import com.pigx.engine.core.definition.constant.BaseConstants;
 import com.google.common.base.MoreObjects;
-import java.time.Duration;
-import java.util.Map;
+import com.pigx.engine.assistant.access.constant.AccessConstants;
 import me.zhyd.oauth.config.AuthConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.time.Duration;
+import java.util.Map;
+
+
 @ConfigurationProperties(prefix = AccessConstants.PROPERTY_ACCESS_JUSTAUTH)
-/* loaded from: assistant-module-access-3.5.7.0.jar:cn/herodotus/engine/assistant/access/properties/JustAuthProperties.class */
 public class JustAuthProperties {
+
+    /**
+     * 是否开启
+     */
     private Boolean enabled;
+    /**
+     * State 缓存时长，默认5分钟
+     */
     private Duration timeout = Duration.ofMinutes(5);
+    /**
+     * 第三方系统登录配置信息
+     */
     private Map<String, AuthConfig> configs;
+    /**
+     * 支付宝登录 PublicKey
+     */
     private String alipayPublicKey;
 
     public Boolean getEnabled() {
-        return this.enabled;
+        return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
@@ -25,7 +39,7 @@ public class JustAuthProperties {
     }
 
     public Duration getTimeout() {
-        return this.timeout;
+        return timeout;
     }
 
     public void setTimeout(Duration timeout) {
@@ -33,7 +47,7 @@ public class JustAuthProperties {
     }
 
     public Map<String, AuthConfig> getConfigs() {
-        return this.configs;
+        return configs;
     }
 
     public void setConfigs(Map<String, AuthConfig> configs) {
@@ -41,14 +55,19 @@ public class JustAuthProperties {
     }
 
     public String getAlipayPublicKey() {
-        return this.alipayPublicKey;
+        return alipayPublicKey;
     }
 
     public void setAlipayPublicKey(String alipayPublicKey) {
         this.alipayPublicKey = alipayPublicKey;
     }
 
+    @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add(BaseConstants.PROPERTY_NAME_ENABLED, this.enabled).add("timeout", this.timeout).add("alipayPublicKey", this.alipayPublicKey).toString();
+        return MoreObjects.toStringHelper(this)
+                .add("enabled", enabled)
+                .add("timeout", timeout)
+                .add("alipayPublicKey", alipayPublicKey)
+                .toString();
     }
 }

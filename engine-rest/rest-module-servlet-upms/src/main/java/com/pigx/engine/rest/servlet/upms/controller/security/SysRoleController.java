@@ -12,56 +12,74 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
-@RequestMapping({"/security/role"})
-@Tags({@Tag(name = "用户安全管理接口"), @Tag(name = "系统角色管理接口")})
+import java.util.List;
+
+
 @RestController
-/* loaded from: rest-module-servlet-upms-3.5.7.0.jar:cn/herodotus/engine/rest/servlet/upms/controller/security/SysRoleController.class */
+@RequestMapping("/security/role")
+@Tags({
+        @Tag(name = "用户安全管理接口"),
+        @Tag(name = "系统角色管理接口")
+})
 public class SysRoleController extends AbstractJpaWriteableController<SysRole, String> {
+
     private final SysRoleService sysRoleService;
 
     public SysRoleController(SysRoleService sysRoleService) {
         this.sysRoleService = sysRoleService;
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
+    @Override
     public BaseJpaWriteableService<SysRole, String> getService() {
         return this.sysRoleService;
     }
 
-    @Operation(summary = "根据角色代码查询角色", description = "根据输入的角色代码，查询对应的角色", responses = {@ApiResponse(description = "查询到的角色", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = SysRole.class))}), @ApiResponse(responseCode = "204", description = "查询成功，未查到数据"), @ApiResponse(responseCode = "500", description = "查询失败")})
-    @Parameters({@Parameter(name = "roleCode", in = ParameterIn.PATH, required = true, description = "角色代码")})
     @AccessLimited
-    @GetMapping({"/{roleCode}"})
+    @Operation(summary = "根据角色代码查询角色", description = "根据输入的角色代码，查询对应的角色",
+            responses = {
+                    @ApiResponse(description = "查询到的角色", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = SysRole.class))),
+                    @ApiResponse(responseCode = "204", description = "查询成功，未查到数据"),
+                    @ApiResponse(responseCode = "500", description = "查询失败")
+            }
+    )
+    @Parameters({
+            @Parameter(name = "roleCode", in = ParameterIn.PATH, required = true, description = "角色代码"),
+    })
+    @GetMapping("/{roleCode}")
     public Result<SysRole> findByRoleCode(@PathVariable("roleCode") String roleCode) {
-        SysRole sysRole = this.sysRoleService.findByRoleCode(roleCode);
-        return result((SysRoleController) sysRole);
+        SysRole sysRole = sysRoleService.findByRoleCode(roleCode);
+        return result(sysRole);
     }
 
-    @Override // com.pigx.engine.web.api.servlet.BindingController
     @AccessLimited
-    @GetMapping({"/list"})
-    @Operation(summary = "获取全部角色", description = "获取全部角色数据列表", responses = {@ApiResponse(description = "全部数据列表", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))}), @ApiResponse(responseCode = "204", description = "查询成功，未查到数据"), @ApiResponse(responseCode = "500", description = "查询失败")})
+    @Operation(summary = "获取全部角色", description = "获取全部角色数据列表",
+            responses = {
+                    @ApiResponse(description = "全部数据列表", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Result.class))),
+                    @ApiResponse(responseCode = "204", description = "查询成功，未查到数据"),
+                    @ApiResponse(responseCode = "500", description = "查询失败")
+            })
+    @GetMapping("/list")
     public Result<List<SysRole>> findAll() {
-        return result((List) this.sysRoleService.findAll());
+        List<SysRole> sysAuthorities = sysRoleService.findAll();
+        return result(sysAuthorities);
     }
 
+    @Operation(summary = "给角色赋予权限", description = "为角色赋予权限",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = MediaType.APPLICATION_FORM_URLENCODED_VALUE)),
+            responses = {@ApiResponse(description = "已分配权限的角色数据", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))})
+    @Parameters({
+            @Parameter(name = "roleId", required = true, description = "角色ID"),
+            @Parameter(name = "permissions[]", required = true, description = "权限对象组成的数组")
+    })
     @PutMapping
-    @Operation(summary = "给角色赋予权限", description = "为角色赋予权限", requestBody = @RequestBody(content = {@Content(mediaType = "application/x-www-form-urlencoded")}), responses = {@ApiResponse(description = "已分配权限的角色数据", content = {@Content(mediaType = "application/json")})})
-    @Parameters({@Parameter(name = "roleId", required = true, description = "角色ID"), @Parameter(name = "permissions[]", required = true, description = "权限对象组成的数组")})
     public Result<SysRole> assign(@RequestParam(name = "roleId") String roleId, @RequestParam(name = "permissions[]") String[] permissions) {
-        SysRole sysRole = this.sysRoleService.assign(roleId, permissions);
-        return result((SysRoleController) sysRole);
+        SysRole sysRole = sysRoleService.assign(roleId, permissions);
+        return result(sysRole);
     }
 }

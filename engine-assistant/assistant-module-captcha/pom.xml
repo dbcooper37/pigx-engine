@@ -39,8 +39,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
-                    <!-- 解决字体图标不显示以及Chrome控制台Failed to decode downloaded font错误的问题-->
-                    <!-- 主要原因是maven打包项目的时候对项目进行统一编码，这就导致字体文件被破坏，增加过滤配置，让maven不对字体文件进行处理-->
                     <nonFilteredFileExtensions>
                         <nonFilteredFileExtension>txt</nonFilteredFileExtension>
                         <nonFilteredFileExtension>ttf</nonFilteredFileExtension>

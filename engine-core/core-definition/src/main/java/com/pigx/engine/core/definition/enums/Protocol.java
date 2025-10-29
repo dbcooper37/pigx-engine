@@ -1,7 +1,10 @@
 package com.pigx.engine.core.definition.enums;
 
-/* loaded from: core-definition-3.5.7.0.jar:cn/herodotus/engine/core/definition/enums/Protocol.class */
+
 public enum Protocol {
+    /**
+     * 协议类型
+     */
     HTTP("http://", "http"),
     HTTPS("https://", "https"),
     REDIS("redis://", "redis"),
@@ -16,10 +19,10 @@ public enum Protocol {
     }
 
     public String getFormat() {
-        return this.format;
+        return format;
     }
 
     public String getPrefix() {
-        return this.prefix;
+        return prefix;
     }
 }

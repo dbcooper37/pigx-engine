@@ -3,10 +3,18 @@ package com.pigx.engine.data.tenant.repository;
 import com.pigx.engine.data.core.jpa.repository.BaseJpaRepository;
 import com.pigx.engine.data.tenant.entity.SysTenantDataSource;
 import jakarta.persistence.QueryHint;
+import org.hibernate.jpa.AvailableHints;
 import org.springframework.data.jpa.repository.QueryHints;
 
-/* loaded from: data-module-tenant-3.5.7.0.jar:cn/herodotus/engine/data/tenant/repository/SysTenantDataSourceRepository.class */
+
 public interface SysTenantDataSourceRepository extends BaseJpaRepository<SysTenantDataSource, String> {
-    @QueryHints({@QueryHint(name = "org.hibernate.cacheable", value = "true")})
+
+    /**
+     * 根据租户ID查询数据源
+     *
+     * @param tenantId 租户ID
+     * @return {@link SysTenantDataSource}
+     */
+    @QueryHints(@QueryHint(name = AvailableHints.HINT_CACHEABLE, value = "true"))
     SysTenantDataSource findByTenantId(String tenantId);
 }

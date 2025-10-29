@@ -2,13 +2,15 @@ package com.pigx.engine.assistant.captcha.renderer.behavior;
 
 import com.pigx.engine.core.definition.domain.captcha.Captcha;
 
-/* loaded from: assistant-module-captcha-3.5.7.0.jar:cn/herodotus/engine/assistant/captcha/renderer/behavior/JigsawCaptcha.class */
+
 public class JigsawCaptcha extends Captcha {
+
     private String originalImageBase64;
+
     private String sliderImageBase64;
 
     public String getOriginalImageBase64() {
-        return this.originalImageBase64;
+        return originalImageBase64;
     }
 
     public void setOriginalImageBase64(String originalImageBase64) {
@@ -16,7 +18,7 @@ public class JigsawCaptcha extends Captcha {
     }
 
     public String getSliderImageBase64() {
-        return this.sliderImageBase64;
+        return sliderImageBase64;
     }
 
     public void setSliderImageBase64(String sliderImageBase64) {

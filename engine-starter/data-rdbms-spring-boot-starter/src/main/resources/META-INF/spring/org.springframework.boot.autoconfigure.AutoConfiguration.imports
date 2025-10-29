@@ -1,0 +1,3 @@
+com.pigx.engine.data.rdbms.autoconfigure.DataJpaAutoConfiguration
+com.pigx.engine.data.rdbms.autoconfigure.DataQueryDslAutoConfiguration
+com.pigx.engine.data.rdbms.autoconfigure.DataMybatisPlusAutoConfiguration

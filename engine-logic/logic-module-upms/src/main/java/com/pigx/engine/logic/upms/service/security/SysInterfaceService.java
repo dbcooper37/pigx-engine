@@ -10,63 +10,62 @@ import com.pigx.engine.message.core.domain.RestMapping;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
-import java.lang.invoke.SerializedLambda;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-@Service
-/* loaded from: logic-module-upms-3.5.7.0.jar:cn/herodotus/engine/logic/upms/service/security/SysInterfaceService.class */
-public class SysInterfaceService extends AbstractJpaService<SysInterface, String> {
-    private final SysInterfaceRepository sysInterfaceRepository;
-    private final Converter<RestMapping, SysInterface> toSysInterface = new RequestMappingToSysInterfaceConverter();
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    private static /* synthetic */ Object $deserializeLambda$(SerializedLambda lambda) {
-        switch (lambda.getImplMethodName()) {
-            case "lambda$findAllocatable$c5f995df$1":
-                if (lambda.getImplMethodKind() == 6 && lambda.getFunctionalInterfaceClass().equals("org/springframework/data/jpa/domain/Specification") && lambda.getFunctionalInterfaceMethodName().equals("toPredicate") && lambda.getFunctionalInterfaceMethodSignature().equals("(Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;") && lambda.getImplClass().equals("cn/herodotus/engine/logic/upms/service/security/SysInterfaceService") && lambda.getImplMethodSignature().equals("(Ljakarta/persistence/criteria/Root;Ljakarta/persistence/criteria/CriteriaQuery;Ljakarta/persistence/criteria/CriteriaBuilder;)Ljakarta/persistence/criteria/Predicate;")) {
-                    return (root, criteriaQuery, criteriaBuilder) -> {
-                        Subquery<SysAttribute> subQuery = criteriaQuery.subquery(SysAttribute.class);
-                        Root<SysAttribute> subRoot = subQuery.from(SysAttribute.class);
-                        Predicate subPredicate = criteriaBuilder.equal(subRoot.get("attributeId"), root.get("interfaceId"));
-                        subQuery.where(subPredicate);
-                        subQuery.select(subRoot.get("attributeId"));
-                        criteriaQuery.where(criteriaBuilder.not(criteriaBuilder.exists(subQuery)));
-                        return criteriaQuery.getRestriction();
-                    };
-                }
-                break;
-        }
-        throw new IllegalArgumentException("Invalid lambda deserialization");
-    }
+
+@Service
+public class SysInterfaceService extends AbstractJpaService<SysInterface, String> {
+
+    private final SysInterfaceRepository sysInterfaceRepository;
+    private final Converter<RestMapping, SysInterface> toSysInterface;
 
     public SysInterfaceService(SysInterfaceRepository sysInterfaceRepository) {
         this.sysInterfaceRepository = sysInterfaceRepository;
+        this.toSysInterface = new RequestMappingToSysInterfaceConverter();
     }
 
-    @Override // com.pigx.engine.data.core.jpa.service.BaseJpaReadableService
+    @Override
     public BaseJpaRepository<SysInterface, String> getRepository() {
-        return this.sysInterfaceRepository;
+        return sysInterfaceRepository;
     }
 
+    /**
+     * 查找SysSecurityAttribute中不存在的SysAuthority
+     *
+     * @return SysAuthority列表
+     */
     public List<SysInterface> findAllocatable() {
+
+        // exist sql 结构示例： SELECT * FROM article WHERE EXISTS (SELECT * FROM user WHERE article.uid = user.uid)
         Specification<SysInterface> specification = (root, criteriaQuery, criteriaBuilder) -> {
+
+            // 构造Not Exist子查询
             Subquery<SysAttribute> subQuery = criteriaQuery.subquery(SysAttribute.class);
             Root<SysAttribute> subRoot = subQuery.from(SysAttribute.class);
+
+            // 构造Not Exist 子查询的where条件
             Predicate subPredicate = criteriaBuilder.equal(subRoot.get("attributeId"), root.get("interfaceId"));
             subQuery.where(subPredicate);
+
+            // 构造完整的子查询语句
+            //这句话不加会报错，因为他不知道你子查询要查出什么字段。就是上面示例中的子查询中的“select *”的作用
             subQuery.select(subRoot.get("attributeId"));
+
+            // 构造完整SQL
+            // 正确的结构参考：SELECT * FROM sys_authority sa WHERE NOT EXISTS ( SELECT * FROM sys_metadata sm WHERE sm.metadata_id = sa.authority_id )
             criteriaQuery.where(criteriaBuilder.not(criteriaBuilder.exists(subQuery)));
             return criteriaQuery.getRestriction();
         };
-        return findAll(specification);
+
+        return this.findAll(specification);
     }
 
     public List<SysInterface> storeRequestMappings(Collection<RestMapping> restMappings) {
@@ -76,13 +75,8 @@ public class SysInterfaceService extends AbstractJpaService<SysInterface, String
 
     private List<SysInterface> toSysInterfaces(Collection<RestMapping> restMappings) {
         if (CollectionUtils.isNotEmpty(restMappings)) {
-            Stream<RestMapping> stream = restMappings.stream();
-            Converter<RestMapping, SysInterface> converter = this.toSysInterface;
-            Objects.requireNonNull(converter);
-            return (List) stream.map((v1) -> {
-                return r1.convert(v1);
-            }).collect(Collectors.toList());
+            return restMappings.stream().map(toSysInterface::convert).collect(Collectors.toList());
         }
-        return new ArrayList();
+        return new ArrayList<>();
     }
 }

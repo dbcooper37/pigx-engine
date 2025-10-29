@@ -6,16 +6,22 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 
-/* loaded from: oauth2-module-authentication-3.5.7.0.jar:cn/herodotus/engine/oauth2/authentication/customizer/OAuth2FormLoginConfigurerCustomizer.class */
+
 public class OAuth2FormLoginConfigurerCustomizer implements Customizer<FormLoginConfigurer<HttpSecurity>> {
+
     private final OAuth2AuthenticationProperties authenticationProperties;
 
     public OAuth2FormLoginConfigurerCustomizer(OAuth2AuthenticationProperties authenticationProperties) {
         this.authenticationProperties = authenticationProperties;
     }
 
+    @Override
     public void customize(FormLoginConfigurer<HttpSecurity> configurer) {
-        configurer.loginPage(getFormLogin().getLoginPageUrl()).usernameParameter(getFormLogin().getUsernameParameter()).passwordParameter(getFormLogin().getPasswordParameter());
+        configurer
+                .loginPage(getFormLogin().getLoginPageUrl())
+                .usernameParameter(getFormLogin().getUsernameParameter())
+                .passwordParameter(getFormLogin().getPasswordParameter());
+
         if (StringUtils.isNotBlank(getFormLogin().getFailureUrl())) {
             configurer.failureForwardUrl(getFormLogin().getFailureUrl());
         }
@@ -25,6 +31,6 @@ public class OAuth2FormLoginConfigurerCustomizer implements Customizer<FormLogin
     }
 
     private OAuth2AuthenticationProperties.FormLogin getFormLogin() {
-        return this.authenticationProperties.getFormLogin();
+        return authenticationProperties.getFormLogin();
     }
 }

@@ -43,6 +43,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.pigx.engine</groupId>
+            <artifactId>web-core</artifactId>
+        </dependency>
 
     </dependencies>
 </project>

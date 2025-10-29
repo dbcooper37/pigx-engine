@@ -1,14 +1,13 @@
-package com.pigx.engine.autoconfigure.crypto;
+package com.pigx.engine.core.autoconfigure.crypto;
 
 import com.pigx.engine.core.foundation.condition.AbstractEnumSpringBootCondition;
+
 import java.lang.annotation.Annotation;
 
-/* loaded from: core-autoconfigure-3.5.7.0.jar:cn/herodotus/engine/core/autoconfigure/crypto/OnCryptoStrategyCondition.class */
-class OnCryptoStrategyCondition extends AbstractEnumSpringBootCondition<CryptoStrategy> {
-    OnCryptoStrategyCondition() {
-    }
 
-    @Override // com.pigx.engine.core.foundation.condition.AbstractEnumSpringBootCondition
+class OnCryptoStrategyCondition extends AbstractEnumSpringBootCondition<CryptoStrategy> {
+
+    @Override
     protected Class<? extends Annotation> getAnnotationClass() {
         return ConditionalOnCryptoStrategy.class;
     }
