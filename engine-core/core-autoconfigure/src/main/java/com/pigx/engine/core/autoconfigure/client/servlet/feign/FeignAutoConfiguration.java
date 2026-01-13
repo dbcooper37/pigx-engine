@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.AnnotatedParameterProcessor;
 import org.springframework.cloud.openfeign.FeignClientProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,16 +19,26 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p> Description : 自定义通用的Feign Fallback处理工厂(基于Sentinel) </p>
+ * Auto-configuration for Feign clients with security enhancements.
  * <p>
+ * This configuration sets up:
+ * <ul>
+ *   <li>Custom Feign contract for @Inner annotation support</li>
+ *   <li>Security interceptor for signed tokens on internal calls</li>
+ *   <li>Request interceptor for header propagation</li>
+ *   <li>Error decoder for proper exception handling</li>
+ * </ul>
+ * </p>
  *
- * @author : gengwei.zheng
- * @date : 2020/3/1 18:35
+ * @author gengwei.zheng
+ * @author PigX Engine Team
+ * @since 1.0.0
  * @see <a href="https://blog.csdn.net/ttzommed/article/details/90669320">参考文档</a>
  */
 @AutoConfiguration
 @ConditionalOnClass(Feign.class)
 @ConditionalOnServletApplication
+@EnableConfigurationProperties(FeignSecurityProperties.class)
 public class FeignAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(FeignAutoConfiguration.class);
@@ -49,6 +60,27 @@ public class FeignAutoConfiguration {
         FeignRequestInterceptor feignRequestInterceptor = new FeignRequestInterceptor();
         log.trace("[PIGXD] |- Bean [Feign Request Interceptor] Configure.");
         return feignRequestInterceptor;
+    }
+
+    /**
+     * Security interceptor for adding signed tokens to internal Feign calls.
+     * <p>
+     * This interceptor works with {@link FeignInnerContract} to secure
+     * internal service-to-service communication.
+     * </p>
+     *
+     * @param feignSecurityProperties the security configuration properties
+     * @return the security interceptor
+     */
+    @Bean
+    @ConditionalOnMissingBean(FeignSecurityInterceptor.class)
+    public FeignSecurityInterceptor feignSecurityInterceptor(FeignSecurityProperties feignSecurityProperties) {
+        FeignSecurityInterceptor interceptor = new FeignSecurityInterceptor(
+                feignSecurityProperties.getSecretKey(),
+                feignSecurityProperties.isEnabled());
+        log.trace("[PIGXD] |- Bean [Feign Security Interceptor] Configure. Enabled: {}", 
+                feignSecurityProperties.isEnabled());
+        return interceptor;
     }
 
     @Bean

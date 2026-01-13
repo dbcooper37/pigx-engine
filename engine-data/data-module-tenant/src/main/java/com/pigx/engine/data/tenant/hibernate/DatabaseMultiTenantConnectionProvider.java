@@ -11,16 +11,34 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 
+/**
+ * Multi-tenant connection provider for database-per-tenant architecture.
+ * <p>
+ * This provider manages separate datasources for each tenant, loading them
+ * lazily from the database on first access.
+ * </p>
+ *
+ * <p><b>Thread Safety:</b> This class is thread-safe. Initialization is
+ * performed exactly once using double-checked locking with AtomicBoolean.</p>
+ *
+ * @author PigX Engine Team
+ * @since 1.0.0
+ */
 public class DatabaseMultiTenantConnectionProvider extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl<String> implements HibernatePropertiesCustomizer {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseMultiTenantConnectionProvider.class);
-    private final Map<String, DataSource> dataSources = new HashMap<>();
+    
+    private final ConcurrentMap<String, DataSource> dataSources = new ConcurrentHashMap<>();
     private final DataSource defaultDataSource;
-    private boolean isDataSourceInit = false;
+    private final AtomicBoolean isDataSourceInit = new AtomicBoolean(false);
+    private final ReentrantLock initLock = new ReentrantLock();
 
     public DatabaseMultiTenantConnectionProvider(DataSource dataSource) {
         this.defaultDataSource = dataSource;
@@ -28,9 +46,9 @@ public class DatabaseMultiTenantConnectionProvider extends AbstractDataSourceBas
     }
 
     private void initialize() {
-        isDataSourceInit = true;
         MultiTenantDataSourceFactory factory = SpringUtil.getBean(MultiTenantDataSourceFactory.class);
         dataSources.putAll(factory.getAll(defaultDataSource));
+        log.info("[PIGXD] |- Multi-tenant datasources initialized. Total tenants: {}", dataSources.size());
     }
 
     /**
@@ -46,8 +64,17 @@ public class DatabaseMultiTenantConnectionProvider extends AbstractDataSourceBas
 
     @Override
     protected DataSource selectDataSource(String tenantIdentifier) {
-        if (!isDataSourceInit) {
-            initialize();
+        // Thread-safe lazy initialization with double-checked locking
+        if (!isDataSourceInit.get()) {
+            initLock.lock();
+            try {
+                if (!isDataSourceInit.get()) {
+                    initialize();
+                    isDataSourceInit.set(true);
+                }
+            } finally {
+                initLock.unlock();
+            }
         }
 
         DataSource currentDataSource = dataSources.get(tenantIdentifier);
@@ -55,9 +82,34 @@ public class DatabaseMultiTenantConnectionProvider extends AbstractDataSourceBas
             log.debug("[PIGXD] |- Found the multi tenant dataSource for id : [{}]", tenantIdentifier);
             return currentDataSource;
         } else {
-            log.warn("[PIGXD] |- Cannot found the dataSource for tenant [{}], change to use default.", tenantIdentifier);
+            log.warn("[PIGXD] |- Cannot find the dataSource for tenant [{}], using default.", tenantIdentifier);
             return defaultDataSource;
         }
+    }
+    
+    /**
+     * Adds a new tenant datasource at runtime.
+     *
+     * @param tenantId   the tenant identifier
+     * @param dataSource the datasource for this tenant
+     */
+    public void addTenantDataSource(String tenantId, DataSource dataSource) {
+        dataSources.put(tenantId, dataSource);
+        log.info("[PIGXD] |- Added datasource for tenant [{}]", tenantId);
+    }
+    
+    /**
+     * Removes a tenant datasource.
+     *
+     * @param tenantId the tenant identifier to remove
+     * @return the removed datasource, or null if not found
+     */
+    public DataSource removeTenantDataSource(String tenantId) {
+        DataSource removed = dataSources.remove(tenantId);
+        if (removed != null) {
+            log.info("[PIGXD] |- Removed datasource for tenant [{}]", tenantId);
+        }
+        return removed;
     }
 
     @Override

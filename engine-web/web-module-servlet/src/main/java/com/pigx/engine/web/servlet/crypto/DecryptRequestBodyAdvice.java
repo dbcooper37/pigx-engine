@@ -33,6 +33,12 @@ public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
 
     private static final Logger log = LoggerFactory.getLogger(DecryptRequestBodyAdvice.class);
 
+    /**
+     * Maximum allowed JSON nesting depth to prevent stack overflow attacks.
+     * Deeply nested JSON payloads can cause stack overflow during recursive processing.
+     */
+    private static final int MAX_JSON_DEPTH = 32;
+
     private HttpCryptoProcessor httpCryptoProcessor;
 
     public void setInterfaceCryptoProcessor(HttpCryptoProcessor httpCryptoProcessor) {
@@ -66,7 +72,7 @@ public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
             String content = IoUtil.read(httpInputMessage.getBody()).toString();
 
             if (StringUtils.isNotBlank(content)) {
-                String data = httpCryptoProcessor.decrypt(sessionId, content);
+                String data = httpCryptoProcessor.tryDecrypt(sessionId, content);
                 if (Strings.CS.equals(data, content)) {
                     data = decrypt(sessionId, content);
                 }
@@ -84,29 +90,48 @@ public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
     private String decrypt(String sessionKey, String content) throws SessionInvalidException {
         JsonNode jsonNode = Jackson2Utils.toNode(content);
         if (ObjectUtils.isNotEmpty(jsonNode)) {
-            decrypt(sessionKey, jsonNode);
+            decrypt(sessionKey, jsonNode, 0);
             return Jackson2Utils.toJson(jsonNode);
         }
 
         return content;
     }
 
-    private void decrypt(String sessionKey, JsonNode jsonNode) throws SessionInvalidException {
+    /**
+     * Recursively decrypts JSON node values with depth limiting to prevent stack overflow.
+     *
+     * @param sessionKey   the session key for decryption
+     * @param jsonNode     the JSON node to process
+     * @param currentDepth the current recursion depth
+     * @throws SessionInvalidException if the session is invalid
+     * @throws CryptoProcessingException if the JSON nesting exceeds maximum allowed depth
+     */
+    private void decrypt(String sessionKey, JsonNode jsonNode, int currentDepth) throws SessionInvalidException {
+        // Prevent stack overflow from deeply nested JSON
+        if (currentDepth >= MAX_JSON_DEPTH) {
+            log.error("[PIGXD] |- JSON nesting depth {} exceeds maximum allowed depth {}. " +
+                    "Possible attack attempt.", currentDepth, MAX_JSON_DEPTH);
+            throw new CryptoProcessingException(
+                    "JSON nesting depth exceeds maximum allowed: " + MAX_JSON_DEPTH,
+                    com.pigx.engine.web.core.constant.WebErrorCodes.CRYPTO_JSON_DEPTH_EXCEEDED);
+        }
+        
         if (jsonNode.isObject()) {
             Iterator<Map.Entry<String, JsonNode>> it = jsonNode.fields();
             while (it.hasNext()) {
                 Map.Entry<String, JsonNode> entry = it.next();
                 if (entry.getValue() instanceof TextNode t && entry.getValue().isValueNode()) {
-                    String value = httpCryptoProcessor.decrypt(sessionKey, t.asText());
+                    // Use tryDecrypt for graceful handling of non-encrypted values
+                    String value = httpCryptoProcessor.tryDecrypt(sessionKey, t.asText());
                     entry.setValue(new TextNode(value));
                 }
-                decrypt(sessionKey, entry.getValue());
+                decrypt(sessionKey, entry.getValue(), currentDepth + 1);
             }
         }
 
         if (jsonNode.isArray()) {
             for (JsonNode node : jsonNode) {
-                decrypt(sessionKey, node);
+                decrypt(sessionKey, node, currentDepth + 1);
             }
         }
     }

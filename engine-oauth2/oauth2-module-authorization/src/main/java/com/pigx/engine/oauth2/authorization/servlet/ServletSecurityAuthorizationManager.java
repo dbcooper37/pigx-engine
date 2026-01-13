@@ -4,6 +4,7 @@ import com.pigx.engine.core.autoconfigure.oauth2.domain.HerodotusRequest;
 import com.pigx.engine.core.autoconfigure.oauth2.servlet.ServletOAuth2ResourceMatcherConfigurer;
 import com.pigx.engine.core.identity.domain.HerodotusSecurityAttribute;
 import com.pigx.engine.oauth2.authorization.processor.SecurityAttributeStorage;
+import com.pigx.engine.oauth2.authorization.validator.FeignTokenValidator;
 import com.pigx.engine.web.core.servlet.utils.HeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
@@ -26,16 +27,55 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 
+/**
+ * Authorization manager for servlet-based security that validates requests
+ * against configured security attributes and handles internal service communication.
+ *
+ * <p>This manager implements a multi-layer authorization strategy:</p>
+ * <ol>
+ *   <li><b>Static resources:</b> Immediately granted access without authentication</li>
+ *   <li><b>Permit-all endpoints:</b> Whitelisted URLs that bypass security</li>
+ *   <li><b>Internal Feign calls:</b> Validated using signed HMAC tokens</li>
+ *   <li><b>Has-authenticated:</b> Requires valid authentication only</li>
+ *   <li><b>Configured permissions:</b> Checked against stored security attributes</li>
+ * </ol>
+ *
+ * <p><b>Security Features:</b></p>
+ * <ul>
+ *   <li>Validates internal service communication using {@link FeignTokenValidator}</li>
+ *   <li>Supports wildcard URL patterns with path variables</li>
+ *   <li>Configurable strict mode for unauthenticated requests</li>
+ *   <li>Spring Expression Language (SpEL) for complex authorization rules</li>
+ * </ul>
+ *
+ * <p><b>Example configuration:</b></p>
+ * <pre>{@code
+ * // In application.yml:
+ * herodotus.feign.security.enabled=true
+ * herodotus.feign.security.secret-key=your-secret-key
+ * }</pre>
+ *
+ * @author PigX Engine Team
+ * @since 1.0.0
+ * @see SecurityAttributeStorage
+ * @see FeignTokenValidator
+ * @see ServletOAuth2ResourceMatcherConfigurer
+ */
 public class ServletSecurityAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
 
     private static final Logger log = LoggerFactory.getLogger(ServletSecurityAuthorizationManager.class);
 
     private final SecurityAttributeStorage securityAttributeStorage;
     private final ServletOAuth2ResourceMatcherConfigurer servletOAuth2ResourceMatcherConfigurer;
+    private final FeignTokenValidator feignTokenValidator;
 
-    public ServletSecurityAuthorizationManager(SecurityAttributeStorage securityAttributeStorage, ServletOAuth2ResourceMatcherConfigurer servletOAuth2ResourceMatcherConfigurer) {
+    public ServletSecurityAuthorizationManager(
+            SecurityAttributeStorage securityAttributeStorage,
+            ServletOAuth2ResourceMatcherConfigurer servletOAuth2ResourceMatcherConfigurer,
+            FeignTokenValidator feignTokenValidator) {
         this.securityAttributeStorage = securityAttributeStorage;
         this.servletOAuth2ResourceMatcherConfigurer = servletOAuth2ResourceMatcherConfigurer;
+        this.feignTokenValidator = feignTokenValidator;
     }
 
     @Override
@@ -56,9 +96,15 @@ public class ServletSecurityAuthorizationManager implements AuthorizationManager
             return new AuthorizationDecision(true);
         }
 
+        // Validate Feign internal service calls with signed token
         String feignInnerFlag = HeaderUtils.getHerodotusFromIn(request);
         if (StringUtils.isNotBlank(feignInnerFlag)) {
-            log.trace("[PIGXD] |- Is feign inner invoke : [{}], Passed!", url);
+            if (feignTokenValidator != null && !feignTokenValidator.validate(feignInnerFlag, request)) {
+                log.warn("[PIGXD] |- Invalid Feign token from [{}] for URL [{}], rejecting request",
+                        request.getRemoteAddr(), url);
+                return new AuthorizationDecision(false);
+            }
+            log.trace("[PIGXD] |- Valid feign inner invoke : [{}], Passed!", url);
             return new AuthorizationDecision(true);
         }
 

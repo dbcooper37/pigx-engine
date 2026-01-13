@@ -4,6 +4,7 @@ import com.pigx.engine.data.tenant.condition.ConditionalOnMultiTenant;
 import com.pigx.engine.data.tenant.enums.MultiTenant;
 import com.pigx.engine.data.tenant.hibernate.DatabaseMultiTenantConnectionProvider;
 import com.pigx.engine.data.tenant.hibernate.HerodotusHibernatePropertiesProvider;
+import com.pigx.engine.data.tenant.properties.HikariPoolProperties;
 import com.pigx.engine.data.tenant.properties.MultiTenantProperties;
 import com.pigx.engine.data.tenant.service.MultiTenantDataSourceFactory;
 import jakarta.annotation.PostConstruct;
@@ -14,10 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.SchemaManagementProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,9 +37,20 @@ import java.util.Map;
 import java.util.Objects;
 
 
+/**
+ * Configuration for multi-tenant database approach.
+ * <p>
+ * This configuration sets up separate database connections for each tenant,
+ * providing complete data isolation between tenants.
+ * </p>
+ *
+ * @author PigX Engine Team
+ * @since 1.0.0
+ */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnMultiTenant(MultiTenant.DATABASE)
 @EnableTransactionManagement
+@EnableConfigurationProperties(HikariPoolProperties.class)
 @EntityScan(basePackages = {
         "com.pigx.engine.data.tenant.entity",
 })

@@ -6,6 +6,7 @@ import com.pigx.engine.cache.jetcache.stamp.AbstractStampManager;
 import com.pigx.engine.core.definition.domain.SecretKey;
 import com.pigx.engine.core.definition.support.crypto.AsymmetricCryptoProcessor;
 import com.pigx.engine.core.definition.support.crypto.SymmetricCryptoProcessor;
+import com.pigx.engine.core.foundation.audit.SecurityAuditLogger;
 import com.pigx.engine.web.core.constant.WebConstants;
 import com.pigx.engine.web.core.exception.SessionInvalidException;
 import org.apache.commons.lang3.ObjectUtils;
@@ -31,33 +32,73 @@ public class HttpCryptoProcessor extends AbstractStampManager<String, SecretKey>
         this.symmetricCryptoProcessor = symmetricCryptoProcessor;
     }
 
+    /**
+     * Encrypts content using the symmetric key associated with the session.
+     *
+     * @param identity the session identity
+     * @param content  the content to encrypt
+     * @return the encrypted content
+     * @throws SessionInvalidException if the session has expired
+     * @throws CryptoProcessingException if encryption fails
+     */
     public String encrypt(String identity, String content) {
         try {
             SecretKey secretKey = getSecretKey(identity);
             String result = symmetricCryptoProcessor.encrypt(content, secretKey.getSymmetricKey());
-            log.debug("[PIGXD] |- Encrypt content from [{}] to [{}].", content, result);
+            log.debug("[PIGXD] |- Encrypt content successfully.");
+            SecurityAuditLogger.logCryptoEvent(true, true, identity, null);
             return result;
         } catch (StampHasExpiredException e) {
-            log.warn("[PIGXD] |- Session has expired, need recreate, Skip encrypt content [{}].", content);
-            return content;
+            log.warn("[PIGXD] |- Session [{}] has expired during encryption.", identity);
+            SecurityAuditLogger.logCryptoEvent(false, true, identity, "Session expired");
+            throw new SessionInvalidException("Session has expired, please refresh and try again", e);
         } catch (Exception e) {
-            log.warn("[PIGXD] |- Symmetric can not Encrypt content [{}], Skip!", content);
-            return content;
+            log.error("[PIGXD] |- Failed to encrypt content: {}", e.getMessage());
+            SecurityAuditLogger.logCryptoEvent(false, true, identity, e.getMessage());
+            throw new CryptoProcessingException("Failed to encrypt content", e);
         }
     }
 
+    /**
+     * Decrypts content using the symmetric key associated with the session.
+     *
+     * @param identity the session identity
+     * @param content  the content to decrypt
+     * @return the decrypted content
+     * @throws SessionInvalidException if the session has expired
+     * @throws CryptoProcessingException if decryption fails
+     */
     public String decrypt(String identity, String content) {
         try {
             SecretKey secretKey = getSecretKey(identity);
-
             String result = symmetricCryptoProcessor.decrypt(content, secretKey.getSymmetricKey());
-            log.debug("[PIGXD] |- Decrypt content from [{}] to [{}].", content, result);
+            log.debug("[PIGXD] |- Decrypt content successfully.");
+            SecurityAuditLogger.logCryptoEvent(true, false, identity, null);
             return result;
         } catch (StampHasExpiredException e) {
-            log.warn("[PIGXD] |- Session has expired, need recreate, Skip decrypt content [{}].", content);
-            return content;
+            log.warn("[PIGXD] |- Session [{}] has expired during decryption.", identity);
+            SecurityAuditLogger.logCryptoEvent(false, false, identity, "Session expired");
+            throw new SessionInvalidException("Session has expired, please refresh and try again", e);
         } catch (Exception e) {
-            log.warn("[PIGXD] |- Symmetric can not Decrypt content [{}], Skip!", content);
+            log.error("[PIGXD] |- Failed to decrypt content: {}", e.getMessage());
+            SecurityAuditLogger.logCryptoEvent(false, false, identity, e.getMessage());
+            throw new CryptoProcessingException("Failed to decrypt content", e);
+        }
+    }
+    
+    /**
+     * Attempts to decrypt content, returning the original content if decryption fails.
+     * Use this method when graceful degradation is acceptable (e.g., for non-critical data).
+     *
+     * @param identity the session identity
+     * @param content  the content to decrypt
+     * @return the decrypted content, or the original content if decryption fails
+     */
+    public String tryDecrypt(String identity, String content) {
+        try {
+            return decrypt(identity, content);
+        } catch (Exception e) {
+            log.debug("[PIGXD] |- Graceful decrypt failed for identity [{}], returning original content", identity);
             return content;
         }
     }

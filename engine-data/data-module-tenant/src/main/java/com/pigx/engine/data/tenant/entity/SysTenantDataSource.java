@@ -3,6 +3,7 @@ package com.pigx.engine.data.tenant.entity;
 import com.google.common.base.MoreObjects;
 import com.pigx.engine.data.core.jpa.entity.AbstractSysEntity;
 import com.pigx.engine.data.tenant.constant.TenantConstants;
+import com.pigx.engine.data.tenant.crypto.EncryptedStringConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -32,8 +33,9 @@ public class SysTenantDataSource extends AbstractSysEntity {
     @Column(name = "user_name", length = 100)
     private String username;
 
-    @Schema(name = "数据库密码")
-    @Column(name = "password", length = 100)
+    @Schema(name = "数据库密码", description = "Password is encrypted at rest using AES encryption")
+    @Column(name = "password", length = 256)  // Increased length for encrypted value
+    @Convert(converter = EncryptedStringConverter.class)
     private String password;
 
     @Schema(name = "数据库驱动")

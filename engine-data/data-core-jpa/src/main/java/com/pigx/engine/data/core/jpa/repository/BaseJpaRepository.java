@@ -18,10 +18,45 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * <p> Description : 基础 Repository </p>
+ * Base repository interface for JPA entities with built-in query caching.
  *
- * @author : gengwei.zheng
- * @date : 2020/4/29 15:21
+ * <p>This repository extends both {@link JpaRepository} and {@link JpaSpecificationExecutor}
+ * to provide a comprehensive set of CRUD and query operations with automatic
+ * Hibernate second-level cache integration.</p>
+ *
+ * <p><b>Features:</b></p>
+ * <ul>
+ *   <li>Automatic query caching using {@code @QueryHints(HINT_CACHEABLE)}</li>
+ *   <li>Support for {@link Specification}-based dynamic queries</li>
+ *   <li>Pagination and sorting out of the box</li>
+ *   <li>Transaction management for write operations</li>
+ * </ul>
+ *
+ * <p><b>Usage:</b></p>
+ * <pre>{@code
+ * public interface UserRepository extends BaseJpaRepository<User, String> {
+ *     Optional<User> findByUsername(String username);
+ *     
+ *     @EntityGraph(attributePaths = {"roles"})
+ *     Optional<User> findByUsernameWithRoles(String username);
+ * }
+ * }</pre>
+ *
+ * <p><b>Best Practices:</b></p>
+ * <ul>
+ *   <li>Use {@code @EntityGraph} for relationships to avoid N+1 queries</li>
+ *   <li>Define custom queries for complex filtering instead of Specification where possible</li>
+ *   <li>Consider using projections for read-only operations to improve performance</li>
+ * </ul>
+ *
+ * @param <E>  the entity type, must extend {@link BaseEntity}
+ * @param <ID> the entity's ID type, must be {@link Serializable}
+ * @author gengwei.zheng
+ * @author PigX Engine Team
+ * @since 1.0.0
+ * @see JpaRepository
+ * @see JpaSpecificationExecutor
+ * @see BaseEntity
  */
 @NoRepositoryBean
 public interface BaseJpaRepository<E extends BaseEntity, ID extends Serializable> extends JpaRepository<E, ID>, JpaSpecificationExecutor<E> {

@@ -1,4 +1,4 @@
-package com.pigx.engine.starter.cache;
+package com.pigx.engine.cache.autoconfigure;
 
 import com.alicp.jetcache.autoconfigure.JetCacheAutoConfiguration;
 import com.pigx.engine.cache.jetcache.config.CacheJetCacheConfiguration;

@@ -45,8 +45,14 @@ public class SchemaMultiTenantConnectionProvider implements MultiTenantConnectio
 
     @Override
     public void releaseConnection(String schema, Connection connection) throws SQLException {
-        connection.setSchema(SystemConstants.TENANT_ID);
-        releaseAnyConnection(connection);
+        try {
+            connection.setSchema(SystemConstants.TENANT_ID);
+        } catch (SQLException e) {
+            log.error("[PIGXD] |- Failed to reset schema to default [{}], but will still close connection", 
+                    SystemConstants.TENANT_ID, e);
+        } finally {
+            releaseAnyConnection(connection);
+        }
     }
 
     @Override

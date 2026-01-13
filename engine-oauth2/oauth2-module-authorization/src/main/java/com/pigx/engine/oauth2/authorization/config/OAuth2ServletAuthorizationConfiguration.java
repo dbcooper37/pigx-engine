@@ -5,14 +5,17 @@ import com.pigx.engine.core.autoconfigure.oauth2.servlet.ServletOAuth2ResourceMa
 import com.pigx.engine.core.foundation.condition.ConditionalOnServletApplication;
 import com.pigx.engine.oauth2.authorization.processor.SecurityAttributeAnalyzer;
 import com.pigx.engine.oauth2.authorization.processor.SecurityAttributeStorage;
+import com.pigx.engine.oauth2.authorization.properties.FeignSecurityProperties;
 import com.pigx.engine.oauth2.authorization.servlet.OAuth2SessionManagementConfigurerCustomer;
 import com.pigx.engine.oauth2.authorization.servlet.ServletOAuth2AuthorizationConfigurerManager;
 import com.pigx.engine.oauth2.authorization.servlet.ServletSecurityAuthorizationManager;
+import com.pigx.engine.oauth2.authorization.validator.FeignTokenValidator;
 import com.pigx.engine.web.core.servlet.template.ThymeleafTemplateHandler;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -24,6 +27,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnServletApplication
 @EnableMethodSecurity(proxyTargetClass = true, securedEnabled = true, jsr250Enabled = true)
+@EnableConfigurationProperties(FeignSecurityProperties.class)
 @Import({
         OAuth2ServletSessionConfiguration.class,
 })
@@ -44,8 +48,25 @@ public class OAuth2ServletAuthorizationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ServletSecurityAuthorizationManager servletSecurityAuthorizationManager(SecurityAttributeStorage securityAttributeStorage, ServletOAuth2ResourceMatcherConfigurer servletOAuth2ResourceMatcherConfigurer) {
-        ServletSecurityAuthorizationManager manager = new ServletSecurityAuthorizationManager(securityAttributeStorage, servletOAuth2ResourceMatcherConfigurer);
+    public FeignTokenValidator feignTokenValidator(FeignSecurityProperties feignSecurityProperties) {
+        FeignTokenValidator validator = new FeignTokenValidator(
+                feignSecurityProperties.getSecretKey(),
+                feignSecurityProperties.isEnabled(),
+                feignSecurityProperties.getTokenValiditySeconds());
+        log.trace("[PIGXD] |- Bean [Feign Token Validator] Configure. Enabled: {}", feignSecurityProperties.isEnabled());
+        return validator;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ServletSecurityAuthorizationManager servletSecurityAuthorizationManager(
+            SecurityAttributeStorage securityAttributeStorage,
+            ServletOAuth2ResourceMatcherConfigurer servletOAuth2ResourceMatcherConfigurer,
+            FeignTokenValidator feignTokenValidator) {
+        ServletSecurityAuthorizationManager manager = new ServletSecurityAuthorizationManager(
+                securityAttributeStorage,
+                servletOAuth2ResourceMatcherConfigurer,
+                feignTokenValidator);
         log.trace("[PIGXD] |- Bean [Servlet Security Authorization Manager] Configure.");
         return manager;
     }
